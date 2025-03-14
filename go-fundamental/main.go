@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"go-fundamental/function"
+	"go-fundamental/multithreading"
 )
 
 func main() {
@@ -15,4 +16,5 @@ func main() {
 	fmt.Println("Divide by zero: ", val, " ", err)
 	val, err = function.Divide(10, 3)
 	fmt.Println("Normal division: ", val, " ", err)
+	multithreading.Test()
 }
