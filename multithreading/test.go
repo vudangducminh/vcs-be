@@ -13,7 +13,7 @@ var mutex sync.Mutex
 func MakingCakes(id int, data chan int, wg *sync.WaitGroup) {
 	defer wg.Done()
 	for cakeID := range data {
-		time.Sleep(2 * time.Second) // Significant amount of time to make a pancake
+		time.Sleep(3 * time.Second)
 		mutex.Lock()
 		fmt.Printf("Worker %d: Created pancake %d\n", id+1, cakeID+1)
 		cakes = append(cakes, cakeID+1)
@@ -30,7 +30,7 @@ func ServingCakes(id int, data chan int, wg *sync.WaitGroup) {
 		fmt.Printf("Guest %d: Used pancake %d\n", id+1, cakeID)
 		fmt.Println("Pancake used:", pancakeUsed)
 		mutex.Unlock()
-		time.Sleep(1 * time.Second) // Time taken to use a pancake
+		time.Sleep(1 * time.Second)
 	}
 }
 
