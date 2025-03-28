@@ -2,7 +2,10 @@ module basic-server
 
 go 1.24.1
 
-require github.com/lib/pq v1.10.9
+require (
+	github.com/lib/pq v1.10.9
+	xorm.io/xorm v1.3.9
+)
 
 require (
 	github.com/goccy/go-json v0.8.1 // indirect
@@ -12,5 +15,4 @@ require (
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/syndtr/goleveldb v1.0.0 // indirect
 	xorm.io/builder v0.3.11-0.20220531020008-1bd24a7dc978 // indirect
-	xorm.io/xorm v1.3.9 // indirect
 )
