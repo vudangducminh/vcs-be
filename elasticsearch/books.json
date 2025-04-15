@@ -1,0 +1,31 @@
+{
+    "settings": {
+        "index": {
+            "number_of_shards": 5,
+            "number_of_replicas": 2
+        }
+    },
+    "mappings": {
+        "properties": {
+            "title": {
+                "type": "text"
+            },
+            "published_date": {
+                "type": "date"
+            },
+            "rating": {
+                "type": "byte"
+            },
+            "authors": {
+                "properties": {
+                    "first_name": {
+                        "type": "keyword"
+                    },
+                    "last_name": {
+                        "type": "keyword"
+                    }
+                }
+            }
+        }
+    }
+}
