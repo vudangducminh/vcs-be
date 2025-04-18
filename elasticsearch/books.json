@@ -8,7 +8,12 @@
     "mappings": {
         "properties": {
             "title": {
-                "type": "text"
+                "type": "text",
+                "fields": {
+                    "keyword": {
+                        "type": "text"
+                    }
+                }
             },
             "published_date": {
                 "type": "date"
