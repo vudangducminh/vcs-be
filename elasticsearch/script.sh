@@ -1,13 +1,10 @@
 http http://localhost:9200/book/_search <<EOF
 {
   "query": {
-    "match_all": {}
-  },
-  "sort": [
-    {
-      "title": {
-        "order": "asc"
+    "range": {
+      "rating": {
+        "gte": 0.0
       }
     }
-  ]
+  }
 }

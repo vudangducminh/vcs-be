@@ -2,7 +2,6 @@ package main
 
 import (
 	"elasticsearch/elastic"
-	"elasticsearch/object"
 	"elasticsearch/server"
 	"fmt"
 	"log"
@@ -15,16 +14,19 @@ func main() {
 	})
 	http.HandleFunc("/book/id", server.GetBookInfoByID)
 	http.HandleFunc("/book/title", server.GetBookInfoByTitle)
-	http.HandleFunc("/book/search/title", server.SearchBookInfoByTitlePrefix)
-	// http.HandleFunc("/add", server.AddPlayerScoreOnServer)
+	http.HandleFunc("/book/search/title", server.SearchRelatedBookInfoByTitle)
+	http.HandleFunc("/book/search/rating", server.SearchBookInfoByRating)
+	http.HandleFunc("/book/delete/id", server.DeleteBookInfoByID)
+
 	elastic.ConnectToEs()
-	book := object.Book{
-		Title:          "Prince of Persia",
-		Published_date: "2023-10-01",
-		Rating:         "4.4",
-		Author:         "John Doe",
-	}
-	server.AddBookInfo(book)
-	fmt.Println("Server listening on port :5002")
+
+	// book := object.Book{
+	// 	Title:          "[MV] Mumei",
+	// 	Published_date: "2023-10-10",
+	// 	Rating:         "9.6",
+	// 	Author:         "Nanashi Mumei",
+	// }
+	// server.AddBookInfo(book)
+	fmt.Println("Server listening on port: 5002")
 	log.Fatal(http.ListenAndServe(":5002", nil))
 }
