@@ -1,0 +1,27 @@
+{
+    "settings": {
+        "index": {
+            "number_of_shards": 5,
+            "number_of_replicas": 2
+        }
+    },
+    "mappings": {
+        "properties": {
+            "id": {
+                "type": "keyword"
+            },
+            "fullname": {
+                "type": "text"
+            },
+            "email": {
+                "type": "text"
+            },
+            "username": {
+                "type": "keyword"
+            },
+            "password": {
+                "type": "text"
+            }
+        }
+    }
+}
