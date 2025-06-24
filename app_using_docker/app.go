@@ -1,44 +1,25 @@
+// filepath: /home/vudangducminh/Desktop/go-tutorial/vcs-be/app_using_docker/app.go
 package main
 
 import (
-	"html/template"
-	"log"
+	"app_using_docker/elasticsearch/elastic"
+	"app_using_docker/handler"
 	"net/http"
 )
 
-var templates = template.Must(template.ParseGlob("templates/*.html"))
-
-func loginPage(w http.ResponseWriter, r *http.Request) {
-	templates.ExecuteTemplate(w, "login.html", nil)
-}
-
-func registerPage(w http.ResponseWriter, r *http.Request) {
-	templates.ExecuteTemplate(w, "register.html", nil)
-}
-
-func handleLogin(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		http.Redirect(w, r, "/", http.StatusSeeOther)
-		return
-	}
-	username := r.FormValue("username")
-	password := r.FormValue("password")
-
-	log.Println("Username:", username)
-	log.Println("Password:", password)
-
-	http.Redirect(w, r, "/", http.StatusSeeOther)
-}
-
-func handleRegister(w http.ResponseWriter, r *http.Request) {
-
-}
-
 func main() {
-	http.HandleFunc("/", loginPage)
-	http.HandleFunc("/login", handleLogin)
-	http.HandleFunc("/register", registerPage)
-	http.HandleFunc("/register_submit", handleRegister)
+	// Connect to Elasticsearch
+	elastic.ConnectToEs()
+
+	if elastic.Es == nil {
+		panic("Failed to connect to Elasticsearch")
+	}
+
+	// Initialize the HTTP server and set up routes
+	http.HandleFunc("/", handler.LoginPage)
+	http.HandleFunc("/login", handler.HandleLogin)
+	http.HandleFunc("/register", handler.RegisterPage)
+	http.HandleFunc("/register_submit", handler.HandleRegister)
 
 	// If you have files like static/style.css or static/script.js
 	// then you can serve them using the following line.

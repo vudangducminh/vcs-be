@@ -1,5 +1,13 @@
-FROM nginx:1.27.5-alpine
-COPY frontend /usr/share/nginx/html
+FROM golang:1.24.1
 
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+WORKDIR /app
+
+# Copy the Go module files and download dependencies
+COPY go.mod go.sum ./
+RUN go mod download
+
+# Copy the source code and build the binary
+COPY . .
+
+# Set the entrypoint to the compiled binary
+CMD ["go", "build", "app_using_docker", "./app_using_docker"]
