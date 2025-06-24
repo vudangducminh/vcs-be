@@ -12,7 +12,7 @@ var err error
 func ConnectToEs() {
 	cfg := elasticsearch.Config{
 		Addresses: []string{
-			"http://localhost:9200",
+			"http://elasticsearch:9200",
 		},
 		APIKey: "",
 	}

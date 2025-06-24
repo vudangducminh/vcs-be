@@ -10,4 +10,4 @@ RUN go mod download
 COPY . .
 
 # Set the entrypoint to the compiled binary
-CMD ["go", "build", "app_using_docker", "./app_using_docker"]
+CMD ["go", "build", "app_using_docker"]

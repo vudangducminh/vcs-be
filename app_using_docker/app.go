@@ -1,4 +1,3 @@
-// filepath: /home/vudangducminh/Desktop/go-tutorial/vcs-be/app_using_docker/app.go
 package main
 
 import (
