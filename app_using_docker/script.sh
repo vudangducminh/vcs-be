@@ -1,6 +1,7 @@
-curl -X POST "http://localhost:9200/_search" -H "Content-Type: application/json" -d '{
+curl -X POST "http://localhost:9200/account/_search" -H "Content-Type: application/json" -d '{
   "query": {
-    "match_all": {
+    "match": {
+      "username": "aa"
     }
   }
 }'

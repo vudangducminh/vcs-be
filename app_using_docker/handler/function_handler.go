@@ -18,6 +18,10 @@ func RegisterPage(w http.ResponseWriter, r *http.Request) {
 	templates.ExecuteTemplate(w, "register.html", nil)
 }
 
+func HomePage(w http.ResponseWriter, r *http.Request) {
+	templates.ExecuteTemplate(w, "home.html", nil)
+}
+
 func HandleLogin(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
@@ -26,10 +30,20 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 	username := r.FormValue("username")
 	password := r.FormValue("password")
 
+	if username == "" || password == "" {
+		log.Fatalln("Username and password are required")
+		return
+	}
+
 	log.Println("Username:", username)
 	log.Println("Password:", password)
 
-	http.Redirect(w, r, "/", http.StatusSeeOther)
+	storedPassword := query.GetAccountPasswordByUsername(username)
+	if storedPassword != password {
+		log.Fatalln("Invalid username or password")
+		return
+	}
+	http.Redirect(w, r, "/home", http.StatusSeeOther)
 }
 
 func HandleRegister(w http.ResponseWriter, r *http.Request) {
@@ -44,8 +58,12 @@ func HandleRegister(w http.ResponseWriter, r *http.Request) {
 	password := r.FormValue("password")
 	confirmPassword := r.FormValue("confirm_password")
 
+	if fullName == "" || email == "" || username == "" || password == "" || confirmPassword == "" {
+		log.Fatalln(w, "All fields are required", http.StatusBadRequest)
+		return
+	}
 	if password != confirmPassword {
-		http.Error(w, "Passwords do not match", http.StatusBadRequest)
+		log.Fatalln(w, "Passwords do not match", http.StatusBadRequest)
 		return
 	}
 

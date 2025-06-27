@@ -19,7 +19,7 @@ func GetAccountInfoByUsername(w http.ResponseWriter, r *http.Request) {
 		elastic.Es.Search.WithBody(strings.NewReader(fmt.Sprintf(`{
 			"query": {
 				"match": {
-					"_username": "%s"
+					"username": "%s"
 				}
 			}
 		}`, username))),
@@ -36,6 +36,67 @@ func GetAccountInfoByUsername(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	fmt.Fprintf(w, "%s", searchResp.String())
+}
+
+func GetAccountPasswordByUsername(username string) string {
+	searchResp, err := elastic.Es.Search(
+		elastic.Es.Search.WithContext(context.Background()),
+		elastic.Es.Search.WithIndex("account"),
+		elastic.Es.Search.WithBody(strings.NewReader(fmt.Sprintf(`{
+			"query": {
+				"match": {
+					"username": "%s"
+				}
+			}
+		}`, username))),
+		elastic.Es.Search.WithTrackTotalHits(true),
+		elastic.Es.Search.WithPretty(),
+	)
+	if err != nil {
+		log.Fatalln("Error searching account")
+		return ""
+	}
+	defer searchResp.Body.Close()
+	if searchResp.IsError() {
+		log.Fatalln("Error searching account")
+		return ""
+	}
+	var searchResult map[string]interface{}
+	err = json.NewDecoder(searchResp.Body).Decode(&searchResult)
+	if err != nil {
+		log.Fatalln("Error decoding search response")
+		return ""
+	}
+	hits, ok := searchResult["hits"].(map[string]interface{})
+	if !ok {
+		log.Fatalln("Invalid search response format")
+		return ""
+	}
+	newHits, ok := hits["hits"].([]interface{})
+	if !ok {
+		log.Fatalln("Invalid search response format")
+		return ""
+	}
+	if len(newHits) == 0 {
+		log.Fatalln("No account found with the given username")
+		return ""
+	}
+	firstHit, ok := newHits[0].(map[string]interface{})
+	if !ok {
+		log.Fatalln("Invalid search response format")
+		return ""
+	}
+	source, ok := firstHit["_source"].(map[string]interface{})
+	if !ok {
+		log.Fatalln("Invalid search response format")
+		return ""
+	}
+	password, ok := source["password"].(string)
+	if !ok {
+		log.Fatalln("Invalid search response format")
+		return ""
+	}
+	return password
 }
 
 func CheckAccountExistsByUsername(username string) bool {

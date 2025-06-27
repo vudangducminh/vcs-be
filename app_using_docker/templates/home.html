@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Home Page</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #74ebd5, #9face6);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .home-container {
+            background: #fff;
+            padding: 2rem 3rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        .home-container h1 {
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .home-container p {
+            color: #555;
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+
+        .home-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .home-button {
+            padding: 0.75rem 1.5rem;
+            background-color: #7c9ee5;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .home-button:hover {
+            background-color: #688edc;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="home-container">
+        <h1>Welcome to the Home Page</h1>
+        <p>You're successfully logged in. Explore the site using the buttons below.</p>
+        <div class="home-buttons">
+            <a href="/profile" class="home-button">Profile</a>
+            <a href="/settings" class="home-button">Settings</a>
+            <a href="/logout" class="home-button">Logout</a>
+        </div>
+    </div>
+</body>
+
+</html>

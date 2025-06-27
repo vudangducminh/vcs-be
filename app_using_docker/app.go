@@ -19,6 +19,7 @@ func main() {
 	http.HandleFunc("/login", handler.HandleLogin)
 	http.HandleFunc("/register", handler.RegisterPage)
 	http.HandleFunc("/register_submit", handler.HandleRegister)
+	http.HandleFunc("/home", handler.HomePage)
 
 	// If you have files like static/style.css or static/script.js
 	// then you can serve them using the following line.
