@@ -13,7 +13,7 @@ var isConnected = false
 func IsConnected() bool {
 	return isConnected
 }
-
+		
 func ConnectToDB() {
 	conns := "postgres://vudangducminh:Amogus69420@localhost:5432/postgres?sslmode=disable;"
 	var err error
