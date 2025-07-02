@@ -1,11 +1,18 @@
 package main
 
 import (
+	"log"
 	"net/http"
 	"sms/client/handler"
+	"sms/database/postgresql/connector"
 )
 
 func main() {
+	// InWitialize the database connection
+	connector.ConnectToDB()
+	if !connector.IsConnected() {
+		log.Println("Failed to connect to the database")
+	}
 
 	// Initialize the HTTP server and set up routes
 	http.HandleFunc("/", handler.LoginPage)

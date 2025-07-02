@@ -1,0 +1,1 @@
+- When using xorm query without the table field, it will assumes the table name of a variable as the variable's struct name

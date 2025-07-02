@@ -1,13 +1,27 @@
 package posgresql_query
 
 import (
+	"log"
+	"sms/database/postgresql/connector"
 	"sms/object"
 )
 
 func GetAccountPasswordByUsername(username string) string {
-	// This function should connect to the PostgreSQL database and retrieve the password for the given username.
-	// For now, we will return a dummy password for demonstration purposes.
-	return "dummy_password"
+	var account object.Account
+	has, err := connector.Engine.Table("account").Cols("password").Alias("account").
+		Where("username = ?", username).
+		Get(&account)
+
+	if err != nil {
+		log.Println("Error retrieving account password:", err)
+		return ""
+	}
+
+	if !has || account.Password == "" {
+		log.Println("No account found with username:", username)
+		return ""
+	}
+	return account.Password
 }
 
 func AddAccountInfo(account object.Account) {

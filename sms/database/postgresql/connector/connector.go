@@ -7,7 +7,7 @@ import (
 	"xorm.io/xorm"
 )
 
-var engine *xorm.Engine
+var Engine *xorm.Engine
 var isConnected = false
 
 func IsConnected() bool {
@@ -17,7 +17,7 @@ func IsConnected() bool {
 func ConnectToDB() {
 	conns := "postgres://vudangducminh:Amogus69420@localhost:5432/postgres?sslmode=disable;"
 	var err error
-	engine, err = xorm.NewEngine("postgres", conns)
+	Engine, err = xorm.NewEngine("postgres", conns)
 	if err != nil {
 		log.Fatal(err)
 		return
