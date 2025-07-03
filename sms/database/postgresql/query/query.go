@@ -24,8 +24,27 @@ func GetAccountPasswordByUsername(username string) string {
 	return account.Password
 }
 
-func AddAccountInfo(account object.Account) {
-	// This function should connect to the PostgreSQL database and add the account information.
-	// For now, we will just print the account information for demonstration purposes.
-	println("Adding account:", account.Username, "with password:", account.Password)
+func AddAccountInfo(account object.Account) bool {
+	has, err := connector.Engine.Table("account").
+		Where("username = ?", account.Username).Count(new(object.Account))
+	if err != nil {
+		log.Println(err)
+		return false
+	}
+	if has > 0 {
+		log.Println("Account already exists with username:", account.Username)
+		return false
+	}
+	affected, err := connector.Engine.Insert(account)
+	if err != nil {
+		log.Println(err)
+		return false
+	}
+	if affected > 0 {
+		log.Println("Account added successfully:", account.Username)
+		return true
+	} else {
+		log.Println("Failed to add account:", account.Username)
+		return false
+	}
 }

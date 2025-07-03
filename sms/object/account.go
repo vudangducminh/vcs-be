@@ -1,9 +1,9 @@
 package object
 
 type Account struct {
-	ID       int    `json:"id"`
-	FullName string `json:"full_name"`
-	Email    string `json:"email"`
-	Username string `json:"username"`
-	Password string `json:"password"`
+	ID       int    `xorm:"'ID' pk autoincr"`
+	Fullname string `xorm:"'fullname'"`
+	Email    string `xorm:"'email'"`
+	Username string `xorm:"'username'"`
+	Password string `xorm:"'password'"`
 }

@@ -1,1 +1,2 @@
 - When using xorm query without the table field, it will assumes the table name of a variable as the variable's struct name
+- We need to set "HttpOnly: true" in cookie to prevent it from being stolen by JS code

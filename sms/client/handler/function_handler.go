@@ -3,9 +3,11 @@ package handler
 import (
 	"log"
 	"net/http"
+	"sms/auth"
 	posgresql_query "sms/database/postgresql/query"
 	"sms/object"
 	"text/template"
+	"time"
 )
 
 var templates = template.Must(template.ParseGlob("client/templates/*.html"))
@@ -45,6 +47,25 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
+
+	// Generate JWT token before redirecting the user
+	tokenString, err := auth.GenerateJWT(username, password)
+	if err != nil {
+		// handle error
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
+	}
+
+	cookie := &http.Cookie{
+		Name:     "token",
+		Value:    tokenString,
+		Path:     "/",
+		HttpOnly: true, // prevents JS access (important)
+		// Secure: true, // enable if using HTTPS
+		Expires: time.Now().Add(time.Hour), // optional, set expiry
+	}
+
+	http.SetCookie(w, cookie)
 	http.Redirect(w, r, "/dashboard", http.StatusSeeOther)
 }
 
@@ -72,8 +93,7 @@ func HandleRegister(w http.ResponseWriter, r *http.Request) {
 	}
 
 	account := object.Account{
-		ID:       0,
-		FullName: fullName,
+		Fullname: fullName,
 		Email:    email,
 		Username: username,
 		Password: password,
@@ -82,7 +102,34 @@ func HandleRegister(w http.ResponseWriter, r *http.Request) {
 	log.Println("Registering Username:", username)
 	log.Println("Password:", password)
 
-	posgresql_query.AddAccountInfo(account)
+	if posgresql_query.AddAccountInfo(account) {
+		// Add success text
+	} else {
+		// Add failed text
+	}
 
-	http.Redirect(w, r, "/", http.StatusSeeOther)
+	http.Redirect(w, r, "/register", http.StatusSeeOther)
+}
+
+func HandleAddServer(w http.ResponseWriter, r *http.Request) {
+	log.Fatalln("Error: HandleAddServer function is not implemented yet")
+	serverName := r.FormValue("server_name")
+	serverAddress := r.FormValue("server_address")
+	serverPort := r.FormValue("server_port")
+	log.Println("Adding server:", serverName, serverAddress, serverPort)
+
+	if r.Method != http.MethodPost {
+		http.Redirect(w, r, "/dashboard", http.StatusSeeOther)
+		return
+	}
+	if serverName == "" || serverAddress == "" || serverPort == "" {
+		log.Println("All fields are required")
+		http.Redirect(w, r, "/dashboard", http.StatusSeeOther)
+		return
+	}
+
+	// Here you would typically save the server information to the database
+	log.Printf("Adding server: %s at %s:%s\n", serverName, serverAddress, serverPort)
+
+	http.Redirect(w, r, "/dashboard", http.StatusSeeOther)
 }

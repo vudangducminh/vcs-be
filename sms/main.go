@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	// InWitialize the database connection
+	// Initialize the database connection
 	connector.ConnectToDB()
 	if !connector.IsConnected() {
 		log.Println("Failed to connect to the database")
@@ -20,6 +20,7 @@ func main() {
 	http.HandleFunc("/register", handler.RegisterPage)
 	http.HandleFunc("/register_submit", handler.HandleRegister)
 	http.HandleFunc("/dashboard", handler.DashboardPage)
+	http.HandleFunc("/add-server", handler.HandleAddServer)
 
 	// If you have files like static/style.css or static/script.js
 	// then you can serve them using the following line.
