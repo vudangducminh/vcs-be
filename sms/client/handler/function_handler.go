@@ -6,13 +6,12 @@ import (
 	"sms/auth"
 	"sms/object"
 	posgresql_query "sms/server/database/postgresql/query"
-	"text/template"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 )
 
-var templates = template.Must(template.ParseGlob("client/templates/*.html"))
+// var templates = template.Must(template.ParseGlob("client/templates/*.html"))
 
 func DashboardPage(w http.ResponseWriter, r *http.Request) {
 	cookie, err := r.Cookie("token")
@@ -44,7 +43,7 @@ func DashboardPage(w http.ResponseWriter, r *http.Request) {
 	}
 	log.Println("Current username:", username)
 	log.Println("Current password:", password)
-	templates.ExecuteTemplate(w, "dashboard.html", nil)
+	// templates.ExecuteTemplate(w, "dashboard.html", nil)
 }
 
 func HandleLogin(w http.ResponseWriter, r *http.Request) {

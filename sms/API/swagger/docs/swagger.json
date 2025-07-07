@@ -1,0 +1,19 @@
+{
+    "schemes": [
+        "http"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "description": "This is a sample server for VCS System Management System API.",
+        "title": "VCS System Management System API",
+        "contact": {
+            "name": "Vu Dang Duc Minh",
+            "url": "https://geithub.com/vudangducminh",
+            "email": "vudangducminh@gmail.com"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:8800",
+    "basePath": "/api/v1",
+    "paths": {}
+}

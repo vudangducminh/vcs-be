@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"sms/API/swagger"
 	"sms/client/handler"
 	"sms/server/database/postgresql/connector"
 )
@@ -13,6 +14,9 @@ func main() {
 	if !connector.IsConnected() {
 		log.Println("Failed to connect to the database")
 	}
+
+	// Connect to Swagger for API documentation
+	swagger.ConnectToSwagger()
 
 	// Initialize the HTTP server and set up routes
 	http.HandleFunc("/login", handler.HandleLogin)
