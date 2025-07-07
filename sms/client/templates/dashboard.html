@@ -2132,7 +2132,7 @@
     </div>
 
     <script>
-        // Server management state
+        /* // Server management state
         let servers = JSON.parse(localStorage.getItem('servers')) || [];
 
         // Initialize with sample data if empty
@@ -2174,7 +2174,7 @@
 
         function saveServers() {
             localStorage.setItem('servers', JSON.stringify(servers));
-        }
+        } */
 
         function getStatusColor(status) {
             switch (status) {
@@ -2195,7 +2195,7 @@
             }
         }
 
-        function renderServers() {
+        /* function renderServers() {
             const grid = document.getElementById('serverGrid');
             const emptyState = document.getElementById('emptyState');
 
@@ -2269,9 +2269,9 @@
                 `).join('');
 
             updateStats();
-        }
+        } */
 
-        function updateStats() {
+        /* function updateStats() {
             const total = servers.length;
             const online = servers.filter(s => s.status === 'online').length;
             const offline = servers.filter(s => s.status === 'offline').length;
@@ -2282,9 +2282,9 @@
             document.getElementById('offlineServers').textContent = offline;
             document.getElementById('maintenanceServers').textContent = maintenance;
             document.getElementById('lastUpdated').textContent = new Date().toLocaleTimeString();
-        }
+        } */
 
-        function toggleServer(id, newStatus) {
+        /* function toggleServer(id, newStatus) {
             const server = servers.find(s => s.id === id);
             if (server) {
                 server.status = newStatus;
@@ -2300,9 +2300,9 @@
                 saveServers();
                 renderServers();
             }
-        }
+        } */
 
-        function restartServer(id) {
+        /* function restartServer(id) {
             const server = servers.find(s => s.id === id);
             if (server) {
                 server.status = 'maintenance';
@@ -2324,7 +2324,7 @@
                 saveServers();
                 renderServers();
             }
-        }
+        } */
 
         function showAddServerModal() {
             document.getElementById('addServerModal').classList.remove('hidden');
@@ -2340,7 +2340,7 @@
         // Event listeners
         document.getElementById('addServerBtn').addEventListener('click', showAddServerModal);
 
-        document.getElementById('addServerForm').addEventListener('submit', function (e) {
+        /* document.getElementById('addServerForm').addEventListener('submit', function (e) {
             e.preventDefault();
 
             const name = document.getElementById('serverName').value;
@@ -2362,7 +2362,7 @@
             saveServers();
             renderServers();
             hideAddServerModal();
-        });
+        }); */
 
         // Close modal when clicking outside
         document.getElementById('addServerModal').addEventListener('click', function (e) {
