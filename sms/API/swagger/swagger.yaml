@@ -1,0 +1,16 @@
+openapi: 3.0.4
+info:
+  title: VCS Server Management System - OpenAPI 3.0
+  description: |-
+    This is a sample Server Management System based on the OpenAPI 3.0 specification. You can find out more about
+    Swagger at [https://swagger.io](https://swagger.io).
+  termsOfService: https://swagger.io/terms/
+  contact:
+    email: vudangducminh@gmail.com
+servers:
+  - url: https://localhost:8080/api
+tags:
+  - name: server
+    description: Operations about server
+  - name: user
+    description: Operations about user

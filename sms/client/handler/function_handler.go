@@ -4,8 +4,8 @@ import (
 	"log"
 	"net/http"
 	"sms/auth"
-	posgresql_query "sms/database/postgresql/query"
 	"sms/object"
+	posgresql_query "sms/server/database/postgresql/query"
 	"text/template"
 	"time"
 
@@ -13,14 +13,6 @@ import (
 )
 
 var templates = template.Must(template.ParseGlob("client/templates/*.html"))
-
-func LoginPage(w http.ResponseWriter, r *http.Request) {
-	templates.ExecuteTemplate(w, "login.html", nil)
-}
-
-func RegisterPage(w http.ResponseWriter, r *http.Request) {
-	templates.ExecuteTemplate(w, "register.html", nil)
-}
 
 func DashboardPage(w http.ResponseWriter, r *http.Request) {
 	cookie, err := r.Cookie("token")
@@ -143,24 +135,17 @@ func HandleRegister(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleAddServer(w http.ResponseWriter, r *http.Request) {
-	log.Fatalln("Error: HandleAddServer function is not implemented yet")
 	serverName := r.FormValue("server_name")
-	serverAddress := r.FormValue("server_address")
-	serverPort := r.FormValue("server_port")
-	log.Println("Adding server:", serverName, serverAddress, serverPort)
+	serverIP := r.FormValue("server_IP")
+	serverType := r.FormValue("server_type")
+	log.Println("Adding server:", serverName, serverIP, serverType)
 
 	if r.Method != http.MethodPost {
 		http.Redirect(w, r, "/dashboard", http.StatusSeeOther)
 		return
 	}
-	if serverName == "" || serverAddress == "" || serverPort == "" {
-		log.Println("All fields are required")
-		http.Redirect(w, r, "/dashboard", http.StatusSeeOther)
-		return
-	}
 
-	// Here you would typically save the server information to the database
-	log.Printf("Adding server: %s at %s:%s\n", serverName, serverAddress, serverPort)
+	log.Printf("Adding server: %s at %s:%s\n", serverName, serverIP, serverType)
 
 	http.Redirect(w, r, "/dashboard", http.StatusSeeOther)
 }

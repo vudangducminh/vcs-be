@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 	"sms/client/handler"
-	"sms/database/postgresql/connector"
+	"sms/server/database/postgresql/connector"
 )
 
 func main() {
@@ -15,9 +15,7 @@ func main() {
 	}
 
 	// Initialize the HTTP server and set up routes
-	http.HandleFunc("/", handler.LoginPage)
 	http.HandleFunc("/login", handler.HandleLogin)
-	http.HandleFunc("/register", handler.RegisterPage)
 	http.HandleFunc("/register_submit", handler.HandleRegister)
 	http.HandleFunc("/dashboard", handler.DashboardPage)
 	http.HandleFunc("/add-server", handler.HandleAddServer)
