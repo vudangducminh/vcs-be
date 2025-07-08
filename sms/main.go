@@ -2,11 +2,24 @@ package main
 
 import (
 	"log"
-	"net/http"
 	"sms/API/swagger"
-	"sms/client/handler"
+	_ "sms/API/users_handler" // Importing users_handler for Swagger documentation
+	_ "sms/docs"
 	"sms/server/database/postgresql/connector"
 )
+
+// @title           VCS System Management API
+// @version         1.0
+// @description     This is a sample server for VCS System Management API.
+// @contact.name    Vu Dang Duc Minh
+// @contact.email   vudangducminh@gmail.com
+// @contact.url     https://github.com/vudangducminh
+// @BasePath        /api/v1
+// @schemes         http
+// @host            localhost:8800
+
+// @Tag.name        Users
+// @Tag.description "Operations related to user authentication and management"
 
 func main() {
 	// Initialize the database connection
@@ -18,16 +31,7 @@ func main() {
 	// Connect to Swagger for API documentation
 	swagger.ConnectToSwagger()
 
-	// Initialize the HTTP server and set up routes
-	http.HandleFunc("/login", handler.HandleLogin)
-	http.HandleFunc("/register_submit", handler.HandleRegister)
-	http.HandleFunc("/dashboard", handler.DashboardPage)
-	http.HandleFunc("/add-server", handler.HandleAddServer)
+	log.Println("Server starting on http://localhost:8800")
+	log.Println("Swagger UI available at http://localhost:8800/swagger/index.html")
 
-	// If you have files like static/style.css or static/script.js
-	// then you can serve them using the following line.
-	// http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
-
-	println("Server started at http://localhost:8800")
-	http.ListenAndServe(":8800", nil)
 }

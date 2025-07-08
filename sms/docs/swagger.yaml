@@ -1,0 +1,17 @@
+basePath: /api/v1
+host: localhost:8800
+info:
+  contact:
+    email: vudangducminh@gmail.com
+    name: Vu Dang Duc Minh
+    url: https://github.com/vudangducminh
+  description: This is a sample server for VCS System Management API.
+  title: VCS System Management API
+  version: "1.0"
+paths: {}
+schemes:
+- http
+swagger: "2.0"
+tags:
+- description: '"Operations related to user authentication and management"'
+  name: Users
