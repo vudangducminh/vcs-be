@@ -15,8 +15,8 @@ var RedisClient *redis.Client
 func TestConnectToRedis(t *testing.T) {
 	// Best practice: Get sensitive information from environment variables
 	// Replace with your actual host, port, and password found in Azure portal
-	redisHost := "vcsbe.redis.cache.windows.net"
-	redisPort := "6380"
+	redisHost := "redis-13990.c251.east-us-mz.azure.redns.redis-cloud.com"
+	redisPort := "13990"
 	redisAddr := fmt.Sprintf("%s:%s", redisHost, redisPort)
 	redisPassword := "9rLVW1004AEMuAzqQCBIvb30gHQDqRAzmAzCaLR0JpY="
 	redisUsername := "default"
@@ -46,30 +46,5 @@ func TestConnectToRedis(t *testing.T) {
 		t.Errorf("Could not connect to Redis: %v", err)
 		return
 	}
-
 	log.Printf("Connected to Redis successfully! PING response: %s", pong)
-
-	// --- Example Usage ---
-
-	// Set a key
-	err = RedisClient.Set(ctx, "mykey", "hello from go", 10).Err() // 0 means no expiration
-	if err != nil {
-		t.Errorf("Could not set key: %v", err)
-		return
-	}
-	log.Println("Set 'mykey' to 'hello from go'")
-
-	// Get a key
-	val, err := RedisClient.Get(ctx, "mykey").Result()
-	if err == redis.Nil {
-		log.Println("Key 'mykey' does not exist")
-	} else if err != nil {
-		t.Errorf("Could not get key: %v", err)
-		return
-	} else {
-		log.Printf("Got 'mykey': %s", val)
-	}
-
-	// Delete a key
-	// client.Del(ctx, "mykey")
 }
