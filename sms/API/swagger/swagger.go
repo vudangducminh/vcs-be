@@ -13,11 +13,7 @@ func ConnectToSwagger() {
 	users := r.Group("api/v1/users")
 	{
 		users.POST("/login", users_handler.HandleLogin)
-		users.POST("/register", func(c *gin.Context) {
-			c.JSON(200, gin.H{
-				"message": "Register endpoint",
-			})
-		})
+		users.POST("/register", users_handler.HandleRegister)
 		users.GET("/dashboard", func(c *gin.Context) {
 			c.JSON(200, gin.H{
 				"message": "Dashboard endpoint",

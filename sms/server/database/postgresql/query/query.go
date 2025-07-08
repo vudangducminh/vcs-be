@@ -2,6 +2,7 @@ package posgresql_query
 
 import (
 	"log"
+	"net/http"
 	"sms/object"
 	"sms/server/database/postgresql/connector"
 )
@@ -24,27 +25,27 @@ func GetAccountPasswordByUsername(username string) string {
 	return account.Password
 }
 
-func AddAccountInfo(account object.Account) bool {
+func AddAccountInfo(account object.Account) int {
 	has, err := connector.Engine.Table("account").
 		Where("username = ?", account.Username).Count(new(object.Account))
 	if err != nil {
 		log.Println(err)
-		return false
+		return http.StatusInternalServerError
 	}
 	if has > 0 {
 		log.Println("Account already exists with username:", account.Username)
-		return false
+		return http.StatusConflict
 	}
 	affected, err := connector.Engine.Insert(account)
 	if err != nil {
 		log.Println(err)
-		return false
+		return http.StatusInternalServerError
 	}
 	if affected > 0 {
 		log.Println("Account added successfully:", account.Username)
-		return true
+		return http.StatusCreated
 	} else {
 		log.Println("Failed to add account:", account.Username)
-		return false
+		return http.StatusInternalServerError
 	}
 }

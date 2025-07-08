@@ -52,6 +52,40 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/users/register": {
+            "post": {
+                "description": "Handle user registration by validating input and storing account information",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Handle user registration",
+                "parameters": [
+                    {
+                        "description": "Registration request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/object.RegisterRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Registration successful",
+                        "schema": {
+                            "$ref": "#/definitions/object.RegisterResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -76,6 +110,42 @@ const docTemplate = `{
                 "message": {
                     "type": "string",
                     "example": "Login successful"
+                }
+            }
+        },
+        "object.RegisterRequest": {
+            "type": "object",
+            "required": [
+                "confirm_password",
+                "email",
+                "fullname",
+                "password",
+                "username"
+            ],
+            "properties": {
+                "confirm_password": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "fullname": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "object.RegisterResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "Registration successful"
                 }
             }
         }

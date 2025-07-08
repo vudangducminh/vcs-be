@@ -5,46 +5,52 @@ import (
 	"net/http"
 	"sms/object"
 	posgresql_query "sms/server/database/postgresql/query"
+
+	"github.com/gin-gonic/gin"
 )
 
-func HandleRegister(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		http.Redirect(w, r, "/register", http.StatusSeeOther)
+// @Tags         Users
+// @Summary      Handle user registration
+// @Description  Handle user registration by validating input and storing account information
+// @Accept       json
+// @Produce      json
+// @Param        request body object.RegisterRequest true "Registration request"
+// @Success      200 {object} object.RegisterResponse "Registration successful"
+// @Router       /users/register [post]
+func HandleRegister(c *gin.Context) {
+	var req object.RegisterRequest
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
 		return
 	}
 
-	fullName := r.FormValue("fullname")
-	email := r.FormValue("email")
-	username := r.FormValue("username")
-	password := r.FormValue("password")
-	confirmPassword := r.FormValue("confirm_password")
-
-	if fullName == "" || email == "" || username == "" || password == "" || confirmPassword == "" {
-		log.Println(w, "All fields are required", http.StatusBadRequest)
-		http.Redirect(w, r, "/", http.StatusSeeOther)
+	if req.Fullname == "" || req.Email == "" || req.Username == "" || req.Password == "" || req.ConfirmPassword == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "All fields are required"})
 		return
 	}
-	if password != confirmPassword {
-		log.Println(w, "Passwords do not match", http.StatusBadRequest)
-		http.Redirect(w, r, "/", http.StatusSeeOther)
+	if req.Password != req.ConfirmPassword {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Passwords do not match"})
 		return
 	}
 
+	log.Println("Registering Username:", req.Username)
+	log.Println("Password:", req.Password)
 	account := object.Account{
-		Fullname: fullName,
-		Email:    email,
-		Username: username,
-		Password: password,
+		Fullname: req.Fullname,
+		Email:    req.Email,
+		Username: req.Username,
+		Password: req.Password,
 	}
-
-	log.Println("Registering Username:", username)
-	log.Println("Password:", password)
-
-	if posgresql_query.AddAccountInfo(account) {
-		// Add success text
+	httpStatus := posgresql_query.AddAccountInfo(account)
+	if httpStatus == http.StatusCreated {
+		c.JSON(http.StatusCreated, gin.H{
+			"message": "Registration successful",
+		})
 	} else {
-		// Add failed text
+		c.JSON(httpStatus, gin.H{
+			"message": "Registration failed",
+			"error":   "Account already exists or internal server error",
+		})
 	}
-
-	http.Redirect(w, r, "/register", http.StatusSeeOther)
 }
