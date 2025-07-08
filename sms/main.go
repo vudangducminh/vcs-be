@@ -17,10 +17,8 @@ import (
 // @BasePath        /api/v1
 // @schemes         http
 // @host            localhost:8800
-
 // @Tag.name        Users
 // @Tag.description "Operations related to user authentication and management"
-
 func main() {
 	// Initialize the database connection
 	connector.ConnectToDB()

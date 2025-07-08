@@ -10,7 +10,7 @@ import (
 
 func ConnectToSwagger() {
 	r := gin.Default()
-	users := r.Group("/users")
+	users := r.Group("api/v1/users")
 	{
 		users.POST("/login", users_handler.HandleLogin)
 		users.POST("/register", func(c *gin.Context) {

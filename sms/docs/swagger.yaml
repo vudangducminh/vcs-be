@@ -1,4 +1,21 @@
 basePath: /api/v1
+definitions:
+  object.LoginRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  object.LoginResponse:
+    properties:
+      message:
+        example: Login successful
+        type: string
+    type: object
 host: localhost:8800
 info:
   contact:
@@ -8,7 +25,30 @@ info:
   description: This is a sample server for VCS System Management API.
   title: VCS System Management API
   version: "1.0"
-paths: {}
+paths:
+  /users/login:
+    post:
+      consumes:
+      - application/json
+      description: Handle user login by validating credentials and generating a JWT
+        token
+      parameters:
+      - description: Login request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/object.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Login successful
+          schema:
+            $ref: '#/definitions/object.LoginResponse'
+      summary: Handle user login
+      tags:
+      - Users
 schemes:
 - http
 swagger: "2.0"
