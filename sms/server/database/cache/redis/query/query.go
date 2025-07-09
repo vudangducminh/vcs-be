@@ -1,6 +1,7 @@
 package redis_query
 
 import (
+	"context"
 	"log"
 	"sms/auth"
 	"sms/server/database/cache/redis/connector"
@@ -26,11 +27,20 @@ func SaveJWTToken(tokenStr string, second int) bool {
 		log.Println("Username claim not found or not a string")
 		return false
 	}
-	err = connector.RedisClient.Set(connector.RedisClient.Context(), tokenStr, username, second*time.Second).Err()
+	err = connector.RedisClient.Set(context.Background(), tokenStr, username, time.Duration(second)*time.Second).Err()
 	if err != nil {
 		log.Println("Failed to save JWT token to Redis:", err)
 		return false
 	}
 	log.Println("JWT token saved to Redis successfully")
 	return true
+}
+
+func GetUsernameByJWTToken(tokenStr string) string {
+	username, err := connector.RedisClient.Get(context.Background(), tokenStr).Result()
+	if err != nil {
+		log.Println("Error while fetching username using JWT token")
+		return ""
+	}
+	return username
 }

@@ -1,36 +1,26 @@
 package website_handler
 
-import "github.com/gin-gonic/gin"
+import (
+	"log"
+	"net/http"
+	"sms/object"
 
-func DashboardPage(c *gin.Context) {
-	// cookie, err := r.Cookie("token")
-	// if err != nil {
-	// 	// Cookie not found or other error
-	// 	log.Println("Token cookie not found:", err)
-	// 	http.Redirect(w, r, "/", http.StatusSeeOther)
-	// 	return
-	// }
-	// // Maybe I can use redis to save the token so that I can retrieve the user information without the need to validate the cookie
-	// token, err := auth.ValidateJWT(cookie.Value)
-	// if err != nil {
-	// 	log.Println("Invalid token:", err)
-	// 	http.Redirect(w, r, "/", http.StatusSeeOther)
-	// 	return
-	// }
-	// claims := token.Claims.(jwt.MapClaims)
-	// username, ok := claims["username"].(string)
-	// if !ok {
-	// 	log.Println("Username claim not found or not a string")
-	// 	http.Redirect(w, r, "/", http.StatusSeeOther)
-	// 	return
-	// }
-	// password, ok := claims["password"].(string)
-	// if !ok {
-	// 	log.Println("Password claim not found or not a string")
-	// 	http.Redirect(w, r, "/", http.StatusSeeOther)
-	// 	return
-	// }
-	// log.Println("Current username:", username)
-	// log.Println("Current password:", password)
-	// templates.ExecuteTemplate(w, "dashboard.html", nil)
+	redis_query "sms/server/database/cache/redis/query"
+
+	"github.com/gin-gonic/gin"
+)
+
+func Authentication(c *gin.Context) {
+	var req object.AuthRequest
+	username := redis_query.GetUsernameByJWTToken(req.JWT)
+	if username == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
+		return
+	}
+	log.Println("Current username:", username)
+	c.JSON(http.StatusOK, gin.H{
+		"message":  "Authentication successfully",
+		"username": username,
+	})
+
 }
