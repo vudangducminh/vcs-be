@@ -1,50 +1,33 @@
 package test
 
 import (
-	"context"    // Used for client methods
-	"crypto/tls" // Needed for TLSConfig
+	"context" // Used for client methods
 	"fmt"
-	"log"
+
+	// Needed for TLSConfig
+
 	"testing"
 
 	"github.com/go-redis/redis/v8"
 )
 
-var RedisClient *redis.Client
-
 func TestConnectToRedis(t *testing.T) {
-	// Best practice: Get sensitive information from environment variables
-	// Replace with your actual host, port, and password found in Azure portal
-	redisHost := "redis-13990.c251.east-us-mz.azure.redns.redis-cloud.com"
-	redisPort := "13990"
-	redisAddr := fmt.Sprintf("%s:%s", redisHost, redisPort)
-	redisPassword := "9rLVW1004AEMuAzqQCBIvb30gHQDqRAzmAzCaLR0JpY="
-	redisUsername := "default"
-
 	ctx := context.Background()
 
-	// Configure Redis client options
-	options := &redis.Options{
-		Addr:     redisAddr,
-		Password: redisPassword, // The Access Key from Azure Portal
-		Username: redisUsername, // Typically "default" for Access Key auth
-		DB:       0,             // Default Redis database (usually 0)
+	rdb := redis.NewClient(&redis.Options{
+		Addr:     "redis-13990.c251.east-us-mz.azure.redns.redis-cloud.com:13990",
+		Username: "default",
+		Password: "c3QOPfZSpiPqTmfBCINbFuPvaKUSEMM8",
+		DB:       0,
+	})
 
-		// Since Non-SSL port 6379 is disabled, you MUST connect using SSL/TLS
-		TLSConfig: &tls.Config{
-			// For connecting to Azure Cache for Redis publicly, an empty TLSConfig is usually sufficient.
-			// It enables the client to negotiate TLS.
-		},
-	}
+	rdb.Set(ctx, "foo", "bar", 0)
+	result, err := rdb.Get(ctx, "foo").Result()
 
-	// Create the Redis client
-	RedisClient = redis.NewClient(options)
-
-	// Test the connection using the PING command
-	pong, err := RedisClient.Ping(ctx).Result()
 	if err != nil {
-		t.Errorf("Could not connect to Redis: %v", err)
+		t.Fatalf("Failed to get value from Redis: %v", err)
 		return
 	}
-	log.Printf("Connected to Redis successfully! PING response: %s", pong)
+
+	fmt.Println(result) // >>> bar
 }
