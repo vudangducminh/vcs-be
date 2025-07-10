@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"sms/auth"
+	_ "sms/docs"
 	"sms/object"
 	posgresql_query "sms/server/database/postgresql/query"
 

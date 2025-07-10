@@ -2,6 +2,7 @@ package swagger
 
 import (
 	"sms/API/users_handler"
+	_ "sms/docs"
 
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
