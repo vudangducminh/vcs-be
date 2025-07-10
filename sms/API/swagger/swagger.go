@@ -1,6 +1,7 @@
 package swagger
 
 import (
+	"sms/API/servers_handler"
 	"sms/API/users_handler"
 	"sms/API/website_handler"
 	_ "sms/docs"
@@ -20,6 +21,10 @@ func ConnectToSwagger() {
 	auth := r.Group("api/v1/auth")
 	{
 		auth.POST("/", website_handler.Authentication)
+	}
+	servers := r.Group("api/v1/servers")
+	{
+		servers.POST("/add_server", servers_handler.AddServer)
 	}
 	// The host should match the @host annotation in main.go
 	url := ginSwagger.URL("http://localhost:8800/swagger/doc.json")
