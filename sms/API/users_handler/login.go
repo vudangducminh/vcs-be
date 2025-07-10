@@ -6,16 +6,21 @@ import (
 	"sms/auth"
 	_ "sms/docs"
 	"sms/object"
+
+	redis_query "sms/server/database/cache/redis/query"
 	posgresql_query "sms/server/database/postgresql/query"
 
 	"github.com/gin-gonic/gin"
 )
 
-// @Summary      Handle user Login
-// @Description  (Description can be commented out too if needed)
-// @Tags         users
+// @Tags         Users
+// @Summary      Handle user login
+// @Description  Handle user login by validating credentials and generating a JWT token
+// @Accept       json
+// @Produce      json
+// @Param        request body object.LoginRequest true "Login request"
+// @Success      200 {object} object.LoginResponse "Login successful"
 // @Router       /users/login [post]
-
 func HandleLogin(c *gin.Context) {
 	var req object.LoginRequest
 
@@ -24,6 +29,8 @@ func HandleLogin(c *gin.Context) {
 		return
 	}
 
+	log.Println("Username:", req.Username)
+	log.Println("Password:", req.Password)
 	if req.Username == "" || req.Password == "" {
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"message": "Username and password are required",
@@ -31,9 +38,6 @@ func HandleLogin(c *gin.Context) {
 		})
 		return
 	}
-
-	log.Println("Username:", req.Username)
-	log.Println("Password:", req.Password)
 
 	storedPassword := posgresql_query.GetAccountPasswordByUsername(req.Username)
 	if storedPassword != req.Password {
@@ -56,8 +60,15 @@ func HandleLogin(c *gin.Context) {
 	}
 	// Set the cookie in the response
 
-	c.JSON(http.StatusOK, gin.H{
-		"message": "Login successful",
-		"token":   tokenString,
-	})
+	if redis_query.SaveJWTToken(tokenString, 60) {
+		c.JSON(http.StatusOK, gin.H{
+			"message": "Login successful",
+			"token":   tokenString,
+		})
+	} else {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "Error saving JWT token",
+			"error":   "Error saving JWT token",
+		})
+	}
 }

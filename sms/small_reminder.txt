@@ -1,5 +1,7 @@
 - When using xorm query without the table field, it will assumes the table name of a variable as the variable's struct name
 - We need to set "HttpOnly: true" in cookie to prevent it from being stolen by JS code
+- While annotating API function, there must not be spaces between annotation and the function 
 
 Note:
-- Find a way to import data from SQL not localstorage (servers)
+- Swagger initialization:
+    swag init -g main.go --dir .,./API/users_handler,./object

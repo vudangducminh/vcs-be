@@ -5,7 +5,8 @@ import (
 	"sms/API/swagger"
 	_ "sms/API/users_handler" // Importing users_handler for Swagger documentation
 	_ "sms/docs"
-	"sms/server/database/postgresql/connector"
+	redis "sms/server/database/cache/redis/connector"
+	postgresql "sms/server/database/postgresql/connector"
 )
 
 // @title           VCS System Management API
@@ -17,20 +18,19 @@ import (
 // @BasePath        /api/v1
 // @schemes         http
 // @host            localhost:8800
-
 // @Tag.name        Users
 // @Tag.description "Operations related to user authentication and management"
-
 func main() {
 	// Initialize the database connection
-	connector.ConnectToDB()
-	if !connector.IsConnected() {
+	postgresql.ConnectToDB()
+	// Initialize the Redis connection
+	redis.ConnectToRedis()
+	if !postgresql.IsConnected() {
 		log.Println("Failed to connect to the database")
 	}
 
 	// Connect to Swagger for API documentation
 	swagger.ConnectToSwagger()
-
 	log.Println("Server starting on http://localhost:8800")
 	log.Println("Swagger UI available at http://localhost:8800/swagger/index.html")
 
