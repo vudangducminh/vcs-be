@@ -1,5 +1,18 @@
 basePath: /api/v1
 definitions:
+  object.AuthRequest:
+    properties:
+      jwt:
+        type: string
+    required:
+    - jwt
+    type: object
+  object.AuthResponse:
+    properties:
+      message:
+        example: Authentication successfully
+        type: string
+    type: object
   object.LoginRequest:
     properties:
       password:
@@ -51,6 +64,29 @@ info:
   title: VCS System Management API
   version: "1.0"
 paths:
+  /auth:
+    post:
+      consumes:
+      - application/json
+      description: Handle user authentication by validating JWT token and returning
+        username
+      parameters:
+      - description: Authentication request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/object.AuthRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Authentication successfully
+          schema:
+            $ref: '#/definitions/object.AuthResponse'
+      summary: Handle user authentication
+      tags:
+      - Auth
   /users/login:
     post:
       consumes:
@@ -103,3 +139,5 @@ swagger: "2.0"
 tags:
 - description: '"Operations related to user authentication and management"'
   name: Users
+- description: '"Operations related to user authentication"'
+  name: Auth

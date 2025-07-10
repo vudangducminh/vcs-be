@@ -20,6 +20,8 @@ import (
 // @host            localhost:8800
 // @Tag.name        Users
 // @Tag.description "Operations related to user authentication and management"
+// @Tag.name		Auth
+// @Tag.description "Operations related to user authentication"
 func main() {
 	// Initialize the database connection
 	postgresql.ConnectToDB()

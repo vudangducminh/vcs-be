@@ -2,6 +2,7 @@ package swagger
 
 import (
 	"sms/API/users_handler"
+	"sms/API/website_handler"
 	_ "sms/docs"
 
 	"github.com/gin-gonic/gin"
@@ -15,13 +16,11 @@ func ConnectToSwagger() {
 	{
 		users.POST("/login", users_handler.HandleLogin)
 		users.POST("/register", users_handler.HandleRegister)
-		users.GET("/dashboard", func(c *gin.Context) {
-			c.JSON(200, gin.H{
-				"message": "Dashboard endpoint",
-			})
-		})
 	}
-
+	auth := r.Group("api/v1/auth")
+	{
+		auth.POST("/", website_handler.Authentication)
+	}
 	// The host should match the @host annotation in main.go
 	url := ginSwagger.URL("http://localhost:8800/swagger/doc.json")
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))

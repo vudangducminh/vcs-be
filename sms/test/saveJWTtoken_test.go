@@ -17,7 +17,7 @@ func TestSaveJWTToken(t *testing.T) {
 		return
 	}
 	// Save the JWT token to Redis
-	tokenStr := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTIwMzg0ODQsInBhc3N3b3JkIjoiYWEiLCJ1c2VybmFtZSI6ImFhIn0.8HJTSwaR2AMRsT4ZwnWyJDm_ot_DrgmlwXqPRhZyu8M"
+	tokenStr := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTIxNjU2MzcsInBhc3N3b3JkIjoiMTIzIiwidXNlcm5hbWUiOiJLYXdhaWkifQ.Ao5QaAde80cCdf-9QDmCznRW-h0iFlinIdZNnUTJ-kc"
 	token, err := auth.ValidateJWT(tokenStr)
 	if err != nil {
 		t.Error("Invalid JWT token:", err)
@@ -33,11 +33,11 @@ func TestSaveJWTToken(t *testing.T) {
 		t.Error("Username claim not found or not a string")
 		return
 	}
-	if username != "aa" {
-		t.Error("Wrong username in JWT token, expected 'aa', got:", username)
+	if username != "Kawaii" {
+		t.Error("Wrong username in JWT token, expected 'kawaii', got:", username)
 		return
 	}
-	err = connector.RedisClient.Set(context.Background(), tokenStr, username, 10*time.Second).Err()
+	err = connector.RedisClient.Set(context.Background(), tokenStr, username, 60*time.Second).Err()
 	if err != nil {
 		t.Error("Failed to save JWT token to Redis:", err)
 		return

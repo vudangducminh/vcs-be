@@ -19,6 +19,40 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/auth": {
+            "post": {
+                "description": "Handle user authentication by validating JWT token and returning username",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Handle user authentication",
+                "parameters": [
+                    {
+                        "description": "Authentication request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/object.AuthRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Authentication successfully",
+                        "schema": {
+                            "$ref": "#/definitions/object.AuthResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/users/login": {
             "post": {
                 "description": "Handle user login by validating credentials and generating a JWT token",
@@ -89,6 +123,26 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "object.AuthRequest": {
+            "type": "object",
+            "required": [
+                "jwt"
+            ],
+            "properties": {
+                "jwt": {
+                    "type": "string"
+                }
+            }
+        },
+        "object.AuthResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "Authentication successfully"
+                }
+            }
+        },
         "object.LoginRequest": {
             "type": "object",
             "required": [
@@ -154,6 +208,10 @@ const docTemplate = `{
         {
             "description": "\"Operations related to user authentication and management\"",
             "name": "Users"
+        },
+        {
+            "description": "\"Operations related to user authentication\"",
+            "name": "Auth"
         }
     ]
 }`

@@ -60,7 +60,7 @@ func HandleLogin(c *gin.Context) {
 	}
 	// Set the cookie in the response
 
-	if redis_query.SaveJWTToken(tokenString, 60) {
+	if redis_query.SaveJWTToken(tokenString, 1800) {
 		c.JSON(http.StatusOK, gin.H{
 			"message": "Login successful",
 			"token":   tokenString,

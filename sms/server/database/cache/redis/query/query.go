@@ -37,7 +37,9 @@ func SaveJWTToken(tokenStr string, second int) bool {
 }
 
 func GetUsernameByJWTToken(tokenStr string) string {
+	log.Println("JWT token:", tokenStr)
 	username, err := connector.RedisClient.Get(context.Background(), tokenStr).Result()
+	log.Println("Username from JWT token:", username)
 	if err != nil {
 		log.Println("Error while fetching username using JWT token")
 		return ""
