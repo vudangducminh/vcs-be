@@ -22,15 +22,20 @@ import (
 // @Tag.description "Operations related to user authentication and management"
 // @Tag.name		Auth
 // @Tag.description "Operations related to user authentication"
+// @Tag.name		Servers
+// @Tag.description "Operations related to server management"
 func main() {
 	// Initialize the database connection
 	postgresql.ConnectToDB()
+	if !postgresql.IsConnected() {
+		log.Println("Failed to connect to postgresql database")
+	}
 	// Initialize the Redis connection
 	redis.ConnectToRedis()
-	if !postgresql.IsConnected() {
-		log.Println("Failed to connect to the database")
-	}
 
+	if !redis.IsConnected() {
+		log.Println("Failed to connect to redis database")
+	}
 	// Connect to Swagger for API documentation
 	swagger.ConnectToSwagger()
 	log.Println("Server starting on http://localhost:8800")

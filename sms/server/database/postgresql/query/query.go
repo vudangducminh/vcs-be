@@ -49,3 +49,50 @@ func AddAccountInfo(account object.Account) int {
 		return http.StatusInternalServerError
 	}
 }
+
+func CheckServerExists(IPv4 string) bool {
+	var server object.Server
+	has, err := connector.Engine.Table("server").Where("IPv4 = ?", IPv4).Get(&server)
+	if err != nil {
+		log.Println("Error checking if server exists:", err)
+		return true
+	}
+	if has {
+		log.Println("Server already exists with IPV4:", IPv4)
+		return true
+	}
+	return false
+}
+
+func AddServerInfo(server object.Server) int {
+	if CheckServerExists(server.IPv4) {
+		log.Println("Server already exists with IPV4:", server.IPv4)
+		return http.StatusConflict
+	}
+
+	affected, err := connector.Engine.Insert(server)
+	if affected == 0 {
+		log.Println("Failed to add server:", server.IPv4)
+		return http.StatusInternalServerError
+	}
+	if err != nil {
+		log.Println(err)
+		return http.StatusInternalServerError
+	}
+	log.Println("Server added successfully:", server.IPv4)
+	return http.StatusCreated
+}
+
+func GetServerBySubstr(substr string) ([]object.Server, int) {
+	var servers []object.Server
+	err := connector.Engine.Table("server").Where("server_name LIKE ?", "%"+substr+"%").Find(&servers)
+	if err != nil {
+		log.Println("Error retrieving servers:", err)
+		return nil, http.StatusInternalServerError
+	}
+	if len(servers) == 0 {
+		log.Println("No servers found with substring:", substr)
+		return nil, http.StatusNotFound
+	}
+	return servers, http.StatusOK
+}

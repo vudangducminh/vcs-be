@@ -1,5 +1,43 @@
 basePath: /api/v1
 definitions:
+  object.AddServerRequest:
+    properties:
+      created_time:
+        description: ISO 8601 format
+        type: string
+      ipv4:
+        description: IPv4 address of the server
+        type: string
+      last_updated_time:
+        description: ISO 8601 format
+        type: string
+      server_id:
+        type: string
+      server_name:
+        type: string
+      status:
+        description: e.g., "active", "inactive", "maintenance"
+        type: string
+      uptime:
+        description: e.g., "3666" for 1 hour 1 minute and 6 seconds
+        type: integer
+    type: object
+  object.AddServerResponse:
+    properties:
+      ipv4:
+        description: IPv4 address of the server
+        type: string
+      message:
+        description: Confirmation message
+        example: Server added
+        type: string
+      server_id:
+        description: Unique identifier for the server
+        type: string
+      server_name:
+        description: Name of the server
+        type: string
+    type: object
   object.AuthRequest:
     properties:
       jwt:
@@ -54,6 +92,27 @@ definitions:
         example: Registration successful
         type: string
     type: object
+  object.Server:
+    properties:
+      createdTime:
+        description: ISO 8601 format
+        type: string
+      ipv4:
+        type: string
+      lastUpdatedTime:
+        description: ISO 8601 format
+        type: string
+      serverId:
+        type: string
+      serverName:
+        type: string
+      status:
+        description: e.g., "active", "inactive", "maintenance"
+        type: string
+      uptime:
+        description: e.g., "3666" for 1 hour 1 minute and 6 seconds
+        type: integer
+    type: object
 host: localhost:8800
 info:
   contact:
@@ -87,6 +146,52 @@ paths:
       summary: Handle user authentication
       tags:
       - Auth
+  /servers/add_server:
+    post:
+      consumes:
+      - application/json
+      description: Handle adding a new server by validating input and storing server
+        information
+      parameters:
+      - description: Add server request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/object.AddServerRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Server added
+          schema:
+            $ref: '#/definitions/object.AddServerResponse'
+      summary: Handle adding a new server
+      tags:
+      - Servers
+  /servers/view_server/{server_name}:
+    get:
+      consumes:
+      - application/json
+      description: View server details by server name substring
+      parameters:
+      - description: Server name substring
+        in: path
+        name: server_name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of servers
+          schema:
+            items:
+              $ref: '#/definitions/object.Server'
+            type: array
+      summary: View server details
+      tags:
+      - Servers
   /users/login:
     post:
       consumes:
@@ -126,7 +231,7 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
+        "201":
           description: Registration successful
           schema:
             $ref: '#/definitions/object.RegisterResponse'
@@ -141,3 +246,5 @@ tags:
   name: Users
 - description: '"Operations related to user authentication"'
   name: Auth
+- description: '"Operations related to server management"'
+  name: Servers

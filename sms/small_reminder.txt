@@ -4,4 +4,4 @@
 
 Note:
 - Swagger initialization:
-    swag init -g main.go --dir .,./API/users_handler,./API/website_handler,./object
+    swag init -g main.go --dir .,./API/users_handler,./API/website_handler,./API/servers_handler,./object

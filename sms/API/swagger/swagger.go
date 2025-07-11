@@ -25,6 +25,7 @@ func ConnectToSwagger() {
 	servers := r.Group("api/v1/servers")
 	{
 		servers.POST("/add_server", servers_handler.AddServer)
+		servers.GET("/view_server/:server_name", servers_handler.ViewServer)
 	}
 	// The host should match the @host annotation in main.go
 	url := ginSwagger.URL("http://localhost:8800/swagger/doc.json")

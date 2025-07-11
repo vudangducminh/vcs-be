@@ -15,7 +15,7 @@ import (
 // @Accept       json
 // @Produce      json
 // @Param        request body object.RegisterRequest true "Registration request"
-// @Success      200 {object} object.RegisterResponse "Registration successful"
+// @Success      201 {object} object.RegisterResponse "Registration successful"
 // @Router       /users/register [post]
 func HandleRegister(c *gin.Context) {
 	var req object.RegisterRequest
