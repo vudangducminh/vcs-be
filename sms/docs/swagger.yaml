@@ -1,27 +1,5 @@
 basePath: /api/v1
 definitions:
-  object.AddServerRequest:
-    properties:
-      created_time:
-        description: ISO 8601 format
-        type: string
-      ipv4:
-        description: IPv4 address of the server
-        type: string
-      last_updated_time:
-        description: ISO 8601 format
-        type: string
-      server_id:
-        type: string
-      server_name:
-        type: string
-      status:
-        description: e.g., "active", "inactive", "maintenance"
-        type: string
-      uptime:
-        description: e.g., "3666" for 1 hour 1 minute and 6 seconds
-        type: integer
-    type: object
   object.AddServerResponse:
     properties:
       ipv4:
@@ -113,6 +91,50 @@ definitions:
         description: e.g., "3666" for 1 hour 1 minute and 6 seconds
         type: integer
     type: object
+  object.UpdateServerRequest:
+    properties:
+      created_time:
+        description: ISO 8601 format
+        type: string
+      ipv4:
+        description: IPv4 address of the server
+        type: string
+      last_updated_time:
+        description: ISO 8601 format
+        type: string
+      server_id:
+        type: string
+      server_name:
+        type: string
+      status:
+        description: e.g., "active", "inactive", "maintenance"
+        type: string
+      uptime:
+        description: e.g., "3666" for 1 hour 1 minute and 6 seconds
+        type: integer
+    type: object
+  object.UpdateServerResponse:
+    properties:
+      ipv4:
+        description: IPv4 address of the server
+        type: string
+      last_updated_time:
+        description: Last updated time in ISO 8601 format
+        type: string
+      message:
+        description: Confirmation message
+        example: Server updated
+        type: string
+      server_id:
+        description: Unique identifier for the server
+        type: string
+      server_name:
+        description: Name of the server
+        type: string
+      status:
+        description: Status of the server, e.g., "active", "inactive", "maintenance"
+        type: string
+    type: object
 host: localhost:8800
 info:
   contact:
@@ -158,7 +180,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/object.AddServerRequest'
+          $ref: '#/definitions/object.UpdateServerRequest'
       produces:
       - application/json
       responses:
@@ -167,6 +189,29 @@ paths:
           schema:
             $ref: '#/definitions/object.AddServerResponse'
       summary: Handle adding a new server
+      tags:
+      - Servers
+  /servers/update_server:
+    put:
+      consumes:
+      - application/json
+      description: Handle updating an existing server by validating input and updating
+        server information
+      parameters:
+      - description: Update server request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/object.UpdateServerRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Server updated
+          schema:
+            $ref: '#/definitions/object.UpdateServerResponse'
+      summary: Handle updating an existing server
       tags:
       - Servers
   /servers/view_server/{server_name}:

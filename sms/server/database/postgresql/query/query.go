@@ -96,3 +96,31 @@ func GetServerBySubstr(substr string) ([]object.Server, int) {
 	}
 	return servers, http.StatusOK
 }
+
+func GetServerById(serverId string) (object.Server, bool) {
+	var server object.Server
+	has, err := connector.Engine.Table("server").Where("server_id = ?", serverId).Get(&server)
+	if err != nil {
+		log.Println("Error retrieving server by ID:", err)
+		return server, false
+	}
+	if !has {
+		log.Println("No server found with ID:", serverId)
+		return server, false
+	}
+	return server, true
+}
+
+func UpdateServerInfo(server object.Server) int {
+	affected, err := connector.Engine.Table("server").Where("server_id = ?", server.ServerId).Update(server)
+	if err != nil {
+		log.Println("Error updating server:", err)
+		return http.StatusInternalServerError
+	}
+	if affected == 0 {
+		log.Println("No server found with ID:", server.ServerId)
+		return http.StatusNotFound
+	}
+	log.Println("Server updated successfully:", server.ServerId)
+	return http.StatusOK
+}
