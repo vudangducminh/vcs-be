@@ -119,6 +119,38 @@ const docTemplate = `{
                 }
             }
         },
+        "/servers/import_csv": {
+            "post": {
+                "description": "Import server data from a CSV file",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Servers"
+                ],
+                "summary": "Import CSV file",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "CSV file to import",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "CSV imported successfully",
+                        "schema": {
+                            "$ref": "#/definitions/object.ImportCSVResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/servers/update_server": {
             "put": {
                 "description": "Handle updating an existing server by validating input and updating server information",
@@ -348,6 +380,15 @@ const docTemplate = `{
                 "server_name": {
                     "description": "Name of the deleted server",
                     "type": "string"
+                }
+            }
+        },
+        "object.ImportCSVResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "File imported successfully"
                 }
             }
         },

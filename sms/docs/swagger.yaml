@@ -66,6 +66,12 @@ definitions:
         description: Name of the deleted server
         type: string
     type: object
+  object.ImportCSVResponse:
+    properties:
+      message:
+        example: File imported successfully
+        type: string
+    type: object
   object.LoginRequest:
     properties:
       password:
@@ -247,6 +253,27 @@ paths:
           schema:
             $ref: '#/definitions/object.DeleteServerResponse'
       summary: Delete a server by ID
+      tags:
+      - Servers
+  /servers/import_csv:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Import server data from a CSV file
+      parameters:
+      - description: CSV file to import
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: CSV imported successfully
+          schema:
+            $ref: '#/definitions/object.ImportCSVResponse'
+      summary: Import CSV file
       tags:
       - Servers
   /servers/update_server:
