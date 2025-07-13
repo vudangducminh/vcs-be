@@ -16,12 +16,12 @@ import (
 // @Description  Handle adding a new server by validating input and storing server information
 // @Accept       json
 // @Produce      json
-// @Param        request body object.UpdateServerRequest true "Add server request"
+// @Param        request body object.AddServerRequest true "Add server request"
 // @Success      201 {object} object.AddServerResponse "Server added"
 // @Router       /servers/add_server [post]
 func AddServer(c *gin.Context) {
 	// Implementation for adding a server
-	var req object.UpdateServerRequest
+	var req object.AddServerRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
 		return

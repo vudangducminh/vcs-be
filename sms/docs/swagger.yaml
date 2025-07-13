@@ -1,5 +1,27 @@
 basePath: /api/v1
 definitions:
+  object.AddServerRequest:
+    properties:
+      created_time:
+        description: ISO 8601 format
+        type: string
+      ipv4:
+        description: IPv4 address of the server
+        type: string
+      last_updated_time:
+        description: ISO 8601 format
+        type: string
+      server_id:
+        type: string
+      server_name:
+        type: string
+      status:
+        description: e.g., "active", "inactive", "maintenance"
+        type: string
+      uptime:
+        description: e.g., "3666" for 1 hour 1 minute and 6 seconds
+        type: integer
+    type: object
   object.AddServerResponse:
     properties:
       ipv4:
@@ -27,6 +49,21 @@ definitions:
     properties:
       message:
         example: Authentication successfully
+        type: string
+    type: object
+  object.DeleteServerResponse:
+    properties:
+      ipv4:
+        description: IPv4 address of the deleted server
+        type: string
+      message:
+        example: Server deleted successfully
+        type: string
+      server_id:
+        description: Unique identifier for the deleted server
+        type: string
+      server_name:
+        description: Name of the deleted server
         type: string
     type: object
   object.LoginRequest:
@@ -180,7 +217,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/object.UpdateServerRequest'
+          $ref: '#/definitions/object.AddServerRequest'
       produces:
       - application/json
       responses:
@@ -189,6 +226,27 @@ paths:
           schema:
             $ref: '#/definitions/object.AddServerResponse'
       summary: Handle adding a new server
+      tags:
+      - Servers
+  /servers/delete_server/{server_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a server by its unique ID
+      parameters:
+      - description: Server ID
+        in: path
+        name: server_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Server deleted successfully
+          schema:
+            $ref: '#/definitions/object.DeleteServerResponse'
+      summary: Delete a server by ID
       tags:
       - Servers
   /servers/update_server:
@@ -223,7 +281,6 @@ paths:
       - description: Server name substring
         in: path
         name: server_name
-        required: true
         type: string
       produces:
       - application/json

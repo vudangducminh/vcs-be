@@ -1,6 +1,7 @@
 package servers_handler
 
 import (
+	"log"
 	"net/http"
 	posgresql_query "sms/server/database/postgresql/query"
 
@@ -12,12 +13,15 @@ import (
 // @Description  View server details by server name substring
 // @Accept       json
 // @Produce      json
-// @Param        server_name path string true "Server name substring"
+// @Param        server_name path string false "Server name substring"
 // @Success      200 {object} []object.Server "List of servers"
 // @Router       /servers/view_server/{server_name} [get]
 func ViewServer(c *gin.Context) {
-	// Implementation for viewing server details
 	serverName := c.Param("server_name")
+	if serverName == "undefined" {
+		serverName = ""
+	}
+	log.Println("Received request to view server with name substring:", serverName)
 	servers, httpStatus := posgresql_query.GetServerBySubstr(serverName)
 	if httpStatus == http.StatusNotFound {
 		c.JSON(http.StatusOK, gin.H{"message": "No servers found with the given name"})

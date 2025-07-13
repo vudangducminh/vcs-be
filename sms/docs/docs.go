@@ -73,7 +73,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/object.UpdateServerRequest"
+                            "$ref": "#/definitions/object.AddServerRequest"
                         }
                     }
                 ],
@@ -82,6 +82,38 @@ const docTemplate = `{
                         "description": "Server added",
                         "schema": {
                             "$ref": "#/definitions/object.AddServerResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/servers/delete_server/{server_id}": {
+            "delete": {
+                "description": "Delete a server by its unique ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Servers"
+                ],
+                "summary": "Delete a server by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Server ID",
+                        "name": "server_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Server deleted successfully",
+                        "schema": {
+                            "$ref": "#/definitions/object.DeleteServerResponse"
                         }
                     }
                 }
@@ -139,8 +171,7 @@ const docTemplate = `{
                         "type": "string",
                         "description": "Server name substring",
                         "name": "server_name",
-                        "in": "path",
-                        "required": true
+                        "in": "path"
                     }
                 ],
                 "responses": {
@@ -226,6 +257,37 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "object.AddServerRequest": {
+            "type": "object",
+            "properties": {
+                "created_time": {
+                    "description": "ISO 8601 format",
+                    "type": "string"
+                },
+                "ipv4": {
+                    "description": "IPv4 address of the server",
+                    "type": "string"
+                },
+                "last_updated_time": {
+                    "description": "ISO 8601 format",
+                    "type": "string"
+                },
+                "server_id": {
+                    "type": "string"
+                },
+                "server_name": {
+                    "type": "string"
+                },
+                "status": {
+                    "description": "e.g., \"active\", \"inactive\", \"maintenance\"",
+                    "type": "string"
+                },
+                "uptime": {
+                    "description": "e.g., \"3666\" for 1 hour 1 minute and 6 seconds",
+                    "type": "integer"
+                }
+            }
+        },
         "object.AddServerResponse": {
             "type": "object",
             "properties": {
@@ -265,6 +327,27 @@ const docTemplate = `{
                 "message": {
                     "type": "string",
                     "example": "Authentication successfully"
+                }
+            }
+        },
+        "object.DeleteServerResponse": {
+            "type": "object",
+            "properties": {
+                "ipv4": {
+                    "description": "IPv4 address of the deleted server",
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Server deleted successfully"
+                },
+                "server_id": {
+                    "description": "Unique identifier for the deleted server",
+                    "type": "string"
+                },
+                "server_name": {
+                    "description": "Name of the deleted server",
+                    "type": "string"
                 }
             }
         },
