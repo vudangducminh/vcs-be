@@ -87,9 +87,107 @@ const docTemplate = `{
                 }
             }
         },
+        "/servers/delete_server/{server_id}": {
+            "delete": {
+                "description": "Delete a server by its unique ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Servers"
+                ],
+                "summary": "Delete a server by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Server ID",
+                        "name": "server_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Server deleted successfully",
+                        "schema": {
+                            "$ref": "#/definitions/object.DeleteServerResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/servers/import_excel": {
+            "post": {
+                "description": "Import server data from an Excel file",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Servers"
+                ],
+                "summary": "Import file from excel",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "Excel file to import",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Excel file imported successfully",
+                        "schema": {
+                            "$ref": "#/definitions/object.ImportCSVResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/servers/update_server": {
+            "put": {
+                "description": "Handle updating an existing server by validating input and updating server information",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Servers"
+                ],
+                "summary": "Handle updating an existing server",
+                "parameters": [
+                    {
+                        "description": "Update server request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/object.UpdateServerRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Server updated",
+                        "schema": {
+                            "$ref": "#/definitions/object.UpdateServerResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/servers/view_server/{server_name}": {
             "get": {
-                "description": "View server details by server name substring\nExample usage: /servers/view_server/\u003cserver_name\u003e\nSyntax for view all servers: /servers/view_server/?all=true",
+                "description": "View server details by server name substring\nExample usage:\t\t\t/servers/view_server/\u003cserver_name\u003e",
                 "consumes": [
                     "application/json"
                 ],
@@ -105,8 +203,7 @@ const docTemplate = `{
                         "type": "string",
                         "description": "Server name substring",
                         "name": "server_name",
-                        "in": "path",
-                        "required": true
+                        "in": "path"
                     }
                 ],
                 "responses": {
@@ -265,6 +362,36 @@ const docTemplate = `{
                 }
             }
         },
+        "object.DeleteServerResponse": {
+            "type": "object",
+            "properties": {
+                "ipv4": {
+                    "description": "IPv4 address of the deleted server",
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Server deleted successfully"
+                },
+                "server_id": {
+                    "description": "Unique identifier for the deleted server",
+                    "type": "string"
+                },
+                "server_name": {
+                    "description": "Name of the deleted server",
+                    "type": "string"
+                }
+            }
+        },
+        "object.ImportCSVResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "File imported successfully"
+                }
+            }
+        },
         "object.LoginRequest": {
             "type": "object",
             "required": [
@@ -352,6 +479,67 @@ const docTemplate = `{
                 "uptime": {
                     "description": "e.g., \"3666\" for 1 hour 1 minute and 6 seconds",
                     "type": "integer"
+                }
+            }
+        },
+        "object.UpdateServerRequest": {
+            "type": "object",
+            "properties": {
+                "created_time": {
+                    "description": "ISO 8601 format",
+                    "type": "string"
+                },
+                "ipv4": {
+                    "description": "IPv4 address of the server",
+                    "type": "string"
+                },
+                "last_updated_time": {
+                    "description": "ISO 8601 format",
+                    "type": "string"
+                },
+                "server_id": {
+                    "type": "string"
+                },
+                "server_name": {
+                    "type": "string"
+                },
+                "status": {
+                    "description": "e.g., \"active\", \"inactive\", \"maintenance\"",
+                    "type": "string"
+                },
+                "uptime": {
+                    "description": "e.g., \"3666\" for 1 hour 1 minute and 6 seconds",
+                    "type": "integer"
+                }
+            }
+        },
+        "object.UpdateServerResponse": {
+            "type": "object",
+            "properties": {
+                "ipv4": {
+                    "description": "IPv4 address of the server",
+                    "type": "string"
+                },
+                "last_updated_time": {
+                    "description": "Last updated time in ISO 8601 format",
+                    "type": "string"
+                },
+                "message": {
+                    "description": "Confirmation message",
+                    "type": "string",
+                    "example": "Server updated"
+                },
+                "server_id": {
+                    "description": "Unique identifier for the server",
+                    "type": "string"
+                },
+                "server_name": {
+                    "description": "Name of the server",
+                    "type": "string"
+                },
+                "status": {
+                    "description": "Status of the server, e.g., \"active\", \"inactive\", \"maintenance\"",
+                    "type": "string"
                 }
             }
         }

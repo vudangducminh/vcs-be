@@ -9,7 +9,9 @@ import (
 
 func GetAccountPasswordByUsername(username string) string {
 	var account object.Account
-	has, err := connector.Engine.Table("account").Cols("password").Alias("account").
+	has, err := connector.Engine.Table("account").
+		Cols("password").
+		Alias("account").
 		Where("username = ?", username).
 		Get(&account)
 
@@ -27,7 +29,8 @@ func GetAccountPasswordByUsername(username string) string {
 
 func AddAccountInfo(account object.Account) int {
 	has, err := connector.Engine.Table("account").
-		Where("username = ?", account.Username).Count(new(object.Account))
+		Where("username = ?", account.Username).
+		Count(new(object.Account))
 	if err != nil {
 		log.Println(err)
 		return http.StatusInternalServerError
@@ -52,7 +55,9 @@ func AddAccountInfo(account object.Account) int {
 
 func CheckServerExists(IPv4 string) bool {
 	var server object.Server
-	has, err := connector.Engine.Table("server").Where("IPv4 = ?", IPv4).Get(&server)
+	has, err := connector.Engine.Table("server").
+		Where("IPv4 = ?", IPv4).
+		Get(&server)
 	if err != nil {
 		log.Println("Error checking if server exists:", err)
 		return true
@@ -85,7 +90,9 @@ func AddServerInfo(server object.Server) int {
 
 func GetServerBySubstr(substr string) ([]object.Server, int) {
 	var servers []object.Server
-	err := connector.Engine.Table("server").Where("server_name LIKE ?", "%"+substr+"%").Find(&servers)
+	err := connector.Engine.Table("server").
+		Where("server_name LIKE ?", "%"+substr+"%").
+		Find(&servers)
 	if err != nil {
 		log.Println("Error retrieving servers:", err)
 		return nil, http.StatusInternalServerError
@@ -95,4 +102,52 @@ func GetServerBySubstr(substr string) ([]object.Server, int) {
 		return nil, http.StatusNotFound
 	}
 	return servers, http.StatusOK
+}
+
+func GetServerById(serverId string) (object.Server, bool) {
+	var server object.Server
+	has, err := connector.Engine.Table("server").
+		Where("server_id = ?", serverId).
+		Get(&server)
+	if err != nil {
+		log.Println("Error retrieving server by ID:", err)
+		return server, false
+	}
+	if !has {
+		log.Println("No server found with ID:", serverId)
+		return server, false
+	}
+	return server, true
+}
+
+func UpdateServerInfo(server object.Server) int {
+	affected, err := connector.Engine.Table("server").
+		Where("server_id = ?", server.ServerId).
+		Update(server)
+	if err != nil {
+		log.Println("Error updating server:", err)
+		return http.StatusInternalServerError
+	}
+	if affected == 0 {
+		log.Println("No server found with ID:", server.ServerId)
+		return http.StatusNotFound
+	}
+	log.Println("Server updated successfully:", server.ServerId)
+	return http.StatusOK
+}
+
+func DeleteServer(serverId string) int {
+	affected, err := connector.Engine.Table("server").
+		Where("server_id = ?", serverId).
+		Delete(new(object.Server))
+	if err != nil {
+		log.Println("Error deleting server:", err)
+		return http.StatusInternalServerError
+	}
+	if affected == 0 {
+		log.Println("No server found with ID:", serverId)
+		return http.StatusNotFound
+	}
+	log.Println("Server deleted successfully:", serverId)
+	return http.StatusOK
 }

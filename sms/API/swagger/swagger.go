@@ -26,6 +26,9 @@ func ConnectToSwagger() {
 	{
 		servers.POST("/add_server", servers_handler.AddServer)
 		servers.GET("/view_server/:server_name", servers_handler.ViewServer)
+		servers.PUT("/update_server", servers_handler.UpdateServer)
+		servers.DELETE("/delete_server/:server_id", servers_handler.DeleteServer)
+		servers.POST("/import_excel", servers_handler.ImportExcel)
 	}
 	// The host should match the @host annotation in main.go
 	url := ginSwagger.URL("http://localhost:8800/swagger/doc.json")

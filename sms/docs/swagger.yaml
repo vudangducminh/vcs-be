@@ -51,6 +51,27 @@ definitions:
         example: Authentication successfully
         type: string
     type: object
+  object.DeleteServerResponse:
+    properties:
+      ipv4:
+        description: IPv4 address of the deleted server
+        type: string
+      message:
+        example: Server deleted successfully
+        type: string
+      server_id:
+        description: Unique identifier for the deleted server
+        type: string
+      server_name:
+        description: Name of the deleted server
+        type: string
+    type: object
+  object.ImportCSVResponse:
+    properties:
+      message:
+        example: File imported successfully
+        type: string
+    type: object
   object.LoginRequest:
     properties:
       password:
@@ -113,6 +134,50 @@ definitions:
         description: e.g., "3666" for 1 hour 1 minute and 6 seconds
         type: integer
     type: object
+  object.UpdateServerRequest:
+    properties:
+      created_time:
+        description: ISO 8601 format
+        type: string
+      ipv4:
+        description: IPv4 address of the server
+        type: string
+      last_updated_time:
+        description: ISO 8601 format
+        type: string
+      server_id:
+        type: string
+      server_name:
+        type: string
+      status:
+        description: e.g., "active", "inactive", "maintenance"
+        type: string
+      uptime:
+        description: e.g., "3666" for 1 hour 1 minute and 6 seconds
+        type: integer
+    type: object
+  object.UpdateServerResponse:
+    properties:
+      ipv4:
+        description: IPv4 address of the server
+        type: string
+      last_updated_time:
+        description: Last updated time in ISO 8601 format
+        type: string
+      message:
+        description: Confirmation message
+        example: Server updated
+        type: string
+      server_id:
+        description: Unique identifier for the server
+        type: string
+      server_name:
+        description: Name of the server
+        type: string
+      status:
+        description: Status of the server, e.g., "active", "inactive", "maintenance"
+        type: string
+    type: object
 host: localhost:8800
 info:
   contact:
@@ -169,19 +234,80 @@ paths:
       summary: Handle adding a new server
       tags:
       - Servers
+  /servers/delete_server/{server_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a server by its unique ID
+      parameters:
+      - description: Server ID
+        in: path
+        name: server_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Server deleted successfully
+          schema:
+            $ref: '#/definitions/object.DeleteServerResponse'
+      summary: Delete a server by ID
+      tags:
+      - Servers
+  /servers/import_excel:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Import server data from an Excel file
+      parameters:
+      - description: Excel file to import
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Excel file imported successfully
+          schema:
+            $ref: '#/definitions/object.ImportCSVResponse'
+      summary: Import file from excel
+      tags:
+      - Servers
+  /servers/update_server:
+    put:
+      consumes:
+      - application/json
+      description: Handle updating an existing server by validating input and updating
+        server information
+      parameters:
+      - description: Update server request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/object.UpdateServerRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Server updated
+          schema:
+            $ref: '#/definitions/object.UpdateServerResponse'
+      summary: Handle updating an existing server
+      tags:
+      - Servers
   /servers/view_server/{server_name}:
     get:
       consumes:
       - application/json
-      description: |-
-        View server details by server name substring
-        Example usage: /servers/view_server/<server_name>
-        Syntax for view all servers: /servers/view_server/?all=true
+      description: "View server details by server name substring\nExample usage:\t\t\t/servers/view_server/<server_name>"
       parameters:
       - description: Server name substring
         in: path
         name: server_name
-        required: true
         type: string
       produces:
       - application/json

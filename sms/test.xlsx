@@ -1,0 +1,6 @@
+Index,Name,IPV4,Status
+1,Private Server 1,192.168.0.1,inactive
+2,17.102.0.20,Kibana,active
+3,Elastic,17.102.0.17,maintenance
+4,Web Server 1,14.102.9.78,active
+5,Database Server 1,11.154.2.23,active
