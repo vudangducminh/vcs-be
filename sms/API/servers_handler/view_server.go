@@ -10,6 +10,8 @@ import (
 // @Tags         Servers
 // @Summary      View server details
 // @Description  View server details by server name substring
+// @Description  Example usage:			/servers/view_server/<server_name>
+// @Description  Syntax for view all servers:		/servers/view_server/?all=true
 // @Accept       json
 // @Produce      json
 // @Param        server_name path string true "Server name substring"
@@ -18,6 +20,9 @@ import (
 func ViewServer(c *gin.Context) {
 	// Implementation for viewing server details
 	serverName := c.Param("server_name")
+	if serverName == "?all=true" {
+		serverName = ""
+	}
 	servers, httpStatus := posgresql_query.GetServerBySubstr(serverName)
 	if httpStatus == http.StatusNotFound {
 		c.JSON(http.StatusOK, gin.H{"message": "No servers found with the given name"})

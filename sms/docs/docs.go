@@ -89,7 +89,7 @@ const docTemplate = `{
         },
         "/servers/view_server/{server_name}": {
             "get": {
-                "description": "View server details by server name substring",
+                "description": "View server details by server name substring\nExample usage: /servers/view_server/\u003cserver_name\u003e\nSyntax for view all servers: /servers/view_server/?all=true",
                 "consumes": [
                     "application/json"
                 ],

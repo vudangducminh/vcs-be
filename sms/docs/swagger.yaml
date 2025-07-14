@@ -173,7 +173,10 @@ paths:
     get:
       consumes:
       - application/json
-      description: View server details by server name substring
+      description: |-
+        View server details by server name substring
+        Example usage: /servers/view_server/<server_name>
+        Syntax for view all servers: /servers/view_server/?all=true
       parameters:
       - description: Server name substring
         in: path
