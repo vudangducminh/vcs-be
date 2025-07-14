@@ -1,7 +1,6 @@
 package object
 
 type AddServerRequest struct {
-	ServerId        string `json:"server_id"`
 	ServerName      string `json:"server_name"`
 	Status          string `json:"status"`            // e.g., "active", "inactive", "maintenance"
 	Uptime          int    `json:"uptime"`            // e.g., "3666" for 1 hour 1 minute and 6 seconds

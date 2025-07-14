@@ -3,6 +3,10 @@ package servers_handler
 import (
 	"log"
 	"net/http"
+	"sms/algorithm"
+	"sms/object"
+	posgresql_query "sms/server/database/postgresql/query"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/xuri/excelize/v2"
@@ -50,10 +54,27 @@ func ImportExcel(c *gin.Context) {
 		return
 	}
 
-	// Example: Print each row
+	var isFirstRow bool = true
 	for _, row := range rows {
-		log.Println(row)
-		// You can process each row and insert into your database here
+		if isFirstRow {
+			isFirstRow = false
+			continue
+		}
+		var server object.Server
+		server.ServerId = algorithm.SHA256Hash(time.Now().String())
+		server.ServerName = row[1]
+		server.IPv4 = row[2]
+		server.Status = row[3]
+		server.CreatedTime = time.Now().Format(time.RFC3339)
+		server.LastUpdatedTime = server.CreatedTime
+		server.Uptime = 0
+		status := posgresql_query.AddServerInfo(server)
+		if status != http.StatusCreated {
+			log.Println("Failed to add server from Excel row:", row, "Status code:", status)
+			c.JSON(status, gin.H{"error": "Failed to add server from Excel row"})
+			continue
+		}
+		log.Println("Server added successfully from Excel row:", row)
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "Excel file imported successfully"})

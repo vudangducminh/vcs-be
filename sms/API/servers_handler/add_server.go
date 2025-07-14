@@ -30,14 +30,6 @@ func AddServer(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "ServerName, and IPv4 are required"})
 		return
 	}
-	if req.ServerId == "" {
-		req.ServerId = algorithm.SHA256Hash(time.Now().String() + req.ServerName + req.IPv4)
-	}
-	if posgresql_query.CheckServerExists(req.IPv4) {
-		c.JSON(http.StatusConflict, gin.H{"error": "Server with this IPv4 already exists"})
-		return
-	}
-
 	if req.Status == "" {
 		// Default status if not provided
 		req.Status = "active"
@@ -47,7 +39,7 @@ func AddServer(c *gin.Context) {
 	req.CreatedTime = time.Now().Format(time.RFC3339)
 	req.LastUpdatedTime = req.CreatedTime
 	server := object.Server{
-		ServerId:        req.ServerId,
+		ServerId:        algorithm.SHA256Hash(time.Now().String()),
 		ServerName:      req.ServerName,
 		Status:          req.Status,
 		Uptime:          0, // Default uptime to 0
@@ -57,14 +49,17 @@ func AddServer(c *gin.Context) {
 	}
 
 	status := posgresql_query.AddServerInfo(server)
-	if status == http.StatusCreated {
+	switch status {
+	case http.StatusCreated:
 		c.JSON(http.StatusCreated, gin.H{
 			"message":     "Server added successfully",
 			"server_id":   server.ServerId,
 			"server_name": server.ServerName,
 			"ipv4":        server.IPv4,
 		})
-	} else {
+	case http.StatusConflict:
+		c.JSON(http.StatusConflict, gin.H{"error": "Server already exists with the same IPv4 address"})
+	default:
 		c.JSON(status, gin.H{"error": "Failed to add server"})
 	}
 }
