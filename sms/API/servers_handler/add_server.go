@@ -6,6 +6,7 @@ import (
 	"sms/object"
 	"time"
 
+	elastic_query "sms/server/database/elasticsearch/query"
 	posgresql_query "sms/server/database/postgresql/query"
 
 	"github.com/gin-gonic/gin"
@@ -52,14 +53,28 @@ func AddServer(c *gin.Context) {
 	switch status {
 	case http.StatusCreated:
 		c.JSON(http.StatusCreated, gin.H{
-			"message":     "Server added successfully",
+			"message":     "Server added successfully to PostgreSQL",
 			"server_id":   server.ServerId,
 			"server_name": server.ServerName,
 			"ipv4":        server.IPv4,
 		})
 	case http.StatusConflict:
-		c.JSON(http.StatusConflict, gin.H{"error": "Server already exists with the same IPv4 address"})
+		c.JSON(http.StatusConflict, gin.H{"error": "Server already exists with the same IPv4 address in PostgreSQL"})
 	default:
-		c.JSON(status, gin.H{"error": "Failed to add server"})
+		c.JSON(status, gin.H{"error": "Failed to add server into PostgreSQL database"})
+	}
+	status = elastic_query.AddServerInfo(server)
+	switch status {
+	case http.StatusCreated:
+		c.JSON(http.StatusCreated, gin.H{
+			"message":     "Server added successfully to Elasticsearch",
+			"server_id":   server.ServerId,
+			"server_name": server.ServerName,
+			"ipv4":        server.IPv4,
+		})
+	case http.StatusConflict:
+		c.JSON(http.StatusConflict, gin.H{"error": "Server already exists with the same IPv4 address in Elasticsearch"})
+	default:
+		c.JSON(status, gin.H{"error": "Failed to add server into Elasticsearch database"})
 	}
 }

@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"sms/algorithm"
 	"sms/object"
+	elastic_query "sms/server/database/elasticsearch/query"
 	posgresql_query "sms/server/database/postgresql/query"
 	"time"
 
@@ -18,7 +19,7 @@ import (
 // @Accept       multipart/form-data
 // @Produce      json
 // @Param        file formData file true "Excel file to import"
-// @Success      200 {object} object.ImportCSVResponse "Excel file imported successfully"
+// @Success      200 {object} object.ImportExcelResponse "Excel file imported successfully"
 // @Router       /servers/import_excel [post]
 func ImportExcel(c *gin.Context) {
 	file, err := c.FormFile("file")
@@ -70,8 +71,14 @@ func ImportExcel(c *gin.Context) {
 		server.Uptime = 0
 		status := posgresql_query.AddServerInfo(server)
 		if status != http.StatusCreated {
-			log.Println("Failed to add server from Excel row:", row, "Status code:", status)
+			log.Println("Failed to add server to PostgreSQL from Excel row:", row, "Status code:", status)
 			c.JSON(status, gin.H{"error": "Failed to add server from Excel row"})
+			continue
+		}
+		status = elastic_query.AddServerInfo(server)
+		if status != http.StatusCreated {
+			log.Println("Failed to add server to Elasticsearch from Excel row:", row, "Status code:", status)
+			c.JSON(status, gin.H{"error": "Failed to add server to Elasticsearch from Excel row"})
 			continue
 		}
 		log.Println("Server added successfully from Excel row:", row)

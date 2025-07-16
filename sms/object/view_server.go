@@ -1,5 +1,7 @@
 package object
 
+type ViewServerRequest struct {
+}
 type ViewServerResponse struct {
 	ServerId        string `json:"server_id"`
 	ServerName      string `json:"server_name"`

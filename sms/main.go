@@ -6,6 +6,7 @@ import (
 	_ "sms/API/users_handler" // Importing users_handler for Swagger documentation
 	_ "sms/docs"
 	redis "sms/server/database/cache/redis/connector"
+	elastic "sms/server/database/elasticsearch/connector"
 	postgresql "sms/server/database/postgresql/connector"
 )
 
@@ -35,6 +36,11 @@ func main() {
 
 	if !redis.IsConnected() {
 		log.Println("Failed to connect to redis database")
+	}
+	// Initialize the Elasticsearch connection
+	elastic.ConnectToEs()
+	if !elastic.IsConnected() {
+		log.Println("Failed to connect to Elasticsearch")
 	}
 	// Connect to Swagger for API documentation
 	swagger.ConnectToSwagger()
