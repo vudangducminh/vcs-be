@@ -297,13 +297,19 @@ paths:
       summary: Handle updating an existing server
       tags:
       - Servers
-  /servers/view_servers/{filter}/{string}:
+  /servers/view_servers/{order}/{filter}/{string}:
     get:
       consumes:
       - application/json
       description: View server details with optional filtering
       parameters:
-      - description: Filter by server_id, server_name, ipv4, or status
+      - description: Order of results, either 'asc' or 'desc'. If not provided or
+          using the wrong order format, the default order is ascending
+        in: query
+        name: order
+        type: string
+      - description: Filter by server_id, server_name, ipv4, or status. If not provided
+          or using the wrong filter format, the default filter is server_name
         in: query
         name: filter
         type: string

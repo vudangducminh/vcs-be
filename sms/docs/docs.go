@@ -185,7 +185,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/servers/view_servers/{filter}/{string}": {
+        "/servers/view_servers/{order}/{filter}/{string}": {
             "get": {
                 "description": "View server details with optional filtering",
                 "consumes": [
@@ -201,7 +201,13 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Filter by server_id, server_name, ipv4, or status",
+                        "description": "Order of results, either 'asc' or 'desc'. If not provided or using the wrong order format, the default order is ascending",
+                        "name": "order",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter by server_id, server_name, ipv4, or status. If not provided or using the wrong filter format, the default filter is server_name",
                         "name": "filter",
                         "in": "query"
                     },

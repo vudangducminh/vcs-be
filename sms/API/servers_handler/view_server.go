@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"sms/object"
 	elastic_query "sms/server/database/elasticsearch/query"
+	"sort"
 
 	"github.com/gin-gonic/gin"
 )
@@ -14,14 +15,20 @@ import (
 // @Description  View server details with optional filtering
 // @Accept       json
 // @Produce      json
-// @Param        filter query string false "Filter by server_id, server_name, ipv4, or status"
+// @Param        order query string false "Order of results, either 'asc' or 'desc'. If not provided or using the wrong order format, the default order is ascending"
+// @Param        filter query string false "Filter by server_id, server_name, ipv4, or status. If not provided or using the wrong filter format, the default filter is server_name"
 // @Param        string path string false "Substring to search in server_id, server_name, ipv4, or status"
 // @Success      200 {object} object.Server "Server details retrieved successfully"
-// @Router       /servers/view_servers/{filter}/{string} [get]
+// @Router       /servers/view_servers/{order}/{filter}/{string} [get]
 func ViewServer(c *gin.Context) {
+	order := c.Query("order")
+	if order != "asc" && order != "desc" {
+		order = "asc" // Default order if not specified
+	}
 	filter := c.Query("filter")
 	str := c.Param("string")
-	if str == "undefined" {
+	log.Printf("Received request to view server with filter '%s' and substring: '%s'", filter, str)
+	if str == "undefined" || str == "{string}" {
 		str = ""
 	}
 	log.Printf("Received request to view server with filter '%s' and substring: '%s'", filter, str)
@@ -46,6 +53,25 @@ func ViewServer(c *gin.Context) {
 		c.JSON(httpStatus, gin.H{"error": "Failed to retrieve server details"})
 		return
 	}
+
+	// Sort the servers based on the filter and order
+	sort.Slice(servers, func(i, j int) bool {
+		var less bool
+		switch filter {
+		case "server_id":
+			less = servers[i].ServerId < servers[j].ServerId
+		case "status":
+			less = servers[i].Status < servers[j].Status
+		case "ipv4":
+			less = servers[i].IPv4 < servers[j].IPv4
+		default: // Default to sorting by server_name
+			less = servers[i].ServerName < servers[j].ServerName
+		}
+		if order == "desc" {
+			return !less
+		}
+		return less
+	})
 
 	// Prepare the response
 	var response []gin.H
