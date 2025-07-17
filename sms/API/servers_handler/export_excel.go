@@ -17,7 +17,7 @@ import (
 // @Accept       json
 // @Produce      json
 // @Param        order query string false "Order of results, either 'asc' or 'desc'. If not provided or using the wrong order format, the default order is ascending"
-// @Param        filter query string false "Filter by server_id, server_name, ipv4, or status. If not provided or using the wrong filter format, the default filter is server_name"
+// @Param        filter query string false "Filter by server_id, server_name, ipv4, or status. If not provided or using the wrong filter format, then there is no filter applied"
 // @Param        string path string false "Substring to search in server_id, server_name, ipv4, or status"
 // @Success      200 {object} object.ImportExcelResponse "Excel file exported successfully"
 // @Router       /servers/export_excel/{order}/{filter}/{string} [get]
@@ -28,6 +28,10 @@ func ExportDataToExcel(c *gin.Context) {
 		order = "asc" // Default order if not specified
 	}
 	filter := c.Query("filter")
+	if filter != "server_id" && filter != "server_name" && filter != "ipv4" && filter != "status" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid filter parameter"})
+		return
+	}
 	str := c.Param("string")
 	log.Printf("Received request to export server with filter '%s' and substring: '%s'", filter, str)
 	if str == "undefined" || str == "{string}" {
@@ -45,6 +49,7 @@ func ExportDataToExcel(c *gin.Context) {
 	case "status":
 		servers, httpStatus = elastic_query.GetServerByStatus(str)
 	}
+
 	if httpStatus == http.StatusNotFound {
 		c.JSON(http.StatusOK, gin.H{"message": "No servers found with the given requirements"})
 		return
