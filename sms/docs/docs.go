@@ -145,7 +145,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Excel file imported successfully",
                         "schema": {
-                            "$ref": "#/definitions/object.ImportCSVResponse"
+                            "$ref": "#/definitions/object.ImportExcelResponse"
                         }
                     }
                 }
@@ -185,9 +185,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/servers/view_server/{server_name}": {
+        "/servers/view_servers/{filter}/{string}": {
             "get": {
-                "description": "View server details by server name substring\nExample usage:\t\t\t/servers/view_server/\u003cserver_name\u003e",
+                "description": "View server details with optional filtering",
                 "consumes": [
                     "application/json"
                 ],
@@ -201,19 +201,22 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Server name substring",
-                        "name": "server_name",
+                        "description": "Filter by server_id, server_name, ipv4, or status",
+                        "name": "filter",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Substring to search in server_id, server_name, ipv4, or status",
+                        "name": "string",
                         "in": "path"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "List of servers",
+                        "description": "Server details retrieved successfully",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/object.Server"
-                            }
+                            "$ref": "#/definitions/object.Server"
                         }
                     }
                 }
@@ -304,9 +307,6 @@ const docTemplate = `{
                     "description": "ISO 8601 format",
                     "type": "string"
                 },
-                "server_id": {
-                    "type": "string"
-                },
                 "server_name": {
                     "type": "string"
                 },
@@ -383,7 +383,7 @@ const docTemplate = `{
                 }
             }
         },
-        "object.ImportCSVResponse": {
+        "object.ImportExcelResponse": {
             "type": "object",
             "properties": {
                 "message": {

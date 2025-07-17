@@ -11,8 +11,6 @@ definitions:
       last_updated_time:
         description: ISO 8601 format
         type: string
-      server_id:
-        type: string
       server_name:
         type: string
       status:
@@ -66,7 +64,7 @@ definitions:
         description: Name of the deleted server
         type: string
     type: object
-  object.ImportCSVResponse:
+  object.ImportExcelResponse:
     properties:
       message:
         example: File imported successfully
@@ -272,7 +270,7 @@ paths:
         "200":
           description: Excel file imported successfully
           schema:
-            $ref: '#/definitions/object.ImportCSVResponse'
+            $ref: '#/definitions/object.ImportExcelResponse'
       summary: Import file from excel
       tags:
       - Servers
@@ -299,25 +297,27 @@ paths:
       summary: Handle updating an existing server
       tags:
       - Servers
-  /servers/view_server/{server_name}:
+  /servers/view_servers/{filter}/{string}:
     get:
       consumes:
       - application/json
-      description: "View server details by server name substring\nExample usage:\t\t\t/servers/view_server/<server_name>"
+      description: View server details with optional filtering
       parameters:
-      - description: Server name substring
+      - description: Filter by server_id, server_name, ipv4, or status
+        in: query
+        name: filter
+        type: string
+      - description: Substring to search in server_id, server_name, ipv4, or status
         in: path
-        name: server_name
+        name: string
         type: string
       produces:
       - application/json
       responses:
         "200":
-          description: List of servers
+          description: Server details retrieved successfully
           schema:
-            items:
-              $ref: '#/definitions/object.Server'
-            type: array
+            $ref: '#/definitions/object.Server'
       summary: View server details
       tags:
       - Servers

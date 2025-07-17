@@ -88,22 +88,6 @@ func AddServerInfo(server object.Server) int {
 	return http.StatusCreated
 }
 
-func GetServerBySubstr(substr string) ([]object.Server, int) {
-	var servers []object.Server
-	err := connector.Engine.Table("server").
-		Where("server_name LIKE ?", "%"+substr+"%").
-		Find(&servers)
-	if err != nil {
-		log.Println("Error retrieving servers:", err)
-		return nil, http.StatusInternalServerError
-	}
-	if len(servers) == 0 {
-		log.Println("No servers found with substring:", substr)
-		return nil, http.StatusNotFound
-	}
-	return servers, http.StatusOK
-}
-
 func GetServerById(serverId string) (object.Server, bool) {
 	var server object.Server
 	has, err := connector.Engine.Table("server").
