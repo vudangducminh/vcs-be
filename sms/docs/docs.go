@@ -119,6 +119,49 @@ const docTemplate = `{
                 }
             }
         },
+        "/servers/export_excel/{order}/{filter}/{string}": {
+            "get": {
+                "description": "Export server data to an Excel file with optional filtering and ordering",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Servers"
+                ],
+                "summary": "Export server data to Excel",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Order of results, either 'asc' or 'desc'. If not provided or using the wrong order format, the default order is ascending",
+                        "name": "order",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter by server_id, server_name, ipv4, or status. If not provided or using the wrong filter format, the default filter is server_name",
+                        "name": "filter",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Substring to search in server_id, server_name, ipv4, or status",
+                        "name": "string",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Excel file exported successfully",
+                        "schema": {
+                            "$ref": "#/definitions/object.ImportExcelResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/servers/import_excel": {
             "post": {
                 "description": "Import server data from an Excel file",
