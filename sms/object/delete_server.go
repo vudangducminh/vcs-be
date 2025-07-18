@@ -6,3 +6,11 @@ type DeleteServerResponse struct {
 	ServerName string `json:"server_name"` // Name of the deleted server
 	ServerIPv4 string `json:"ipv4"`        // IPv4 address of the deleted server
 }
+
+type DeleteServerStatusNotFoundResponse struct {
+	Error string `json:"error" example:"Server not found"`
+}
+
+type DeleteServerInternalServerErrorResponse struct {
+	Error string `json:"error" example:"Internal server error"`
+}

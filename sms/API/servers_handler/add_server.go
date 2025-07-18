@@ -18,7 +18,10 @@ import (
 // @Accept       json
 // @Produce      json
 // @Param        request body object.AddServerRequest true "Add server request"
-// @Success      201 {object} object.AddServerResponse "Server added"
+// @Success      201 {object} object.AddServerSuccessResponse "Server added"
+// @Failure      400 {object} object.AddServerBadRequestResponse "Invalid request body"
+// @Failure      409 {object} object.AddServerConflictResponse "Server already exists"
+// @Failure      500 {object} object.AddServerInternalServerErrorResponse "Internal server error"
 // @Router       /servers/add_server [post]
 func AddServer(c *gin.Context) {
 	// Implementation for adding a server

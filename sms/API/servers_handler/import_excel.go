@@ -19,7 +19,13 @@ import (
 // @Accept       multipart/form-data
 // @Produce      json
 // @Param        file formData file true "Excel file to import"
-// @Success      200 {object} object.ImportExcelResponse "Excel file imported successfully"
+// @Success      200 {object} object.ImportExcelSuccessResponse "Excel file imported successfully"
+// @Failure      400 {object} object.ImportExcelInvalidFileFormatResponse "Invalid file format"
+// @Failure      400 {object} object.ImportExcelRetrieveFailedResponse "Failed to retrieve file"
+// @Failure      500 {object} object.ImportExcelOpenFileFailedResponse "Failed to open file"
+// @Failure      500 {object} object.ImportExcelReadFileFailedResponse "Failed to read Excel rows"
+// @Failure      500 {object} object.ImportExcelElasticsearchErrorResponse "Failed to add server to Elasticsearch from Excel row"
+// @Failure      500 {object} object.ImportExcelPostgreSQLErrorResponse "Failed to add server to PostgreSQL from Excel row"
 // @Router       /servers/import_excel [post]
 func ImportExcel(c *gin.Context) {
 	file, err := c.FormFile("file")
@@ -41,7 +47,7 @@ func ImportExcel(c *gin.Context) {
 	f, err := excelize.OpenReader(openedFile)
 	if err != nil {
 		log.Println("Error parsing Excel file:", err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Excel file"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid file format"})
 		return
 	}
 

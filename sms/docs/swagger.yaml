@@ -1,5 +1,23 @@
 basePath: /api/v1
 definitions:
+  object.AddServerBadRequestResponse:
+    properties:
+      error:
+        example: Invalid request body
+        type: string
+    type: object
+  object.AddServerConflictResponse:
+    properties:
+      error:
+        example: Server already exists
+        type: string
+    type: object
+  object.AddServerInternalServerErrorResponse:
+    properties:
+      error:
+        example: Internal server error
+        type: string
+    type: object
   object.AddServerRequest:
     properties:
       created_time:
@@ -20,7 +38,7 @@ definitions:
         description: e.g., "3666" for 1 hour 1 minute and 6 seconds
         type: integer
     type: object
-  object.AddServerResponse:
+  object.AddServerSuccessResponse:
     properties:
       ipv4:
         description: IPv4 address of the server
@@ -49,6 +67,12 @@ definitions:
         example: Authentication successfully
         type: string
     type: object
+  object.DeleteServerInternalServerErrorResponse:
+    properties:
+      error:
+        example: Internal server error
+        type: string
+    type: object
   object.DeleteServerResponse:
     properties:
       ipv4:
@@ -64,10 +88,82 @@ definitions:
         description: Name of the deleted server
         type: string
     type: object
-  object.ImportExcelResponse:
+  object.DeleteServerStatusNotFoundResponse:
+    properties:
+      error:
+        example: Server not found
+        type: string
+    type: object
+  object.ExportExcelBadRequestResponse:
+    properties:
+      error:
+        example: Invalid request parameters
+        type: string
+    type: object
+  object.ExportExcelExportFailedResponse:
+    properties:
+      error:
+        example: Failed to export Excel
+        type: string
+    type: object
+  object.ExportExcelInternalServerErrorResponse:
+    properties:
+      error:
+        example: Failed to retrieve server details
+        type: string
+    type: object
+  object.ExportExcelStatusNotFoundResponse:
     properties:
       message:
-        example: File imported successfully
+        example: No servers found with the given requirements
+        type: string
+    type: object
+  object.ExportExcelSuccessResponse:
+    properties:
+      message:
+        example: Excel file exported successfully
+        type: string
+    type: object
+  object.ImportExcelElasticsearchErrorResponse:
+    properties:
+      error:
+        example: Failed to add server to Elasticsearch from Excel row
+        type: string
+    type: object
+  object.ImportExcelInvalidFileFormatResponse:
+    properties:
+      error:
+        example: Invalid file format
+        type: string
+    type: object
+  object.ImportExcelOpenFileFailedResponse:
+    properties:
+      error:
+        example: Failed to open file
+        type: string
+    type: object
+  object.ImportExcelPostgreSQLErrorResponse:
+    properties:
+      error:
+        example: Failed to add server to PostgreSQL from Excel row
+        type: string
+    type: object
+  object.ImportExcelReadFileFailedResponse:
+    properties:
+      error:
+        example: Failed to read Excel rows
+        type: string
+    type: object
+  object.ImportExcelRetrieveFailedResponse:
+    properties:
+      error:
+        example: Failed to retrieve file
+        type: string
+    type: object
+  object.ImportExcelSuccessResponse:
+    properties:
+      message:
+        example: Excel file imported successfully
         type: string
     type: object
   object.LoginRequest:
@@ -132,6 +228,18 @@ definitions:
         description: e.g., "3666" for 1 hour 1 minute and 6 seconds
         type: integer
     type: object
+  object.UpdateServerBadRequestResponse:
+    properties:
+      error:
+        example: Invalid request body
+        type: string
+    type: object
+  object.UpdateServerInternalServerErrorResponse:
+    properties:
+      error:
+        example: Internal server error
+        type: string
+    type: object
   object.UpdateServerRequest:
     properties:
       created_time:
@@ -154,7 +262,13 @@ definitions:
         description: e.g., "3666" for 1 hour 1 minute and 6 seconds
         type: integer
     type: object
-  object.UpdateServerResponse:
+  object.UpdateServerStatusNotFoundResponse:
+    properties:
+      error:
+        example: Server not found
+        type: string
+    type: object
+  object.UpdateServerSuccessResponse:
     properties:
       ipv4:
         description: IPv4 address of the server
@@ -175,6 +289,25 @@ definitions:
       status:
         description: Status of the server, e.g., "active", "inactive", "maintenance"
         type: string
+    type: object
+  object.ViewServerBadRequestResponse:
+    properties:
+      error:
+        example: Invalid request parameters
+        type: string
+    type: object
+  object.ViewServerInternalServerErrorResponse:
+    properties:
+      error:
+        example: Failed to retrieve server details
+        type: string
+    type: object
+  object.ViewServerSuccessResponse:
+    properties:
+      servers:
+        items:
+          $ref: '#/definitions/object.Server'
+        type: array
     type: object
 host: localhost:8800
 info:
@@ -228,7 +361,19 @@ paths:
         "201":
           description: Server added
           schema:
-            $ref: '#/definitions/object.AddServerResponse'
+            $ref: '#/definitions/object.AddServerSuccessResponse'
+        "400":
+          description: Invalid request body
+          schema:
+            $ref: '#/definitions/object.AddServerBadRequestResponse'
+        "409":
+          description: Server already exists
+          schema:
+            $ref: '#/definitions/object.AddServerConflictResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/object.AddServerInternalServerErrorResponse'
       summary: Handle adding a new server
       tags:
       - Servers
@@ -250,6 +395,14 @@ paths:
           description: Server deleted successfully
           schema:
             $ref: '#/definitions/object.DeleteServerResponse'
+        "404":
+          description: Server not found
+          schema:
+            $ref: '#/definitions/object.DeleteServerStatusNotFoundResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/object.DeleteServerInternalServerErrorResponse'
       summary: Delete a server by ID
       tags:
       - Servers
@@ -280,7 +433,19 @@ paths:
         "200":
           description: Excel file exported successfully
           schema:
-            $ref: '#/definitions/object.ImportExcelResponse'
+            $ref: '#/definitions/object.ExportExcelSuccessResponse'
+        "400":
+          description: Invalid request parameters
+          schema:
+            $ref: '#/definitions/object.ExportExcelBadRequestResponse'
+        "404":
+          description: No servers found with the given requirements
+          schema:
+            $ref: '#/definitions/object.ExportExcelStatusNotFoundResponse'
+        "500":
+          description: Failed to export Excel
+          schema:
+            $ref: '#/definitions/object.ExportExcelExportFailedResponse'
       summary: Export server data to Excel
       tags:
       - Servers
@@ -301,7 +466,15 @@ paths:
         "200":
           description: Excel file imported successfully
           schema:
-            $ref: '#/definitions/object.ImportExcelResponse'
+            $ref: '#/definitions/object.ImportExcelSuccessResponse'
+        "400":
+          description: Failed to retrieve file
+          schema:
+            $ref: '#/definitions/object.ImportExcelRetrieveFailedResponse'
+        "500":
+          description: Failed to add server to PostgreSQL from Excel row
+          schema:
+            $ref: '#/definitions/object.ImportExcelPostgreSQLErrorResponse'
       summary: Import file from excel
       tags:
       - Servers
@@ -324,7 +497,19 @@ paths:
         "200":
           description: Server updated
           schema:
-            $ref: '#/definitions/object.UpdateServerResponse'
+            $ref: '#/definitions/object.UpdateServerSuccessResponse'
+        "400":
+          description: Invalid request body
+          schema:
+            $ref: '#/definitions/object.UpdateServerBadRequestResponse'
+        "404":
+          description: Server not found
+          schema:
+            $ref: '#/definitions/object.UpdateServerStatusNotFoundResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/object.UpdateServerInternalServerErrorResponse'
       summary: Handle updating an existing server
       tags:
       - Servers
@@ -354,7 +539,15 @@ paths:
         "200":
           description: Server details retrieved successfully
           schema:
-            $ref: '#/definitions/object.Server'
+            $ref: '#/definitions/object.ViewServerSuccessResponse'
+        "400":
+          description: Invalid request parameters
+          schema:
+            $ref: '#/definitions/object.ViewServerBadRequestResponse'
+        "500":
+          description: Failed to retrieve server details
+          schema:
+            $ref: '#/definitions/object.ViewServerInternalServerErrorResponse'
       summary: View server details
       tags:
       - Servers

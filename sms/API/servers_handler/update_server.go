@@ -15,7 +15,10 @@ import (
 // @Accept       json
 // @Produce      json
 // @Param        request body object.UpdateServerRequest true "Update server request"
-// @Success      200 {object} object.UpdateServerResponse "Server updated"
+// @Success      200 {object} object.UpdateServerSuccessResponse "Server updated"
+// @Failure      400 {object} object.UpdateServerBadRequestResponse "Invalid request body"
+// @Failure      404 {object} object.UpdateServerStatusNotFoundResponse "Server not found"
+// @Failure      500 {object} object.UpdateServerInternalServerErrorResponse "Internal server error"
 // @Router       /servers/update_server [put]
 func UpdateServer(c *gin.Context) {
 	var req object.UpdateServerRequest

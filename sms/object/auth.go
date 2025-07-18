@@ -4,6 +4,10 @@ type AuthRequest struct {
 	JWT string `json:"jwt" binding:"required"`
 }
 
-type AuthResponse struct {
+type AuthSuccessResponse struct {
 	Message string `json:"message" example:"Authentication successfully"`
+}
+
+type AuthErrorResponse struct {
+	Error string `json:"error" example:"Authentication failed"`
 }

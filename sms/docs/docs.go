@@ -81,7 +81,25 @@ const docTemplate = `{
                     "201": {
                         "description": "Server added",
                         "schema": {
-                            "$ref": "#/definitions/object.AddServerResponse"
+                            "$ref": "#/definitions/object.AddServerSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "$ref": "#/definitions/object.AddServerBadRequestResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Server already exists",
+                        "schema": {
+                            "$ref": "#/definitions/object.AddServerConflictResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/object.AddServerInternalServerErrorResponse"
                         }
                     }
                 }
@@ -114,6 +132,18 @@ const docTemplate = `{
                         "description": "Server deleted successfully",
                         "schema": {
                             "$ref": "#/definitions/object.DeleteServerResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Server not found",
+                        "schema": {
+                            "$ref": "#/definitions/object.DeleteServerStatusNotFoundResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/object.DeleteServerInternalServerErrorResponse"
                         }
                     }
                 }
@@ -156,7 +186,25 @@ const docTemplate = `{
                     "200": {
                         "description": "Excel file exported successfully",
                         "schema": {
-                            "$ref": "#/definitions/object.ImportExcelResponse"
+                            "$ref": "#/definitions/object.ExportExcelSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request parameters",
+                        "schema": {
+                            "$ref": "#/definitions/object.ExportExcelBadRequestResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "No servers found with the given requirements",
+                        "schema": {
+                            "$ref": "#/definitions/object.ExportExcelStatusNotFoundResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to export Excel",
+                        "schema": {
+                            "$ref": "#/definitions/object.ExportExcelExportFailedResponse"
                         }
                     }
                 }
@@ -188,7 +236,19 @@ const docTemplate = `{
                     "200": {
                         "description": "Excel file imported successfully",
                         "schema": {
-                            "$ref": "#/definitions/object.ImportExcelResponse"
+                            "$ref": "#/definitions/object.ImportExcelSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Failed to retrieve file",
+                        "schema": {
+                            "$ref": "#/definitions/object.ImportExcelRetrieveFailedResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to add server to PostgreSQL from Excel row",
+                        "schema": {
+                            "$ref": "#/definitions/object.ImportExcelPostgreSQLErrorResponse"
                         }
                     }
                 }
@@ -222,7 +282,25 @@ const docTemplate = `{
                     "200": {
                         "description": "Server updated",
                         "schema": {
-                            "$ref": "#/definitions/object.UpdateServerResponse"
+                            "$ref": "#/definitions/object.UpdateServerSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "$ref": "#/definitions/object.UpdateServerBadRequestResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Server not found",
+                        "schema": {
+                            "$ref": "#/definitions/object.UpdateServerStatusNotFoundResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/object.UpdateServerInternalServerErrorResponse"
                         }
                     }
                 }
@@ -265,7 +343,19 @@ const docTemplate = `{
                     "200": {
                         "description": "Server details retrieved successfully",
                         "schema": {
-                            "$ref": "#/definitions/object.Server"
+                            "$ref": "#/definitions/object.ViewServerSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request parameters",
+                        "schema": {
+                            "$ref": "#/definitions/object.ViewServerBadRequestResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to retrieve server details",
+                        "schema": {
+                            "$ref": "#/definitions/object.ViewServerInternalServerErrorResponse"
                         }
                     }
                 }
@@ -341,6 +431,33 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "object.AddServerBadRequestResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Invalid request body"
+                }
+            }
+        },
+        "object.AddServerConflictResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Server already exists"
+                }
+            }
+        },
+        "object.AddServerInternalServerErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Internal server error"
+                }
+            }
+        },
         "object.AddServerRequest": {
             "type": "object",
             "properties": {
@@ -369,7 +486,7 @@ const docTemplate = `{
                 }
             }
         },
-        "object.AddServerResponse": {
+        "object.AddServerSuccessResponse": {
             "type": "object",
             "properties": {
                 "ipv4": {
@@ -411,6 +528,15 @@ const docTemplate = `{
                 }
             }
         },
+        "object.DeleteServerInternalServerErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Internal server error"
+                }
+            }
+        },
         "object.DeleteServerResponse": {
             "type": "object",
             "properties": {
@@ -432,12 +558,120 @@ const docTemplate = `{
                 }
             }
         },
-        "object.ImportExcelResponse": {
+        "object.DeleteServerStatusNotFoundResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Server not found"
+                }
+            }
+        },
+        "object.ExportExcelBadRequestResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Invalid request parameters"
+                }
+            }
+        },
+        "object.ExportExcelExportFailedResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Failed to export Excel"
+                }
+            }
+        },
+        "object.ExportExcelInternalServerErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Failed to retrieve server details"
+                }
+            }
+        },
+        "object.ExportExcelStatusNotFoundResponse": {
             "type": "object",
             "properties": {
                 "message": {
                     "type": "string",
-                    "example": "File imported successfully"
+                    "example": "No servers found with the given requirements"
+                }
+            }
+        },
+        "object.ExportExcelSuccessResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "Excel file exported successfully"
+                }
+            }
+        },
+        "object.ImportExcelElasticsearchErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Failed to add server to Elasticsearch from Excel row"
+                }
+            }
+        },
+        "object.ImportExcelInvalidFileFormatResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Invalid file format"
+                }
+            }
+        },
+        "object.ImportExcelOpenFileFailedResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Failed to open file"
+                }
+            }
+        },
+        "object.ImportExcelPostgreSQLErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Failed to add server to PostgreSQL from Excel row"
+                }
+            }
+        },
+        "object.ImportExcelReadFileFailedResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Failed to read Excel rows"
+                }
+            }
+        },
+        "object.ImportExcelRetrieveFailedResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Failed to retrieve file"
+                }
+            }
+        },
+        "object.ImportExcelSuccessResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "Excel file imported successfully"
                 }
             }
         },
@@ -531,6 +765,24 @@ const docTemplate = `{
                 }
             }
         },
+        "object.UpdateServerBadRequestResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Invalid request body"
+                }
+            }
+        },
+        "object.UpdateServerInternalServerErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Internal server error"
+                }
+            }
+        },
         "object.UpdateServerRequest": {
             "type": "object",
             "properties": {
@@ -562,7 +814,16 @@ const docTemplate = `{
                 }
             }
         },
-        "object.UpdateServerResponse": {
+        "object.UpdateServerStatusNotFoundResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Server not found"
+                }
+            }
+        },
+        "object.UpdateServerSuccessResponse": {
             "type": "object",
             "properties": {
                 "ipv4": {
@@ -589,6 +850,35 @@ const docTemplate = `{
                 "status": {
                     "description": "Status of the server, e.g., \"active\", \"inactive\", \"maintenance\"",
                     "type": "string"
+                }
+            }
+        },
+        "object.ViewServerBadRequestResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Invalid request parameters"
+                }
+            }
+        },
+        "object.ViewServerInternalServerErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Failed to retrieve server details"
+                }
+            }
+        },
+        "object.ViewServerSuccessResponse": {
+            "type": "object",
+            "properties": {
+                "servers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/object.Server"
+                    }
                 }
             }
         }

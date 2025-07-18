@@ -16,7 +16,8 @@ import (
 // @Accept       json
 // @Produce      json
 // @Param        request body object.AuthRequest true "Authentication request"
-// @Success      200 {object} object.AuthResponse "Authentication successfully"
+// @Success      200 {object} object.AuthSuccessResponse "Authentication successfully"
+// @Failure      400 {object} object.AuthErrorResponse "Authentication failed"
 // @Router       /auth [post]
 func Authentication(c *gin.Context) {
 	var req object.AuthRequest

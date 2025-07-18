@@ -15,6 +15,8 @@ import (
 // @Produce      json
 // @Param        server_id path string true "Server ID"
 // @Success      200 {object} object.DeleteServerResponse "Server deleted successfully"
+// @Failure      404 {object} object.DeleteServerStatusNotFoundResponse "Server not found"
+// @Failure      500 {object} object.DeleteServerInternalServerErrorResponse "Internal server error"
 // @Router	     /servers/delete_server/{server_id} [delete]
 func DeleteServer(c *gin.Context) {
 	serverID := c.Param("server_id")

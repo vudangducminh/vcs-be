@@ -19,7 +19,11 @@ import (
 // @Param        order query string false "Order of results, either 'asc' or 'desc'. If not provided or using the wrong order format, the default order is ascending"
 // @Param        filter query string false "Filter by server_id, server_name, ipv4, or status. If not provided or using the wrong filter format, the default filter is server_name"
 // @Param        string path string false "Substring to search in server_id, server_name, ipv4, or status"
-// @Success      200 {object} object.ImportExcelResponse "Excel file exported successfully"
+// @Success      200 {object} object.ExportExcelSuccessResponse "Excel file exported successfully"
+// @Failure      400 {object} object.ExportExcelBadRequestResponse "Invalid request parameters"
+// @Failure      404 {object} object.ExportExcelStatusNotFoundResponse "No servers found with the given requirements"
+// @Failure      500 {object} object.ExportExcelInternalServerErrorResponse "Failed to retrieve server details"
+// @Failure      500 {object} object.ExportExcelExportFailedResponse "Failed to export Excel"
 // @Router       /servers/export_excel/{order}/{filter}/{string} [get]
 func ExportDataToExcel(c *gin.Context) {
 	var servers []object.Server

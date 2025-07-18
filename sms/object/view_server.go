@@ -1,13 +1,13 @@
 package object
 
-type ViewServerRequest struct {
+type ViewServerSuccessResponse struct {
+	Servers []Server `json:"servers"`
 }
-type ViewServerResponse struct {
-	ServerId        string `json:"server_id"`
-	ServerName      string `json:"server_name"`
-	Status          string `json:"status"`
-	Uptime          string `json:"uptime"`
-	CreatedTime     string `json:"created_time"`
-	LastUpdatedTime string `json:"last_updated_time"`
-	IPv4            string `json:"ipv4"`
+
+type ViewServerBadRequestResponse struct {
+	Error string `json:"error" example:"Invalid request parameters"`
+}
+
+type ViewServerInternalServerErrorResponse struct {
+	Error string `json:"error" example:"Failed to retrieve server details"`
 }
