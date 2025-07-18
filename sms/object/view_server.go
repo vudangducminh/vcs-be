@@ -1,5 +1,12 @@
 package object
 
+type ViewServerRequest struct {
+	JWT    string `json:"jwt" binding:"required"`
+	Order  string `json:"order"`  // e.g., "asc", "desc"
+	Filter string `json:"filter"` // e.g., "server_id", "server_name", "ipv4", "status"
+	String string `json:"string"` // Substring to search in server_id, server_name, ipv4, or status
+}
+
 type ViewServerSuccessResponse struct {
 	Servers []Server `json:"servers"`
 }

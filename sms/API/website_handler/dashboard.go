@@ -17,7 +17,7 @@ import (
 // @Produce      json
 // @Param        request body object.AuthRequest true "Authentication request"
 // @Success      200 {object} object.AuthSuccessResponse "Authentication successfully"
-// @Failure      400 {object} object.AuthErrorResponse "Authentication failed"
+// @Failure      401 {object} object.AuthErrorResponse "Authentication failed"
 // @Router       /auth [post]
 func Authentication(c *gin.Context) {
 	var req object.AuthRequest
@@ -28,7 +28,7 @@ func Authentication(c *gin.Context) {
 
 	username := redis_query.GetUsernameByJWTToken(req.JWT)
 	if username == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid request body"})
 		return
 	}
 	log.Println("Current username:", username)

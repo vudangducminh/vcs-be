@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"sms/algorithm"
 	"sms/object"
+	redis_query "sms/server/database/cache/redis/query"
 	elastic_query "sms/server/database/elasticsearch/query"
 	posgresql_query "sms/server/database/postgresql/query"
 	"time"
@@ -19,9 +20,11 @@ import (
 // @Accept       multipart/form-data
 // @Produce      json
 // @Param        file formData file true "Excel file to import"
+// @Param        jwt header string true "JWT token for authentication"
 // @Success      200 {object} object.ImportExcelSuccessResponse "Excel file imported successfully"
 // @Failure      400 {object} object.ImportExcelInvalidFileFormatResponse "Invalid file format"
 // @Failure      400 {object} object.ImportExcelRetrieveFailedResponse "Failed to retrieve file"
+// @Failure      401 {object} object.AuthErrorResponse "Authentication failed"
 // @Failure      500 {object} object.ImportExcelOpenFileFailedResponse "Failed to open file"
 // @Failure      500 {object} object.ImportExcelReadFileFailedResponse "Failed to read Excel rows"
 // @Failure      500 {object} object.ImportExcelElasticsearchErrorResponse "Failed to add server to Elasticsearch from Excel row"
@@ -29,9 +32,16 @@ import (
 // @Router       /servers/import_excel [post]
 func ImportExcel(c *gin.Context) {
 	file, err := c.FormFile("file")
+	jwtToken := c.GetHeader("jwt")
 	if err != nil {
 		log.Println("Error retrieving file:", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to retrieve file"})
+		return
+	}
+
+	username := redis_query.GetUsernameByJWTToken(jwtToken)
+	if username == "" {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed"})
 		return
 	}
 

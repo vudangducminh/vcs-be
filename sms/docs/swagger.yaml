@@ -26,6 +26,8 @@ definitions:
       ipv4:
         description: IPv4 address of the server
         type: string
+      jwt:
+        type: string
       last_updated_time:
         description: ISO 8601 format
         type: string
@@ -37,6 +39,8 @@ definitions:
       uptime:
         description: e.g., "3666" for 1 hour 1 minute and 6 seconds
         type: integer
+    required:
+    - jwt
     type: object
   object.AddServerSuccessResponse:
     properties:
@@ -54,6 +58,12 @@ definitions:
         description: Name of the server
         type: string
     type: object
+  object.AuthErrorResponse:
+    properties:
+      error:
+        example: Authentication failed
+        type: string
+    type: object
   object.AuthRequest:
     properties:
       jwt:
@@ -61,7 +71,7 @@ definitions:
     required:
     - jwt
     type: object
-  object.AuthResponse:
+  object.AuthSuccessResponse:
     properties:
       message:
         example: Authentication successfully
@@ -72,6 +82,16 @@ definitions:
       error:
         example: Internal server error
         type: string
+    type: object
+  object.DeleteServerRequest:
+    properties:
+      jwt:
+        type: string
+      server_id:
+        type: string
+    required:
+    - jwt
+    - server_id
     type: object
   object.DeleteServerResponse:
     properties:
@@ -248,6 +268,9 @@ definitions:
       ipv4:
         description: IPv4 address of the server
         type: string
+      jwt:
+        description: JWT token for authentication
+        type: string
       last_updated_time:
         description: ISO 8601 format
         type: string
@@ -338,7 +361,11 @@ paths:
         "200":
           description: Authentication successfully
           schema:
-            $ref: '#/definitions/object.AuthResponse'
+            $ref: '#/definitions/object.AuthSuccessResponse'
+        "401":
+          description: Authentication failed
+          schema:
+            $ref: '#/definitions/object.AuthErrorResponse'
       summary: Handle user authentication
       tags:
       - Auth
@@ -366,6 +393,10 @@ paths:
           description: Invalid request body
           schema:
             $ref: '#/definitions/object.AddServerBadRequestResponse'
+        "401":
+          description: Authentication failed
+          schema:
+            $ref: '#/definitions/object.AuthErrorResponse'
         "409":
           description: Server already exists
           schema:
@@ -383,11 +414,12 @@ paths:
       - application/json
       description: Delete a server by its unique ID
       parameters:
-      - description: Server ID
-        in: path
-        name: server_id
+      - description: Delete server request
+        in: body
+        name: request
         required: true
-        type: string
+        schema:
+          $ref: '#/definitions/object.DeleteServerRequest'
       produces:
       - application/json
       responses:
@@ -395,6 +427,10 @@ paths:
           description: Server deleted successfully
           schema:
             $ref: '#/definitions/object.DeleteServerResponse'
+        "401":
+          description: Authentication failed
+          schema:
+            $ref: '#/definitions/object.AuthErrorResponse'
         "404":
           description: Server not found
           schema:
@@ -413,13 +449,17 @@ paths:
       description: Export server data to an Excel file with optional filtering and
         ordering
       parameters:
+      - description: JWT token for authentication
+        in: query
+        name: jwt
+        type: string
       - description: Order of results, either 'asc' or 'desc'. If not provided or
           using the wrong order format, the default order is ascending
         in: query
         name: order
         type: string
       - description: Filter by server_id, server_name, ipv4, or status. If not provided
-          or using the wrong filter format, the default filter is server_name
+          or using the wrong filter format, then there is no filter applied
         in: query
         name: filter
         type: string
@@ -438,6 +478,10 @@ paths:
           description: Invalid request parameters
           schema:
             $ref: '#/definitions/object.ExportExcelBadRequestResponse'
+        "401":
+          description: Authentication failed
+          schema:
+            $ref: '#/definitions/object.AuthErrorResponse'
         "404":
           description: No servers found with the given requirements
           schema:
@@ -460,6 +504,11 @@ paths:
         name: file
         required: true
         type: file
+      - description: JWT token for authentication
+        in: header
+        name: jwt
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -471,6 +520,10 @@ paths:
           description: Failed to retrieve file
           schema:
             $ref: '#/definitions/object.ImportExcelRetrieveFailedResponse'
+        "401":
+          description: Authentication failed
+          schema:
+            $ref: '#/definitions/object.AuthErrorResponse'
         "500":
           description: Failed to add server to PostgreSQL from Excel row
           schema:
@@ -502,6 +555,10 @@ paths:
           description: Invalid request body
           schema:
             $ref: '#/definitions/object.UpdateServerBadRequestResponse'
+        "401":
+          description: Authentication failed
+          schema:
+            $ref: '#/definitions/object.AuthErrorResponse'
         "404":
           description: Server not found
           schema:
@@ -519,6 +576,10 @@ paths:
       - application/json
       description: View server details with optional filtering
       parameters:
+      - description: JWT token for authentication
+        in: query
+        name: jwt
+        type: string
       - description: Order of results, either 'asc' or 'desc'. If not provided or
           using the wrong order format, the default order is ascending
         in: query
@@ -544,6 +605,10 @@ paths:
           description: Invalid request parameters
           schema:
             $ref: '#/definitions/object.ViewServerBadRequestResponse'
+        "401":
+          description: Authentication failed
+          schema:
+            $ref: '#/definitions/object.AuthErrorResponse'
         "500":
           description: Failed to retrieve server details
           schema:

@@ -1,6 +1,7 @@
 package object
 
 type UpdateServerRequest struct {
+	JWT             string `json:"jwt"` // JWT token for authentication
 	ServerId        string `json:"server_id"`
 	ServerName      string `json:"server_name"`
 	Status          string `json:"status"`            // e.g., "active", "inactive", "maintenance"

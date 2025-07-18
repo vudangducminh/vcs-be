@@ -1,5 +1,9 @@
 package object
 
+type DeleteServerRequest struct {
+	JWT      string `json:"jwt" binding:"required"`
+	ServerId string `json:"server_id" binding:"required"`
+}
 type DeleteServerResponse struct {
 	Message    string `json:"message" example:"Server deleted successfully"`
 	ServerId   string `json:"server_id"`   // Unique identifier for the deleted server

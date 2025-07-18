@@ -3,6 +3,7 @@ package servers_handler
 import (
 	"net/http"
 	"sms/object"
+	redis_query "sms/server/database/cache/redis/query"
 	posgresql_query "sms/server/database/postgresql/query"
 	"time"
 
@@ -16,6 +17,7 @@ import (
 // @Produce      json
 // @Param        request body object.UpdateServerRequest true "Update server request"
 // @Success      200 {object} object.UpdateServerSuccessResponse "Server updated"
+// @Failure      401 {object} object.AuthErrorResponse "Authentication failed"
 // @Failure      400 {object} object.UpdateServerBadRequestResponse "Invalid request body"
 // @Failure      404 {object} object.UpdateServerStatusNotFoundResponse "Server not found"
 // @Failure      500 {object} object.UpdateServerInternalServerErrorResponse "Internal server error"
@@ -26,6 +28,13 @@ func UpdateServer(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
 		return
 	}
+
+	username := redis_query.GetUsernameByJWTToken(req.JWT)
+	if username == "" {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed"})
+		return
+	}
+
 	if req.ServerId == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "ServerId is required"})
 		return

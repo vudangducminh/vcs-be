@@ -47,7 +47,13 @@ const docTemplate = `{
                     "200": {
                         "description": "Authentication successfully",
                         "schema": {
-                            "$ref": "#/definitions/object.AuthResponse"
+                            "$ref": "#/definitions/object.AuthSuccessResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication failed",
+                        "schema": {
+                            "$ref": "#/definitions/object.AuthErrorResponse"
                         }
                     }
                 }
@@ -90,6 +96,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/object.AddServerBadRequestResponse"
                         }
                     },
+                    "401": {
+                        "description": "Authentication failed",
+                        "schema": {
+                            "$ref": "#/definitions/object.AuthErrorResponse"
+                        }
+                    },
                     "409": {
                         "description": "Server already exists",
                         "schema": {
@@ -120,11 +132,13 @@ const docTemplate = `{
                 "summary": "Delete a server by ID",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "Server ID",
-                        "name": "server_id",
-                        "in": "path",
-                        "required": true
+                        "description": "Delete server request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/object.DeleteServerRequest"
+                        }
                     }
                 ],
                 "responses": {
@@ -132,6 +146,12 @@ const docTemplate = `{
                         "description": "Server deleted successfully",
                         "schema": {
                             "$ref": "#/definitions/object.DeleteServerResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication failed",
+                        "schema": {
+                            "$ref": "#/definitions/object.AuthErrorResponse"
                         }
                     },
                     "404": {
@@ -165,13 +185,19 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "description": "JWT token for authentication",
+                        "name": "jwt",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
                         "description": "Order of results, either 'asc' or 'desc'. If not provided or using the wrong order format, the default order is ascending",
                         "name": "order",
                         "in": "query"
                     },
                     {
                         "type": "string",
-                        "description": "Filter by server_id, server_name, ipv4, or status. If not provided or using the wrong filter format, the default filter is server_name",
+                        "description": "Filter by server_id, server_name, ipv4, or status. If not provided or using the wrong filter format, then there is no filter applied",
                         "name": "filter",
                         "in": "query"
                     },
@@ -193,6 +219,12 @@ const docTemplate = `{
                         "description": "Invalid request parameters",
                         "schema": {
                             "$ref": "#/definitions/object.ExportExcelBadRequestResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication failed",
+                        "schema": {
+                            "$ref": "#/definitions/object.AuthErrorResponse"
                         }
                     },
                     "404": {
@@ -230,6 +262,13 @@ const docTemplate = `{
                         "name": "file",
                         "in": "formData",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "JWT token for authentication",
+                        "name": "jwt",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -243,6 +282,12 @@ const docTemplate = `{
                         "description": "Failed to retrieve file",
                         "schema": {
                             "$ref": "#/definitions/object.ImportExcelRetrieveFailedResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication failed",
+                        "schema": {
+                            "$ref": "#/definitions/object.AuthErrorResponse"
                         }
                     },
                     "500": {
@@ -291,6 +336,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/object.UpdateServerBadRequestResponse"
                         }
                     },
+                    "401": {
+                        "description": "Authentication failed",
+                        "schema": {
+                            "$ref": "#/definitions/object.AuthErrorResponse"
+                        }
+                    },
                     "404": {
                         "description": "Server not found",
                         "schema": {
@@ -322,6 +373,12 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "description": "JWT token for authentication",
+                        "name": "jwt",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
                         "description": "Order of results, either 'asc' or 'desc'. If not provided or using the wrong order format, the default order is ascending",
                         "name": "order",
                         "in": "query"
@@ -350,6 +407,12 @@ const docTemplate = `{
                         "description": "Invalid request parameters",
                         "schema": {
                             "$ref": "#/definitions/object.ViewServerBadRequestResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication failed",
+                        "schema": {
+                            "$ref": "#/definitions/object.AuthErrorResponse"
                         }
                     },
                     "500": {
@@ -460,6 +523,9 @@ const docTemplate = `{
         },
         "object.AddServerRequest": {
             "type": "object",
+            "required": [
+                "jwt"
+            ],
             "properties": {
                 "created_time": {
                     "description": "ISO 8601 format",
@@ -467,6 +533,9 @@ const docTemplate = `{
                 },
                 "ipv4": {
                     "description": "IPv4 address of the server",
+                    "type": "string"
+                },
+                "jwt": {
                     "type": "string"
                 },
                 "last_updated_time": {
@@ -508,6 +577,15 @@ const docTemplate = `{
                 }
             }
         },
+        "object.AuthErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Authentication failed"
+                }
+            }
+        },
         "object.AuthRequest": {
             "type": "object",
             "required": [
@@ -519,7 +597,7 @@ const docTemplate = `{
                 }
             }
         },
-        "object.AuthResponse": {
+        "object.AuthSuccessResponse": {
             "type": "object",
             "properties": {
                 "message": {
@@ -534,6 +612,21 @@ const docTemplate = `{
                 "error": {
                     "type": "string",
                     "example": "Internal server error"
+                }
+            }
+        },
+        "object.DeleteServerRequest": {
+            "type": "object",
+            "required": [
+                "jwt",
+                "server_id"
+            ],
+            "properties": {
+                "jwt": {
+                    "type": "string"
+                },
+                "server_id": {
+                    "type": "string"
                 }
             }
         },
@@ -792,6 +885,10 @@ const docTemplate = `{
                 },
                 "ipv4": {
                     "description": "IPv4 address of the server",
+                    "type": "string"
+                },
+                "jwt": {
+                    "description": "JWT token for authentication",
                     "type": "string"
                 },
                 "last_updated_time": {

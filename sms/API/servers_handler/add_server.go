@@ -6,6 +6,7 @@ import (
 	"sms/object"
 	"time"
 
+	redis_query "sms/server/database/cache/redis/query"
 	elastic_query "sms/server/database/elasticsearch/query"
 	posgresql_query "sms/server/database/postgresql/query"
 
@@ -20,6 +21,7 @@ import (
 // @Param        request body object.AddServerRequest true "Add server request"
 // @Success      201 {object} object.AddServerSuccessResponse "Server added"
 // @Failure      400 {object} object.AddServerBadRequestResponse "Invalid request body"
+// @Failure      401 {object} object.AuthErrorResponse "Authentication failed"
 // @Failure      409 {object} object.AddServerConflictResponse "Server already exists"
 // @Failure      500 {object} object.AddServerInternalServerErrorResponse "Internal server error"
 // @Router       /servers/add_server [post]
@@ -30,6 +32,13 @@ func AddServer(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
 		return
 	}
+
+	username := redis_query.GetUsernameByJWTToken(req.JWT)
+	if username == "" {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed"})
+		return
+	}
+
 	if req.ServerName == "" || req.IPv4 == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "ServerName, and IPv4 are required"})
 		return

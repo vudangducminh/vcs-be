@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"sms/object"
+	redis_query "sms/server/database/cache/redis/query"
 	elastic_query "sms/server/database/elasticsearch/query"
 	"sort"
 
@@ -16,22 +17,34 @@ import (
 // @Description  Export server data to an Excel file with optional filtering and ordering
 // @Accept       json
 // @Produce      json
+// @Param        jwt query string false "JWT token for authentication"
 // @Param        order query string false "Order of results, either 'asc' or 'desc'. If not provided or using the wrong order format, the default order is ascending"
-// @Param        filter query string false "Filter by server_id, server_name, ipv4, or status. If not provided or using the wrong filter format, the default filter is server_name"
+// @Param        filter query string false "Filter by server_id, server_name, ipv4, or status. If not provided or using the wrong filter format, then there is no filter applied"
 // @Param        string path string false "Substring to search in server_id, server_name, ipv4, or status"
 // @Success      200 {object} object.ExportExcelSuccessResponse "Excel file exported successfully"
 // @Failure      400 {object} object.ExportExcelBadRequestResponse "Invalid request parameters"
+// @Failure      401 {object} object.AuthErrorResponse "Authentication failed"
 // @Failure      404 {object} object.ExportExcelStatusNotFoundResponse "No servers found with the given requirements"
 // @Failure      500 {object} object.ExportExcelInternalServerErrorResponse "Failed to retrieve server details"
 // @Failure      500 {object} object.ExportExcelExportFailedResponse "Failed to export Excel"
 // @Router       /servers/export_excel/{order}/{filter}/{string} [get]
 func ExportDataToExcel(c *gin.Context) {
+	jwtToken := c.Query("jwt")
+	username := redis_query.GetUsernameByJWTToken(jwtToken)
+	if username == "" {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed"})
+		return
+	}
 	var servers []object.Server
 	order := c.Query("order")
 	if order != "asc" && order != "desc" {
 		order = "asc" // Default order if not specified
 	}
 	filter := c.Query("filter")
+	if filter != "server_id" && filter != "server_name" && filter != "ipv4" && filter != "status" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid filter parameter"})
+		return
+	}
 	str := c.Param("string")
 	log.Printf("Received request to export server with filter '%s' and substring: '%s'", filter, str)
 	if str == "undefined" || str == "{string}" {
@@ -49,6 +62,7 @@ func ExportDataToExcel(c *gin.Context) {
 	case "status":
 		servers, httpStatus = elastic_query.GetServerByStatus(str)
 	}
+
 	if httpStatus == http.StatusNotFound {
 		c.JSON(http.StatusOK, gin.H{"message": "No servers found with the given requirements"})
 		return
