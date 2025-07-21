@@ -117,7 +117,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/servers/delete_server/{server_id}": {
+        "/servers/delete_server": {
             "delete": {
                 "description": "Delete a server by its unique ID",
                 "consumes": [
@@ -291,9 +291,9 @@ const docTemplate = `{
                         }
                     },
                     "500": {
-                        "description": "Failed to add server to PostgreSQL from Excel row",
+                        "description": "Failed to add server to Elasticsearch from Excel row",
                         "schema": {
-                            "$ref": "#/definitions/object.ImportExcelPostgreSQLErrorResponse"
+                            "$ref": "#/definitions/object.ImportExcelElasticsearchErrorResponse"
                         }
                     }
                 }
@@ -729,15 +729,6 @@ const docTemplate = `{
                 "error": {
                     "type": "string",
                     "example": "Failed to open file"
-                }
-            }
-        },
-        "object.ImportExcelPostgreSQLErrorResponse": {
-            "type": "object",
-            "properties": {
-                "error": {
-                    "type": "string",
-                    "example": "Failed to add server to PostgreSQL from Excel row"
                 }
             }
         },

@@ -162,12 +162,6 @@ definitions:
         example: Failed to open file
         type: string
     type: object
-  object.ImportExcelPostgreSQLErrorResponse:
-    properties:
-      error:
-        example: Failed to add server to PostgreSQL from Excel row
-        type: string
-    type: object
   object.ImportExcelReadFileFailedResponse:
     properties:
       error:
@@ -408,7 +402,7 @@ paths:
       summary: Handle adding a new server
       tags:
       - Servers
-  /servers/delete_server/{server_id}:
+  /servers/delete_server:
     delete:
       consumes:
       - application/json
@@ -525,9 +519,9 @@ paths:
           schema:
             $ref: '#/definitions/object.AuthErrorResponse'
         "500":
-          description: Failed to add server to PostgreSQL from Excel row
+          description: Failed to add server to Elasticsearch from Excel row
           schema:
-            $ref: '#/definitions/object.ImportExcelPostgreSQLErrorResponse'
+            $ref: '#/definitions/object.ImportExcelElasticsearchErrorResponse'
       summary: Import file from excel
       tags:
       - Servers

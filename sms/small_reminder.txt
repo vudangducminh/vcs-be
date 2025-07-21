@@ -5,3 +5,5 @@
 Note:
 - Swagger initialization:
     swag init -g main.go --dir .,./API/users_handler,./API/website_handler,./API/servers_handler,./object
+- Go test:
+    go test ./...

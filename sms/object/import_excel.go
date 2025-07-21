@@ -23,7 +23,3 @@ type ImportExcelReadFileFailedResponse struct {
 type ImportExcelElasticsearchErrorResponse struct {
 	Error string `json:"error" example:"Failed to add server to Elasticsearch from Excel row"`
 }
-
-type ImportExcelPostgreSQLErrorResponse struct {
-	Error string `json:"error" example:"Failed to add server to PostgreSQL from Excel row"`
-}

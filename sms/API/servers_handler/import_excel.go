@@ -7,7 +7,6 @@ import (
 	"sms/object"
 	redis_query "sms/server/database/cache/redis/query"
 	elastic_query "sms/server/database/elasticsearch/query"
-	posgresql_query "sms/server/database/postgresql/query"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -28,7 +27,6 @@ import (
 // @Failure      500 {object} object.ImportExcelOpenFileFailedResponse "Failed to open file"
 // @Failure      500 {object} object.ImportExcelReadFileFailedResponse "Failed to read Excel rows"
 // @Failure      500 {object} object.ImportExcelElasticsearchErrorResponse "Failed to add server to Elasticsearch from Excel row"
-// @Failure      500 {object} object.ImportExcelPostgreSQLErrorResponse "Failed to add server to PostgreSQL from Excel row"
 // @Router       /servers/import_excel [post]
 func ImportExcel(c *gin.Context) {
 	file, err := c.FormFile("file")
@@ -85,13 +83,7 @@ func ImportExcel(c *gin.Context) {
 		server.CreatedTime = time.Now().Format(time.RFC3339)
 		server.LastUpdatedTime = server.CreatedTime
 		server.Uptime = 0
-		status := posgresql_query.AddServerInfo(server)
-		if status != http.StatusCreated {
-			log.Println("Failed to add server to PostgreSQL from Excel row:", row, "Status code:", status)
-			c.JSON(status, gin.H{"error": "Failed to add server from Excel row"})
-			continue
-		}
-		status = elastic_query.AddServerInfo(server)
+		status := elastic_query.AddServerInfo(server)
 		if status != http.StatusCreated {
 			log.Println("Failed to add server to Elasticsearch from Excel row:", row, "Status code:", status)
 			c.JSON(status, gin.H{"error": "Failed to add server to Elasticsearch from Excel row"})

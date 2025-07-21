@@ -194,3 +194,89 @@ func GetServerByStatus(substr string) ([]object.Server, int) {
 
 	return ParseSearchResults(res)
 }
+
+func GetServerById(serverId string) (object.Server, bool) {
+	query := fmt.Sprintf(`{
+		"query": {
+			"term": {
+				"server_id": "%s"
+			}
+		}
+	}`, serverId)
+
+	res, err := elastic.Es.Search(
+		elastic.Es.Search.WithIndex("server"),
+		elastic.Es.Search.WithBody(strings.NewReader(query)),
+		elastic.Es.Search.WithPretty(),
+		elastic.Es.Search.WithContext(context.Background()),
+	)
+
+	if err != nil {
+		return object.Server{}, false
+	}
+
+	defer res.Body.Close()
+
+	if res.IsError() {
+		return object.Server{}, false
+	}
+
+	results, status := ParseSearchResults(res)
+	if status != http.StatusOK || len(results) == 0 {
+		return object.Server{}, false
+	}
+
+	return results[0], true
+}
+
+func UpdateServerInfo(server object.Server) int {
+	_, err := elastic.Es.Update(
+		"server",
+		server.ServerId,
+		strings.NewReader(fmt.Sprintf(`{
+			"doc": {
+				"server_name": "%s",
+				"status": "%s",
+				"uptime": %d,
+				"last_updated_time": "%s",
+				"ipv4": "%s"
+			}
+		}`, server.ServerName, server.Status, server.Uptime, server.LastUpdatedTime, server.IPv4)),
+		elastic.Es.Update.WithContext(context.Background()),
+		elastic.Es.Update.WithPretty(),
+	)
+
+	if err != nil {
+		return http.StatusInternalServerError
+	}
+
+	return http.StatusOK
+}
+
+func DeleteServer(serverId string) int {
+	query := fmt.Sprintf(`{
+		"query": {
+			"term": {
+				"server_id": "%s"
+			}
+		}
+	}`, serverId)
+
+	res, err := elastic.Es.DeleteByQuery(
+		[]string{"server"},
+		strings.NewReader(query),
+		elastic.Es.DeleteByQuery.WithContext(context.Background()),
+		elastic.Es.DeleteByQuery.WithRefresh(true),
+	)
+
+	if err != nil {
+		return http.StatusInternalServerError
+	}
+	defer res.Body.Close()
+
+	if res.IsError() {
+		return http.StatusInternalServerError
+	}
+
+	return http.StatusOK
+}

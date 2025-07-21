@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"sms/object"
 	redis_query "sms/server/database/cache/redis/query"
-	posgresql_query "sms/server/database/postgresql/query"
+	elastic_query "sms/server/database/elasticsearch/query"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -40,7 +40,7 @@ func UpdateServer(c *gin.Context) {
 		return
 	}
 
-	server, exists := posgresql_query.GetServerById(req.ServerId)
+	server, exists := elastic_query.GetServerById(req.ServerId)
 	if !exists {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Server not found"})
 		return
@@ -57,7 +57,7 @@ func UpdateServer(c *gin.Context) {
 	}
 	server.LastUpdatedTime = time.Now().Format(time.RFC3339)
 
-	status := posgresql_query.UpdateServerInfo(server)
+	status := elastic_query.UpdateServerInfo(server)
 	if status == http.StatusOK {
 		c.JSON(http.StatusOK, gin.H{"message": "Server updated successfully"})
 	} else {

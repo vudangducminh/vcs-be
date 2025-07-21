@@ -5,7 +5,7 @@ import (
 
 	"sms/object"
 	redis_query "sms/server/database/cache/redis/query"
-	posgresql_query "sms/server/database/postgresql/query"
+	elastic_query "sms/server/database/elasticsearch/query"
 
 	"github.com/gin-gonic/gin"
 )
@@ -20,7 +20,7 @@ import (
 // @Failure      401 {object} object.AuthErrorResponse "Authentication failed"
 // @Failure      404 {object} object.DeleteServerStatusNotFoundResponse "Server not found"
 // @Failure      500 {object} object.DeleteServerInternalServerErrorResponse "Internal server error"
-// @Router	     /servers/delete_server/{server_id} [delete]
+// @Router	     /servers/delete_server [delete]
 func DeleteServer(c *gin.Context) {
 	var req object.DeleteServerRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -34,12 +34,12 @@ func DeleteServer(c *gin.Context) {
 		return
 	}
 
-	server, ok := posgresql_query.GetServerById(req.ServerId)
+	server, ok := elastic_query.GetServerById(req.ServerId)
 	if !ok {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Server not found"})
 		return
 	}
-	status := posgresql_query.DeleteServer(req.ServerId)
+	status := elastic_query.DeleteServer(req.ServerId)
 	switch status {
 	case http.StatusOK:
 		c.JSON(http.StatusOK, gin.H{
