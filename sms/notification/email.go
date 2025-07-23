@@ -9,12 +9,9 @@ import (
 
 // SendEmail sends an email using credentials and server info from environment variables.
 func SendEmail(to []string, subject, body string) error {
-	// --- IMPORTANT ---
-	// Load credentials securely from environment variables.
-	// NEVER hardcode them in your code.
 	from := os.Getenv("SMTP_FROM_EMAIL")
 	password := os.Getenv("SMTP_APP_PASSWORD")
-	smtpHost := os.Getenv("SMTP_HOST")
+	smtpHost := os.Getenv("SMTP_HOST") // smtp.gmail.com
 	smtpPort := os.Getenv("SMTP_PORT")
 
 	if from == "" || password == "" || smtpHost == "" || smtpPort == "" {
@@ -28,7 +25,7 @@ func SendEmail(to []string, subject, body string) error {
 	message := []byte(fmt.Sprintf("To: %s\r\n"+
 		"Subject: %s\r\n"+
 		"\r\n"+
-		"%s\r\n", to[0], subject, body))
+		"%s\r\n", to, subject, body))
 
 	// Create an authentication object.
 	auth := smtp.PlainAuth("", from, password, smtpHost)

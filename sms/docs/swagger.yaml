@@ -221,6 +221,43 @@ definitions:
         example: Registration successful
         type: string
     type: object
+  object.SendEmailInternalServerErrorResponse:
+    properties:
+      error:
+        example: Failed to send email
+        type: string
+      message:
+        example: Internal server error
+        type: string
+    type: object
+  object.SendEmailInvalidRequestResponse:
+    properties:
+      error:
+        example: Invalid request body
+        type: string
+      message:
+        example: Invalid request
+        type: string
+    type: object
+  object.SendEmailRequest:
+    properties:
+      end_time:
+        type: string
+      jwt:
+        type: string
+      start_time:
+        type: string
+    required:
+    - end_time
+    - jwt
+    - start_time
+    type: object
+  object.SendEmailResponse:
+    properties:
+      message:
+        example: Email sent successfully
+        type: string
+    type: object
   object.Server:
     properties:
       createdTime:
@@ -523,6 +560,40 @@ paths:
           schema:
             $ref: '#/definitions/object.ImportExcelElasticsearchErrorResponse'
       summary: Import file from excel
+      tags:
+      - Servers
+  /servers/send_email:
+    post:
+      consumes:
+      - application/json
+      description: Send an email with a specified subject and body
+      parameters:
+      - description: Send email request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/object.SendEmailRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Email sent successfully
+          schema:
+            $ref: '#/definitions/object.SendEmailResponse'
+        "400":
+          description: Invalid request
+          schema:
+            $ref: '#/definitions/object.SendEmailInvalidRequestResponse'
+        "401":
+          description: Authentication failed
+          schema:
+            $ref: '#/definitions/object.AuthErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/object.SendEmailInternalServerErrorResponse'
+      summary: Send an email
       tags:
       - Servers
   /servers/update_server:

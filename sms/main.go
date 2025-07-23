@@ -42,9 +42,18 @@ func main() {
 	if !elastic.IsConnected() {
 		log.Println("Failed to connect to Elasticsearch")
 	}
+
+	// Send a test email to verify email functionality
+	// var to []string = []string{
+	// 	"vudangducminh727@gmail.com",
+	// 	"24020241@vnu.edu.vn",
+	// }
+	// var subject string = "Testing mail sender"
+	// var body string = "This is a test email from VCS System Management API"
+	// email.SendEmail(to, subject, body)
+
 	// Connect to Swagger for API documentation
 	swagger.ConnectToSwagger()
 	log.Println("Server starting on http://localhost:8800")
 	log.Println("Swagger UI available at http://localhost:8800/swagger/index.html")
-
 }

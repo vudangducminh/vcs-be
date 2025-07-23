@@ -299,6 +299,58 @@ const docTemplate = `{
                 }
             }
         },
+        "/servers/send_email": {
+            "post": {
+                "description": "Send an email with a specified subject and body",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Servers"
+                ],
+                "summary": "Send an email",
+                "parameters": [
+                    {
+                        "description": "Send email request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/object.SendEmailRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Email sent successfully",
+                        "schema": {
+                            "$ref": "#/definitions/object.SendEmailResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "schema": {
+                            "$ref": "#/definitions/object.SendEmailInvalidRequestResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication failed",
+                        "schema": {
+                            "$ref": "#/definitions/object.AuthErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/object.SendEmailInternalServerErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/servers/update_server": {
             "put": {
                 "description": "Handle updating an existing server by validating input and updating server information",
@@ -816,6 +868,60 @@ const docTemplate = `{
                 "message": {
                     "type": "string",
                     "example": "Registration successful"
+                }
+            }
+        },
+        "object.SendEmailInternalServerErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Failed to send email"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Internal server error"
+                }
+            }
+        },
+        "object.SendEmailInvalidRequestResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Invalid request body"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Invalid request"
+                }
+            }
+        },
+        "object.SendEmailRequest": {
+            "type": "object",
+            "required": [
+                "end_time",
+                "jwt",
+                "start_time"
+            ],
+            "properties": {
+                "end_time": {
+                    "type": "string"
+                },
+                "jwt": {
+                    "type": "string"
+                },
+                "start_time": {
+                    "type": "string"
+                }
+            }
+        },
+        "object.SendEmailResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "Email sent successfully"
                 }
             }
         },
