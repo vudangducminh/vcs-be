@@ -5,6 +5,7 @@ import (
 	"sms/API/swagger"
 	_ "sms/API/users_handler" // Importing users_handler for Swagger documentation
 	_ "sms/docs"
+	"sms/notification"
 	redis "sms/server/database/cache/redis/connector"
 	elastic "sms/server/database/elasticsearch/connector"
 	postgresql "sms/server/database/postgresql/connector"
@@ -51,6 +52,9 @@ func main() {
 	// var subject string = "Testing mail sender"
 	// var body string = "This is a test email from VCS System Management API"
 	// email.SendEmail(to, subject, body)
+
+	// Start the time checker for daily report email requests
+	go notification.TimeChecker()
 
 	// Connect to Swagger for API documentation
 	swagger.ConnectToSwagger()
