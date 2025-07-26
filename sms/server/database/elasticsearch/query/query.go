@@ -12,7 +12,51 @@ import (
 	"github.com/elastic/go-elasticsearch/v8/esapi"
 )
 
+func CheckServerExists(IPv4 string) bool {
+	query := fmt.Sprintf(`{
+		"query": {
+			"term": {
+				"ipv4": "%s"
+			}
+		}
+	}`, IPv4)
+
+	res, err := elastic.Es.Search(
+		elastic.Es.Search.WithIndex("server"),
+		elastic.Es.Search.WithBody(strings.NewReader(query)),
+		elastic.Es.Search.WithPretty(),
+		elastic.Es.Search.WithContext(context.Background()),
+	)
+
+	if err != nil {
+		return false
+	}
+
+	defer res.Body.Close()
+
+	if res.IsError() {
+		return false
+	}
+
+	var searchResult struct {
+		Hits struct {
+			Hits []struct {
+				ID string `json:"_id"`
+			} `json:"hits"`
+		} `json:"hits"`
+	}
+
+	if err := json.NewDecoder(res.Body).Decode(&searchResult); err != nil {
+		return false
+	}
+
+	return len(searchResult.Hits.Hits) > 0
+}
+
 func AddServerInfo(server object.Server) int {
+	if CheckServerExists(server.IPv4) {
+		return http.StatusConflict
+	}
 	_, err := elastic.Es.Index(
 		"server",
 		strings.NewReader(fmt.Sprintf(`{
@@ -279,4 +323,131 @@ func DeleteServer(serverId string) int {
 	}
 
 	return http.StatusOK
+}
+
+func GetTotalServersCount() int {
+	res, err := elastic.Es.Count(
+		elastic.Es.Count.WithIndex("server"),
+		elastic.Es.Count.WithContext(context.Background()),
+	)
+
+	if err != nil {
+		return 0
+	}
+	defer res.Body.Close()
+
+	if res.IsError() {
+		return 0
+	}
+
+	var countResult struct {
+		Count int `json:"count"`
+	}
+	if err := json.NewDecoder(res.Body).Decode(&countResult); err != nil {
+		return 0
+	}
+
+	return countResult.Count
+}
+
+func GetTotalActiveServersCount() int {
+	query := `{
+		"query": {
+			"term": {
+				"status": "active"
+			}
+		}
+	}`
+
+	res, err := elastic.Es.Count(
+		elastic.Es.Count.WithIndex("server"),
+		elastic.Es.Count.WithBody(strings.NewReader(query)),
+		elastic.Es.Count.WithContext(context.Background()),
+	)
+
+	if err != nil {
+		return 0
+	}
+	defer res.Body.Close()
+
+	if res.IsError() {
+		return 0
+	}
+
+	var countResult struct {
+		Count int `json:"count"`
+	}
+	if err := json.NewDecoder(res.Body).Decode(&countResult); err != nil {
+		return 0
+	}
+
+	return countResult.Count
+}
+
+func GetTotalInactiveServersCount() int {
+	query := `{
+		"query": {
+			"term": {
+				"status": "inactive"
+			}
+		}
+	}`
+
+	res, err := elastic.Es.Count(
+		elastic.Es.Count.WithIndex("server"),
+		elastic.Es.Count.WithBody(strings.NewReader(query)),
+		elastic.Es.Count.WithContext(context.Background()),
+	)
+
+	if err != nil {
+		return 0
+	}
+	defer res.Body.Close()
+
+	if res.IsError() {
+		return 0
+	}
+
+	var countResult struct {
+		Count int `json:"count"`
+	}
+	if err := json.NewDecoder(res.Body).Decode(&countResult); err != nil {
+		return 0
+	}
+
+	return countResult.Count
+}
+
+func GetTotalMaintenanceServersCount() int {
+	query := `{
+		"query": {
+			"term": {
+				"status": "maintenance"
+			}
+		}
+	}`
+
+	res, err := elastic.Es.Count(
+		elastic.Es.Count.WithIndex("server"),
+		elastic.Es.Count.WithBody(strings.NewReader(query)),
+		elastic.Es.Count.WithContext(context.Background()),
+	)
+
+	if err != nil {
+		return 0
+	}
+	defer res.Body.Close()
+
+	if res.IsError() {
+		return 0
+	}
+
+	var countResult struct {
+		Count int `json:"count"`
+	}
+	if err := json.NewDecoder(res.Body).Decode(&countResult); err != nil {
+		return 0
+	}
+
+	return countResult.Count
 }

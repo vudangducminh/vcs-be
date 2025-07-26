@@ -6,11 +6,11 @@ import (
 )
 
 func TimeChecker() {
-	var secs int64 = 86400
+	var secs int64 = 60
 	for {
 		var currentTime = int64(time.Now().Unix())
 		// Check if it's time to send daily report emails
-		var mod int = int(min(currentTime%secs, secs-currentTime%secs))
+		var mod int = int(currentTime % secs)
 		if mod < 10 {
 			redis_query.SendDailyReportEmail()
 		}

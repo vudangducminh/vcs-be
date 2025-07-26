@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/smtp"
 	"os"
+	elastic_query "sms/server/database/elasticsearch/query"
 )
 
 // SendEmail sends an email using credentials and server info from environment variables.
@@ -21,9 +22,19 @@ func SendEmail(to []string) error {
 	smtpAddr := smtpHost + ":" + smtpPort
 
 	// Template for the email subject and body
-	var subject string = "Testing mail sender"
-	var body string = "This is a test email from VCS System Management API"
-	// Note: Headers and body are separated by a double newline.
+	// Template for the email subject and body
+	var subject string = "Daily report from VCS System Management API"
+	var totalServers int = elastic_query.GetTotalServersCount()
+	var activeServers int = elastic_query.GetTotalActiveServersCount()
+	var inactiveServers int = elastic_query.GetTotalInactiveServersCount()
+	var maintenanceServers int = elastic_query.GetTotalMaintenanceServersCount()
+	var otherServers int = totalServers - (activeServers + inactiveServers + maintenanceServers)
+	var body string = "Number of servers in the system: " + fmt.Sprintf("%d", totalServers) +
+		"\nNumber of active servers: " + fmt.Sprintf("%d", activeServers) +
+		"\nNumber of inactive servers: " + fmt.Sprintf("%d", inactiveServers) +
+		"\nNumber of servers in maintenance: " + fmt.Sprintf("%d", maintenanceServers) +
+		"\nNumber of other servers: " + fmt.Sprintf("%d", otherServers)
+
 	message := []byte(fmt.Sprintf("To: %s\r\n"+
 		"Subject: %s\r\n"+
 		"\r\n"+
