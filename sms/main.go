@@ -5,7 +5,7 @@ import (
 	"sms/API/swagger"
 	_ "sms/API/users_handler" // Importing users_handler for Swagger documentation
 	_ "sms/docs"
-	"sms/notification"
+	time_checker "sms/notification/time_checker"
 	redis "sms/server/database/cache/redis/connector"
 	elastic "sms/server/database/elasticsearch/connector"
 	postgresql "sms/server/database/postgresql/connector"
@@ -54,7 +54,8 @@ func main() {
 	// email.SendEmail(to, subject, body)
 
 	// Start the time checker for daily report email requests
-	go notification.TimeChecker()
+	go time_checker.TimeCheckerForSendingEmails()
+	go time_checker.CheckServerUptime()
 
 	// Connect to Swagger for API documentation
 	swagger.ConnectToSwagger()

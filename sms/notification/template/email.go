@@ -9,7 +9,7 @@ import (
 )
 
 // SendEmail sends an email using credentials and server info from environment variables.
-func SendEmail(to []string) error {
+func SendEmail(to []string, averageUptime float32) error {
 	from := os.Getenv("SMTP_FROM_EMAIL")
 	password := os.Getenv("SMTP_APP_PASSWORD")
 	smtpHost := os.Getenv("SMTP_HOST") // smtp.gmail.com
@@ -33,7 +33,8 @@ func SendEmail(to []string) error {
 		"\nNumber of active servers: " + fmt.Sprintf("%d", activeServers) +
 		"\nNumber of inactive servers: " + fmt.Sprintf("%d", inactiveServers) +
 		"\nNumber of servers in maintenance: " + fmt.Sprintf("%d", maintenanceServers) +
-		"\nNumber of other servers: " + fmt.Sprintf("%d", otherServers)
+		"\nNumber of other servers: " + fmt.Sprintf("%d", otherServers) +
+		"\nAverage server uptime: " + fmt.Sprintf("%.2f", averageUptime) + "%"
 
 	message := []byte(fmt.Sprintf("To: %s\r\n"+
 		"Subject: %s\r\n"+

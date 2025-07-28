@@ -4,7 +4,6 @@ import (
 	"context"
 	"log"
 	"sms/auth"
-	template "sms/notification/template"
 	"sms/server/database/cache/redis/connector"
 	"time"
 
@@ -59,7 +58,7 @@ func SaveDailyReportEmailRequest(email string, second int, startTime int64) bool
 	return true
 }
 
-func SendDailyReportEmail() {
+func GetEmailListForReporting() []string {
 	var cursor uint64
 	var allKeys []string
 	ctx := context.Background()
@@ -72,7 +71,7 @@ func SendDailyReportEmail() {
 		keys, nextCursor, err := connector.RedisClient.Scan(ctx, cursor, pattern, 10).Result()
 		if err != nil {
 			log.Printf("Error during Redis SCAN for pattern '%s': %v", pattern, err)
-			return
+			return nil
 		}
 
 		// Add the found keys to our list.
@@ -105,7 +104,5 @@ func SendDailyReportEmail() {
 		}
 		to = append(to, key[7:])
 	}
-
-	template.SendEmail(to)
-	log.Println("Daily report email sent successfully to:", to)
+	return to
 }
