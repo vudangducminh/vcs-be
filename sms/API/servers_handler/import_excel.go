@@ -80,7 +80,7 @@ func ImportExcel(c *gin.Context) {
 		server.ServerName = row[1]
 		server.IPv4 = row[2]
 		server.Status = row[3]
-		server.CreatedTime = time.Now().Format(time.RFC3339)
+		server.CreatedTime = time.Now().Unix()
 		server.LastUpdatedTime = server.CreatedTime
 		server.Uptime = 0
 		status := elastic_query.AddServerInfo(server)

@@ -64,8 +64,8 @@ func AddServerInfo(server object.Server) int {
 			"server_name": "%s",
 			"status": "%s",
 			"uptime": %d,
-			"created_time": "%s",
-			"last_updated_time": "%s",
+			"created_time": %d,
+			"last_updated_time": %d,
 			"ipv4": "%s"
 		}`, server.ServerId, server.ServerName, server.Status, server.Uptime,
 			server.CreatedTime, server.LastUpdatedTime, server.IPv4)),
@@ -87,9 +87,9 @@ func ParseSearchResults(res *esapi.Response) ([]object.Server, int) {
 					ServerId        string `json:"server_id"`
 					ServerName      string `json:"server_name"`
 					Status          string `json:"status"`
-					Uptime          int    `json:"uptime"`
-					CreatedTime     string `json:"created_time"`
-					LastUpdatedTime string `json:"last_updated_time"`
+					Uptime          int64  `json:"uptime"`
+					CreatedTime     int64  `json:"created_time"`
+					LastUpdatedTime int64  `json:"last_updated_time"`
 					IPv4            string `json:"ipv4"`
 				} `json:"_source"`
 			} `json:"hits"`
@@ -282,7 +282,7 @@ func UpdateServerInfo(server object.Server) int {
 				"server_name": "%s",
 				"status": "%s",
 				"uptime": %d,
-				"last_updated_time": "%s",
+				"last_updated_time": %d,
 				"ipv4": "%s"
 			}
 		}`, server.ServerName, server.Status, server.Uptime, server.LastUpdatedTime, server.IPv4)),

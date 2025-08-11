@@ -47,16 +47,13 @@ func AddServer(c *gin.Context) {
 		req.Status = "active"
 	}
 
-	// Set current time as CreatedTime
-	req.CreatedTime = time.Now().Format(time.RFC3339)
-	req.LastUpdatedTime = req.CreatedTime
 	server := object.Server{
 		ServerId:        algorithm.SHA256Hash(time.Now().String()),
 		ServerName:      req.ServerName,
 		Status:          req.Status,
 		Uptime:          0, // Default uptime to 0
-		CreatedTime:     req.CreatedTime,
-		LastUpdatedTime: req.LastUpdatedTime,
+		CreatedTime:     time.Now().Unix(),
+		LastUpdatedTime: time.Now().Unix(),
 		IPv4:            req.IPv4,
 	}
 

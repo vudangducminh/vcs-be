@@ -53,9 +53,12 @@ func UpdateServer(c *gin.Context) {
 		server.IPv4 = req.IPv4
 	}
 	if req.Status != "" {
+		if server.Status == "active" && (req.Status == "inactive" || req.Status == "maintenance") {
+			server.Uptime = time.Now().Unix() - server.LastUpdatedTime
+		}
 		server.Status = req.Status
 	}
-	server.LastUpdatedTime = time.Now().Format(time.RFC3339)
+	server.LastUpdatedTime = time.Now().Unix()
 
 	status := elastic_query.UpdateServerInfo(server)
 	if status == http.StatusOK {
