@@ -8,7 +8,7 @@ import (
 )
 
 func TimeCheckerForSendingEmails() {
-	var secs int64 = 86400
+	var secs int64 = 30
 	for {
 		var currentTime = int64(time.Now().Unix())
 		// Check if it's time to send daily report emails
@@ -20,17 +20,17 @@ func TimeCheckerForSendingEmails() {
 	}
 }
 
-var totalServerUptime int64 = 0
-var maxServerUptime int64 = 0
-
 func CalculateAverageServerUptime() float32 {
-	return float32(totalServerUptime) / float32(maxServerUptime) * 100
-}
-
-func CheckServerUptime() {
-	for {
-		maxServerUptime += int64(elastic_query.GetTotalServersCount())
-		totalServerUptime += int64(elastic_query.GetTotalActiveServersCount())
-		time.Sleep(10 * time.Second)
+	var totalServerUptime int64 = 0
+	now := time.Now().Unix()
+	time, count := elastic_query.GetTotalUptime()
+	totalServerUptime += time
+	time, count = elastic_query.GetTotalLastUpdatedTime()
+	totalServerUptime += (now - time) * int64(count)
+	time, count = elastic_query.GetTotalCreatedTime()
+	var maxServerUptime int64 = now*int64(count) - time
+	if maxServerUptime == 0 {
+		return 0.0
 	}
+	return float32(totalServerUptime) / float32(maxServerUptime) * 100
 }

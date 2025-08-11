@@ -55,7 +55,6 @@ func main() {
 
 	// Start the time checker for daily report email requests
 	go time_checker.TimeCheckerForSendingEmails()
-	go time_checker.CheckServerUptime()
 
 	// Connect to Swagger for API documentation
 	swagger.ConnectToSwagger()

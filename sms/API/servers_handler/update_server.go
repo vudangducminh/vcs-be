@@ -20,6 +20,7 @@ import (
 // @Failure      401 {object} object.AuthErrorResponse "Authentication failed"
 // @Failure      400 {object} object.UpdateServerBadRequestResponse "Invalid request body"
 // @Failure      404 {object} object.UpdateServerStatusNotFoundResponse "Server not found"
+// @Failure      409 {object} object.UpdateServerConflictResponse "Server already exists"
 // @Failure      500 {object} object.UpdateServerInternalServerErrorResponse "Internal server error"
 // @Router       /servers/update_server [put]
 func UpdateServer(c *gin.Context) {

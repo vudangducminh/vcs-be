@@ -28,3 +28,7 @@ type UpdateServerStatusNotFoundResponse struct {
 type UpdateServerInternalServerErrorResponse struct {
 	Error string `json:"error" example:"Internal server error"`
 }
+
+type UpdateServerConflictResponse struct {
+	Error string `json:"error" example:"Server already exists with the same IPv4 address"`
+}

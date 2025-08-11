@@ -451,3 +451,149 @@ func GetTotalMaintenanceServersCount() int {
 
 	return countResult.Count
 }
+
+func GetTotalCreatedTime() (int64, int) {
+	query := `{
+		"size": 0,
+		"aggs": {
+			"total_created_time": {
+				"sum": {
+					"field": "created_time"
+				}
+			}
+		}
+	}`
+
+	res, err := elastic.Es.Search(
+		elastic.Es.Search.WithIndex("server"),
+		elastic.Es.Search.WithBody(strings.NewReader(query)),
+		elastic.Es.Search.WithContext(context.Background()),
+	)
+
+	if err != nil {
+		return 0, 0
+	}
+	defer res.Body.Close()
+
+	if res.IsError() {
+		return 0, 0
+	}
+
+	var result struct {
+		Hits struct {
+			Total struct {
+				Value int `json:"value"`
+			} `json:"total"`
+		} `json:"hits"`
+		Aggregations struct {
+			TotalCreatedTime struct {
+				Value float64 `json:"value"`
+			} `json:"total_created_time"`
+		} `json:"aggregations"`
+	}
+
+	if err := json.NewDecoder(res.Body).Decode(&result); err != nil {
+		return 0, 0
+	}
+
+	return int64(result.Aggregations.TotalCreatedTime.Value), result.Hits.Total.Value
+}
+
+func GetTotalLastUpdatedTime() (int64, int) {
+	query := `{
+		"size": 0,
+		"query": {
+			"term": {
+				"status": "active"
+			}
+		},
+		"aggs": {
+			"total_created_time": {
+				"sum": {
+					"field": "uptime"
+				}
+			},
+		}
+	}`
+
+	res, err := elastic.Es.Search(
+		elastic.Es.Search.WithIndex("server"),
+		elastic.Es.Search.WithBody(strings.NewReader(query)),
+		elastic.Es.Search.WithContext(context.Background()),
+	)
+
+	if err != nil {
+		return 0, 0
+	}
+	defer res.Body.Close()
+
+	if res.IsError() {
+		return 0, 0
+	}
+
+	var result struct {
+		Hits struct {
+			Total struct {
+				Value int `json:"value"`
+			} `json:"total"`
+		} `json:"hits"`
+		Aggregations struct {
+			TotalLastUpdatedTime struct {
+				Value float64 `json:"value"`
+			} `json:"total_last_updated_time"`
+		} `json:"aggregations"`
+	}
+
+	if err := json.NewDecoder(res.Body).Decode(&result); err != nil {
+		return 0, 0
+	}
+
+	return int64(result.Aggregations.TotalLastUpdatedTime.Value), result.Hits.Total.Value
+}
+
+func GetTotalUptime() (int64, int) {
+	query := `{
+		"size": 0,
+		"aggs": {
+			"total_uptime": {
+				"sum": {
+					"field": "uptime"
+				}
+			}
+		}
+	}`
+
+	res, err := elastic.Es.Search(
+		elastic.Es.Search.WithIndex("server"),
+		elastic.Es.Search.WithBody(strings.NewReader(query)),
+		elastic.Es.Search.WithContext(context.Background()),
+	)
+
+	if err != nil {
+		return 0, 0
+	}
+	defer res.Body.Close()
+
+	if res.IsError() {
+		return 0, 0
+	}
+
+	var result struct {
+		Hits struct {
+			Total struct {
+				Value int `json:"value"`
+			} `json:"total"`
+		} `json:"hits"`
+		Aggregations struct {
+			TotalUptime struct {
+				Value float64 `json:"value"`
+			} `json:"total_uptime"`
+		} `json:"aggregations"`
+	}
+
+	if err := json.NewDecoder(res.Body).Decode(&result); err != nil {
+		return 0, 0
+	}
+
+	return int64(result.Aggregations.TotalUptime.Value), result.Hits.Total.Value
+}
