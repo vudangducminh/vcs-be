@@ -508,11 +508,11 @@ func GetTotalLastUpdatedTime() (int64, int) {
 			}
 		},
 		"aggs": {
-			"total_created_time": {
+			"total_last_updated_time": {
 				"sum": {
-					"field": "uptime"
+					"field": "last_updated_time"
 				}
-			},
+			}
 		}
 	}`
 
