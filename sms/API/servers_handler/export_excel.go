@@ -95,7 +95,7 @@ func ExportDataToExcel(c *gin.Context) {
 	f.SetSheetName("Sheet1", sheet)
 
 	// Write header
-	headers := []string{"Server Name", "Status", "IPv4"}
+	headers := []string{"Index", "Server Name", "Status", "IPv4"}
 	for i, h := range headers {
 		cell, _ := excelize.CoordinatesToCellName(i+1, 1)
 		f.SetCellValue(sheet, cell, h)
@@ -104,13 +104,14 @@ func ExportDataToExcel(c *gin.Context) {
 	// Write data
 	for rowIdx, server := range servers {
 		values := []interface{}{
+			rowIdx + 1,
 			server.ServerName,
 			server.Status,
 			server.IPv4,
 		}
-		for colIdx, v := range values {
+		for colIdx, value := range values {
 			cell, _ := excelize.CoordinatesToCellName(colIdx+1, rowIdx+2)
-			f.SetCellValue(sheet, cell, v)
+			f.SetCellValue(sheet, cell, value)
 		}
 	}
 
