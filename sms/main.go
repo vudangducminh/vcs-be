@@ -1,15 +1,19 @@
 package main
 
 import (
+	"fmt"
 	"log"
+	"math/rand"
 	"sms/API/swagger"
 	_ "sms/API/users_handler" // Importing users_handler for Swagger documentation
+	"sms/algorithm"
 	_ "sms/docs"
 	"sms/object"
 	redis "sms/server/database/cache/redis/connector"
 	elastic "sms/server/database/elasticsearch/connector"
 	elastic_query "sms/server/database/elasticsearch/query"
 	postgresql "sms/server/database/postgresql/connector"
+	"time"
 )
 
 // @title           VCS System Management API
@@ -59,40 +63,37 @@ func main() {
 
 func GenerateServer() {
 	var servers []object.Server
-	var sv1 = object.Server{
-		ServerId:        "11244475057891453f598530bd8f2b702dd56bdfa125d10f30c288ff5529ed47",
-		ServerName:      "Server 9",
-		Status:          "inactive",
-		Uptime:          3600, // 1 hour in seconds
-		CreatedTime:     1755140989,
-		LastUpdatedTime: 1755140989,
-		IPv4:            "192.168.1.9",
+	for i := 0; i < 10000; i++ {
+		var rng = rand.Intn(1000)
+		if rng < 600 {
+			rng = 0 // Active status
+		} else if rng < 900 {
+			rng = 1 // Inactive status
+		} else {
+			rng = 2 // Maintenance status
+		}
+		var status string
+		switch rng {
+		case 0:
+			status = "active"
+		case 1:
+			status = "inactive"
+		case 2:
+			status = "maintenance"
+		default:
+			status = "other"
+		}
+		server := object.Server{
+			ServerId:        algorithm.SHA256Hash(time.Now().String() + fmt.Sprintf("%d", i)),
+			ServerName:      "Server " + fmt.Sprintf("%d", i),
+			Status:          status,
+			IPv4:            fmt.Sprintf("%d", rand.Intn(256)) + "." + fmt.Sprintf("%d", rand.Intn(256)) + "." + fmt.Sprintf("%d", rand.Intn(256)) + "." + fmt.Sprintf("%d", rand.Intn(256)),
+			Uptime:          int64(rand.Intn(86400)),                               // 1 hour in seconds
+			CreatedTime:     time.Now().Unix() - 86400*2 - int64(rand.Intn(86400)), // Created 2 to 3 days ago
+			LastUpdatedTime: time.Now().Unix(),
+		}
+		servers = append(servers, server)
 	}
-	servers = append(servers, sv1)
-	// for i := 1; i < 10000; i++ {
-	// 	var rng = rand.Intn(1000) % 3 // Random number between 1 and 1000
-	// 	var status string
-	// 	switch rng {
-	// 	case 0:
-	// 		status = "active"
-	// 	case 1:
-	// 		status = "inactive"
-	// 	case 2:
-	// 		status = "maintenance"
-	// 	default:
-	// 		status = "other"
-	// 	}
-	// 	server := object.Server{
-	// 		ServerId:        algorithm.SHA256Hash(time.Now().String() + fmt.Sprintf("%d", i)),
-	// 		ServerName:      "Server " + fmt.Sprintf("%d", i),
-	// 		Status:          status,
-	// 		IPv4:            "192.168.1." + fmt.Sprintf("%d", i),
-	// 		Uptime:          3600, // 1 hour in seconds
-	// 		CreatedTime:     time.Now().Unix(),
-	// 		LastUpdatedTime: time.Now().Unix(),
-	// 	}
-	// 	servers = append(servers, server)
-	// }
 	status := elastic_query.BulkServerInfo(servers)
 	if status != 201 {
 		log.Println("Failed to add servers to Elasticsearch in bulk, status code:", status)

@@ -1,7 +1,9 @@
 package object
 
 type ImportExcelSuccessResponse struct {
-	Message string `json:"message" example:"Excel file imported successfully"`
+	Message      string `json:"message" example:"Excel file imported successfully"`
+	AddedServers int    `json:"added_servers" example:"5"`
+	ErrorServers int    `json:"error_servers" example:"2"`
 }
 
 type ImportExcelInvalidFileFormatResponse struct {

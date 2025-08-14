@@ -120,6 +120,7 @@ func ParseSearchResults(res *esapi.Response) ([]object.Server, int) {
 
 func GetServerByIdSubstr(substr string) ([]object.Server, int) {
 	query := fmt.Sprintf(`{
+        "size": 10000,
 		"query": {
 			"wildcard": {
 				"server_id": {
@@ -151,6 +152,7 @@ func GetServerByIdSubstr(substr string) ([]object.Server, int) {
 
 func GetServerByNameSubstr(substr string) ([]object.Server, int) {
 	query := fmt.Sprintf(`{
+        "size": 10000,
 		"query": {
 			"wildcard": {
 				"server_name": {
@@ -182,6 +184,7 @@ func GetServerByNameSubstr(substr string) ([]object.Server, int) {
 
 func GetServerByIPv4Substr(substr string) ([]object.Server, int) {
 	query := fmt.Sprintf(`{
+        "size": 10000,
 		"query": {
 			"wildcard": {
 				"ipv4": {
@@ -213,6 +216,7 @@ func GetServerByIPv4Substr(substr string) ([]object.Server, int) {
 
 func GetServerByStatus(substr string) ([]object.Server, int) {
 	query := fmt.Sprintf(`{
+        "size": 10000,
 		"query": {
 			"match": {
 				"status": "%s"
@@ -607,14 +611,18 @@ func BulkServerInfo(servers []object.Server) int {
 			server.ServerId, server.ServerName, server.Status, server.Uptime, server.CreatedTime, server.LastUpdatedTime, server.IPv4, "\n"))
 	}
 
+	if len(bulkRequest.String()) == 0 {
+		log.Println("No servers to index")
+		return http.StatusCreated
+	}
 	res, err := elastic.Es.Bulk(
 		strings.NewReader(bulkRequest.String()),
 		elastic.Es.Bulk.WithIndex("server"),
 		elastic.Es.Bulk.WithContext(context.Background()),
 		elastic.Es.Bulk.WithPretty(),
 	)
-	log.Println("Response:", res)
-	log.Println("Error:", err)
+	// log.Println("Response:", res)
+	// log.Println("Error:", err)
 	if err != nil {
 		return http.StatusInternalServerError
 	}

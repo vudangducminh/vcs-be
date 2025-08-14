@@ -70,6 +70,8 @@ func ImportExcel(c *gin.Context) {
 	}
 
 	var isFirstRow bool = true
+	var servers []object.Server
+	var errorServers []object.Server
 	for _, row := range rows {
 		if isFirstRow {
 			isFirstRow = false
@@ -83,14 +85,21 @@ func ImportExcel(c *gin.Context) {
 		server.CreatedTime = time.Now().Unix()
 		server.LastUpdatedTime = server.CreatedTime
 		server.Uptime = 0
-		status := elastic_query.AddServerInfo(server)
-		if status != http.StatusCreated {
-			log.Println("Failed to add server to Elasticsearch from Excel row:", row, "Status code:", status)
-			c.JSON(status, gin.H{"error": "Failed to add server to Elasticsearch from Excel row"})
+		if elastic_query.CheckServerExists(server.IPv4) {
+			log.Println("Server already exists in Elasticsearch, skipping row:", row)
+			errorServers = append(errorServers, server)
 			continue
 		}
-		log.Println("Server added successfully from Excel row:", row)
+		servers = append(servers, server)
 	}
-
-	c.JSON(http.StatusOK, gin.H{"message": "Excel file imported successfully"})
+	status := elastic_query.BulkServerInfo(servers)
+	if status != http.StatusCreated {
+		c.JSON(status, gin.H{"error": "Failed to add servers to Elasticsearch from Excel rows"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message":       "Excel file imported successfully",
+		"added_servers": len(servers),
+		"error_servers": len(errorServers),
+	})
 }
