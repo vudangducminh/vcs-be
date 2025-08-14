@@ -1,14 +1,21 @@
 package main
 
 import (
+	"fmt"
 	"log"
+	"math/rand"
+	"net/http"
 	"sms/API/swagger"
 	_ "sms/API/users_handler" // Importing users_handler for Swagger documentation
+	"sms/algorithm"
 	_ "sms/docs"
 	time_checker "sms/notification/time_checker"
+	"sms/object"
 	redis "sms/server/database/cache/redis/connector"
 	elastic "sms/server/database/elasticsearch/connector"
+	elastic_query "sms/server/database/elasticsearch/query"
 	postgresql "sms/server/database/postgresql/connector"
+	"time"
 )
 
 // @title           VCS System Management API
@@ -44,14 +51,8 @@ func main() {
 		log.Println("Failed to connect to Elasticsearch")
 	}
 
-	// Send a test email to verify email functionality
-	// var to []string = []string{
-	// 	"vudangducminh727@gmail.com",
-	// 	"24020241@vnu.edu.vn",
-	// }
-	// var subject string = "Testing mail sender"
-	// var body string = "This is a test email from VCS System Management API"
-	// email.SendEmail(to, subject, body)
+	// Generate sample servers for testing
+	GenerateServer()
 
 	// Start the time checker for daily report email requests
 	go time_checker.TimeCheckerForSendingEmails()
@@ -61,4 +62,36 @@ func main() {
 	swagger.ConnectToSwagger()
 	log.Println("Server starting on http://localhost:8800")
 	log.Println("Swagger UI available at http://localhost:8800/swagger/index.html")
+}
+
+func GenerateServer() {
+	for i := 0; i < 10000; i++ {
+		var rng = rand.Intn(1000) % 3 // Random number between 1 and 1000
+		var status string
+		switch rng {
+		case 0:
+			status = "active"
+		case 1:
+			status = "inactive"
+		case 2:
+			status = "maintenance"
+		default:
+			status = "other"
+		}
+		server := object.Server{
+			ServerId:        algorithm.SHA256Hash(time.Now().String() + fmt.Sprintf("%d", i)),
+			ServerName:      "Server " + fmt.Sprintf("%d", i),
+			Status:          status,
+			IPv4:            "192.168.1." + fmt.Sprintf("%d", i),
+			Uptime:          3600, // 1 hour in seconds
+			CreatedTime:     time.Now().Format(time.RFC3339),
+			LastUpdatedTime: time.Now().Format(time.RFC3339),
+		}
+		statusCode := elastic_query.AddServerInfo(server)
+		if statusCode != http.StatusCreated {
+			log.Printf("Failed to add server %s: %v", server.ServerName, status)
+			continue
+		}
+		log.Println("Server added successfully:", server.ServerName)
+	}
 }

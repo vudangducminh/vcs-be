@@ -451,3 +451,43 @@ func GetTotalMaintenanceServersCount() int {
 
 	return countResult.Count
 }
+
+// func AddServersInBulk(servers []object.Server) error {
+// 	if !elastic.IsConnected() {
+// 		return fmt.Errorf("Elasticsearch is not connected")
+// 	}
+
+// 	// Create a new bulk processor
+// 	bulkRequest := elastic.Es.Bulk()
+
+// 	// Add each server to the bulk request
+// 	for _, server := range servers {
+// 		// Create a new request to index the server document.
+// 		// Using the ServerId as the document ID prevents duplicates.
+// 		req := elastic.NewBulkIndexRequest().
+// 			Index("server").
+// 			Id(server.ServerId).
+// 			Doc(server)
+
+// 		bulkRequest.Add(req)
+// 	}
+
+// 	// Execute the bulk request
+// 	bulkResponse, err := bulkRequest.Do(context.Background())
+// 	if err != nil {
+// 		log.Printf("Error executing bulk request: %v", err)
+// 		return err
+// 	}
+
+// 	// Check if there were any errors in the response
+// 	if bulkResponse.Errors {
+// 		// You can iterate through the failed items to see what went wrong
+// 		failed := bulkResponse.Failed()
+// 		log.Printf("Bulk request completed with %d errors.", len(failed))
+// 		// For simplicity, we return a generic error. You could log more details here.
+// 		return fmt.Errorf("bulk indexing completed with errors")
+// 	}
+
+// 	log.Printf("Successfully indexed %d servers in bulk.", len(servers))
+// 	return nil
+// }
