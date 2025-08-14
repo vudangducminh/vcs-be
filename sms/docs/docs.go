@@ -932,21 +932,21 @@ const docTemplate = `{
         "object.Server": {
             "type": "object",
             "properties": {
-                "createdTime": {
-                    "description": "ISO 8601 format",
-                    "type": "string"
+                "created_time": {
+                    "description": "Unix timestamp",
+                    "type": "integer"
                 },
                 "ipv4": {
                     "type": "string"
                 },
-                "lastUpdatedTime": {
-                    "description": "ISO 8601 format",
+                "last_updated_time": {
+                    "description": "Unix timestamp",
+                    "type": "integer"
+                },
+                "server_id": {
                     "type": "string"
                 },
-                "serverId": {
-                    "type": "string"
-                },
-                "serverName": {
+                "server_name": {
                     "type": "string"
                 },
                 "status": {

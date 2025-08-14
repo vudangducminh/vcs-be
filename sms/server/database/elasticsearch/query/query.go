@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"sms/object"
 	elastic "sms/server/database/elasticsearch/connector"
@@ -64,8 +65,8 @@ func AddServerInfo(server object.Server) int {
 			"server_name": "%s",
 			"status": "%s",
 			"uptime": %d,
-			"created_time": "%s",
-			"last_updated_time": "%s",
+			"created_time": %d,
+			"last_updated_time": %d,
 			"ipv4": "%s"
 		}`, server.ServerId, server.ServerName, server.Status, server.Uptime,
 			server.CreatedTime, server.LastUpdatedTime, server.IPv4)),
@@ -87,9 +88,9 @@ func ParseSearchResults(res *esapi.Response) ([]object.Server, int) {
 					ServerId        string `json:"server_id"`
 					ServerName      string `json:"server_name"`
 					Status          string `json:"status"`
-					Uptime          int    `json:"uptime"`
-					CreatedTime     string `json:"created_time"`
-					LastUpdatedTime string `json:"last_updated_time"`
+					Uptime          int64  `json:"uptime"`
+					CreatedTime     int64  `json:"created_time"`
+					LastUpdatedTime int64  `json:"last_updated_time"`
 					IPv4            string `json:"ipv4"`
 				} `json:"_source"`
 			} `json:"hits"`
@@ -282,7 +283,7 @@ func UpdateServerInfo(server object.Server) int {
 				"server_name": "%s",
 				"status": "%s",
 				"uptime": %d,
-				"last_updated_time": "%s",
+				"last_updated_time": %d,
 				"ipv4": "%s"
 			}
 		}`, server.ServerName, server.Status, server.Uptime, server.LastUpdatedTime, server.IPv4)),
@@ -452,42 +453,176 @@ func GetTotalMaintenanceServersCount() int {
 	return countResult.Count
 }
 
-// func AddServersInBulk(servers []object.Server) error {
-// 	if !elastic.IsConnected() {
-// 		return fmt.Errorf("Elasticsearch is not connected")
-// 	}
+func GetTotalCreatedTime() (int64, int) {
+	query := `{
+		"size": 0,
+		"aggs": {
+			"total_created_time": {
+				"sum": {
+					"field": "created_time"
+				}
+			}
+		}
+	}`
 
-// 	// Create a new bulk processor
-// 	bulkRequest := elastic.Es.Bulk()
+	res, err := elastic.Es.Search(
+		elastic.Es.Search.WithIndex("server"),
+		elastic.Es.Search.WithBody(strings.NewReader(query)),
+		elastic.Es.Search.WithContext(context.Background()),
+	)
 
-// 	// Add each server to the bulk request
-// 	for _, server := range servers {
-// 		// Create a new request to index the server document.
-// 		// Using the ServerId as the document ID prevents duplicates.
-// 		req := elastic.NewBulkIndexRequest().
-// 			Index("server").
-// 			Id(server.ServerId).
-// 			Doc(server)
+	if err != nil {
+		return 0, 0
+	}
+	defer res.Body.Close()
 
-// 		bulkRequest.Add(req)
-// 	}
+	if res.IsError() {
+		return 0, 0
+	}
 
-// 	// Execute the bulk request
-// 	bulkResponse, err := bulkRequest.Do(context.Background())
-// 	if err != nil {
-// 		log.Printf("Error executing bulk request: %v", err)
-// 		return err
-// 	}
+	var result struct {
+		Hits struct {
+			Total struct {
+				Value int `json:"value"`
+			} `json:"total"`
+		} `json:"hits"`
+		Aggregations struct {
+			TotalCreatedTime struct {
+				Value float64 `json:"value"`
+			} `json:"total_created_time"`
+		} `json:"aggregations"`
+	}
 
-// 	// Check if there were any errors in the response
-// 	if bulkResponse.Errors {
-// 		// You can iterate through the failed items to see what went wrong
-// 		failed := bulkResponse.Failed()
-// 		log.Printf("Bulk request completed with %d errors.", len(failed))
-// 		// For simplicity, we return a generic error. You could log more details here.
-// 		return fmt.Errorf("bulk indexing completed with errors")
-// 	}
+	if err := json.NewDecoder(res.Body).Decode(&result); err != nil {
+		return 0, 0
+	}
 
-// 	log.Printf("Successfully indexed %d servers in bulk.", len(servers))
-// 	return nil
-// }
+	return int64(result.Aggregations.TotalCreatedTime.Value), result.Hits.Total.Value
+}
+
+func GetTotalLastUpdatedTime() (int64, int) {
+	query := `{
+		"size": 0,
+		"query": {
+			"term": {
+				"status": "active"
+			}
+		},
+		"aggs": {
+			"total_last_updated_time": {
+				"sum": {
+					"field": "last_updated_time"
+				}
+			}
+		}
+	}`
+
+	res, err := elastic.Es.Search(
+		elastic.Es.Search.WithIndex("server"),
+		elastic.Es.Search.WithBody(strings.NewReader(query)),
+		elastic.Es.Search.WithContext(context.Background()),
+	)
+
+	if err != nil {
+		return 0, 0
+	}
+	defer res.Body.Close()
+
+	if res.IsError() {
+		return 0, 0
+	}
+
+	var result struct {
+		Hits struct {
+			Total struct {
+				Value int `json:"value"`
+			} `json:"total"`
+		} `json:"hits"`
+		Aggregations struct {
+			TotalLastUpdatedTime struct {
+				Value float64 `json:"value"`
+			} `json:"total_last_updated_time"`
+		} `json:"aggregations"`
+	}
+
+	if err := json.NewDecoder(res.Body).Decode(&result); err != nil {
+		return 0, 0
+	}
+
+	return int64(result.Aggregations.TotalLastUpdatedTime.Value), result.Hits.Total.Value
+}
+
+func GetTotalUptime() (int64, int) {
+	query := `{
+		"size": 0,
+		"aggs": {
+			"total_uptime": {
+				"sum": {
+					"field": "uptime"
+				}
+			}
+		}
+	}`
+
+	res, err := elastic.Es.Search(
+		elastic.Es.Search.WithIndex("server"),
+		elastic.Es.Search.WithBody(strings.NewReader(query)),
+		elastic.Es.Search.WithContext(context.Background()),
+	)
+
+	if err != nil {
+		return 0, 0
+	}
+	defer res.Body.Close()
+
+	if res.IsError() {
+		return 0, 0
+	}
+
+	var result struct {
+		Hits struct {
+			Total struct {
+				Value int `json:"value"`
+			} `json:"total"`
+		} `json:"hits"`
+		Aggregations struct {
+			TotalUptime struct {
+				Value float64 `json:"value"`
+			} `json:"total_uptime"`
+		} `json:"aggregations"`
+	}
+
+	if err := json.NewDecoder(res.Body).Decode(&result); err != nil {
+		return 0, 0
+	}
+
+	return int64(result.Aggregations.TotalUptime.Value), result.Hits.Total.Value
+}
+
+func BulkServerInfo(servers []object.Server) int {
+	var bulkRequest strings.Builder
+	for _, server := range servers {
+		bulkRequest.WriteString(fmt.Sprintf(`{"index": {"_index": "server", "_id": "%s"}}%s`, server.ServerId, "\n"))
+		bulkRequest.WriteString(fmt.Sprintf(`{"server_id": "%s", "server_name": "%s", "status": "%s", "uptime": %d, "created_time": %d, "last_updated_time": %d, "ipv4": "%s"}%s`,
+			server.ServerId, server.ServerName, server.Status, server.Uptime, server.CreatedTime, server.LastUpdatedTime, server.IPv4, "\n"))
+	}
+
+	res, err := elastic.Es.Bulk(
+		strings.NewReader(bulkRequest.String()),
+		elastic.Es.Bulk.WithIndex("server"),
+		elastic.Es.Bulk.WithContext(context.Background()),
+		elastic.Es.Bulk.WithPretty(),
+	)
+	log.Println("Response:", res)
+	log.Println("Error:", err)
+	if err != nil {
+		return http.StatusInternalServerError
+	}
+	defer res.Body.Close()
+
+	if res.IsError() {
+		return http.StatusInternalServerError
+	}
+
+	return http.StatusCreated
+}
