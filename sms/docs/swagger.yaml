@@ -216,6 +216,12 @@ definitions:
     type: object
   object.ImportExcelSuccessResponse:
     properties:
+      added_servers:
+        example: 5
+        type: integer
+      error_servers:
+        example: 2
+        type: integer
       message:
         example: Excel file imported successfully
         type: string
@@ -288,6 +294,12 @@ definitions:
         example: Invalid request body
         type: string
     type: object
+  object.UpdateServerConflictResponse:
+    properties:
+      error:
+        example: Server already exists with the same IPv4 address
+        type: string
+    type: object
   object.UpdateServerInternalServerErrorResponse:
     properties:
       error:
@@ -296,17 +308,11 @@ definitions:
     type: object
   object.UpdateServerRequest:
     properties:
-      created_time:
-        description: ISO 8601 format
-        type: string
       ipv4:
         description: IPv4 address of the server
         type: string
       jwt:
         description: JWT token for authentication
-        type: string
-      last_updated_time:
-        description: ISO 8601 format
         type: string
       server_id:
         type: string
@@ -315,9 +321,6 @@ definitions:
       status:
         description: e.g., "active", "inactive", "maintenance"
         type: string
-      uptime:
-        description: e.g., "3666" for 1 hour 1 minute and 6 seconds
-        type: integer
     type: object
   object.UpdateServerStatusNotFoundResponse:
     properties:
@@ -634,6 +637,10 @@ paths:
           description: Server not found
           schema:
             $ref: '#/definitions/object.UpdateServerStatusNotFoundResponse'
+        "409":
+          description: Server already exists
+          schema:
+            $ref: '#/definitions/object.UpdateServerConflictResponse'
         "500":
           description: Internal server error
           schema:

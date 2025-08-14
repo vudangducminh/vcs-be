@@ -400,6 +400,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/object.UpdateServerStatusNotFoundResponse"
                         }
                     },
+                    "409": {
+                        "description": "Server already exists",
+                        "schema": {
+                            "$ref": "#/definitions/object.UpdateServerConflictResponse"
+                        }
+                    },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
@@ -863,6 +869,14 @@ const docTemplate = `{
         "object.ImportExcelSuccessResponse": {
             "type": "object",
             "properties": {
+                "added_servers": {
+                    "type": "integer",
+                    "example": 5
+                },
+                "error_servers": {
+                    "type": "integer",
+                    "example": 2
+                },
                 "message": {
                     "type": "string",
                     "example": "Excel file imported successfully"
@@ -968,6 +982,15 @@ const docTemplate = `{
                 }
             }
         },
+        "object.UpdateServerConflictResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Server already exists with the same IPv4 address"
+                }
+            }
+        },
         "object.UpdateServerInternalServerErrorResponse": {
             "type": "object",
             "properties": {
@@ -980,20 +1003,12 @@ const docTemplate = `{
         "object.UpdateServerRequest": {
             "type": "object",
             "properties": {
-                "created_time": {
-                    "description": "ISO 8601 format",
-                    "type": "string"
-                },
                 "ipv4": {
                     "description": "IPv4 address of the server",
                     "type": "string"
                 },
                 "jwt": {
                     "description": "JWT token for authentication",
-                    "type": "string"
-                },
-                "last_updated_time": {
-                    "description": "ISO 8601 format",
                     "type": "string"
                 },
                 "server_id": {
@@ -1005,10 +1020,6 @@ const docTemplate = `{
                 "status": {
                     "description": "e.g., \"active\", \"inactive\", \"maintenance\"",
                     "type": "string"
-                },
-                "uptime": {
-                    "description": "e.g., \"3666\" for 1 hour 1 minute and 6 seconds",
-                    "type": "integer"
                 }
             }
         },

@@ -80,8 +80,8 @@ func ImportExcel(c *gin.Context) {
 		var server object.Server
 		server.ServerId = algorithm.SHA256Hash(time.Now().String())
 		server.ServerName = row[1]
-		server.IPv4 = row[2]
-		server.Status = row[3]
+		server.Status = row[2]
+		server.IPv4 = row[3]
 		server.CreatedTime = time.Now().Unix()
 		server.LastUpdatedTime = server.CreatedTime
 		server.Uptime = 0

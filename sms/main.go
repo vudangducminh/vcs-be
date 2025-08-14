@@ -8,6 +8,7 @@ import (
 	_ "sms/API/users_handler" // Importing users_handler for Swagger documentation
 	"sms/algorithm"
 	_ "sms/docs"
+	time_checker "sms/notify/time_checker"
 	"sms/object"
 	redis "sms/server/database/cache/redis/connector"
 	elastic "sms/server/database/elasticsearch/connector"
@@ -50,10 +51,10 @@ func main() {
 	}
 
 	// Generate sample servers for testing
-	GenerateServer()
+	// GenerateServer()
 
 	// Start the time checker for daily report email requests
-	// go time_checker.TimeCheckerForSendingEmails()
+	go time_checker.TimeCheckerForSendingEmails()
 
 	// Connect to Swagger for API documentation
 	swagger.ConnectToSwagger()

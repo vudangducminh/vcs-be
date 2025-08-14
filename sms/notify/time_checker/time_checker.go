@@ -1,14 +1,14 @@
 package notification
 
 import (
-	template "sms/notification/template"
+	template "sms/notify/template"
 	redis_query "sms/server/database/cache/redis/query"
 	elastic_query "sms/server/database/elasticsearch/query"
 	"time"
 )
 
 func TimeCheckerForSendingEmails() {
-	var secs int64 = 60
+	var secs int64 = 3600
 	for {
 		var currentTime = int64(time.Now().Unix())
 		// Check if it's time to send daily report emails
