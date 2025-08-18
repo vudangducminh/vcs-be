@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"math/rand"
+	"os"
 	"sms/API/swagger"
 	_ "sms/API/users_handler" // Importing users_handler for Swagger documentation
 	"sms/algorithm"
@@ -33,6 +34,18 @@ import (
 // @Tag.name		Servers
 // @Tag.description "Operations related to server management"
 func main() {
+	// Set the log file
+	file, err := os.OpenFile("log/server.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	if err != nil {
+		// If we can't open the log file, we can't continue.
+		// log.Fatal will print the error and exit the program.
+		log.Fatalf("Failed to open log file: %v", err)
+	}
+	// Set the output of the default logger to the file.
+	// All subsequent calls to log.Println, log.Printf, etc. will write to this file.
+	log.SetOutput(file)
+	log.Println("Logger initialized. Subsequent logs will be written to log/server.log")
+
 	// Initialize the database connection
 	postgresql.ConnectToDB()
 	if !postgresql.IsConnected() {

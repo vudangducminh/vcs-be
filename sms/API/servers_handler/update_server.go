@@ -3,7 +3,6 @@ package servers_handler
 import (
 	"net/http"
 	"sms/object"
-	redis_query "sms/server/database/cache/redis/query"
 	elastic_query "sms/server/database/elasticsearch/query"
 	"time"
 
@@ -15,6 +14,7 @@ import (
 // @Description  Handle updating an existing server by validating input and updating server information
 // @Accept       json
 // @Produce      json
+// @Param        jwt header string true "JWT token for authentication"
 // @Param        request body object.UpdateServerRequest true "Update server request"
 // @Success      200 {object} object.UpdateServerSuccessResponse "Server updated"
 // @Failure      401 {object} object.AuthErrorResponse "Authentication failed"
@@ -27,12 +27,6 @@ func UpdateServer(c *gin.Context) {
 	var req object.UpdateServerRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
-		return
-	}
-
-	username := redis_query.GetUsernameByJWTToken(req.JWT)
-	if username == "" {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed"})
 		return
 	}
 

@@ -4,7 +4,6 @@ import (
 	"log"
 	"net/http"
 	"sms/object"
-	redis_query "sms/server/database/cache/redis/query"
 	elastic_query "sms/server/database/elasticsearch/query"
 	"sort"
 
@@ -26,12 +25,7 @@ import (
 // @Failure      500 {object} object.ViewServerInternalServerErrorResponse "Failed to retrieve server details"
 // @Router       /servers/view_servers/{order}/{filter}/{string} [get]
 func ViewServer(c *gin.Context) {
-	jwtToken := c.Query("jwt")
-	username := redis_query.GetUsernameByJWTToken(jwtToken)
-	if username == "" {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed"})
-		return
-	}
+
 	order := c.Query("order")
 	if order != "asc" && order != "desc" {
 		order = "asc" // Default order if not specified

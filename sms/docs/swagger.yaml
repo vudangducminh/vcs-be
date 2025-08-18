@@ -26,8 +26,6 @@ definitions:
       ipv4:
         description: IPv4 address of the server
         type: string
-      jwt:
-        type: string
       last_updated_time:
         description: ISO 8601 format
         type: string
@@ -39,8 +37,6 @@ definitions:
       uptime:
         description: e.g., "3666" for 1 hour 1 minute and 6 seconds
         type: integer
-    required:
-    - jwt
     type: object
   object.AddServerSuccessResponse:
     properties:
@@ -62,19 +58,6 @@ definitions:
     properties:
       error:
         example: Authentication failed
-        type: string
-    type: object
-  object.AuthRequest:
-    properties:
-      jwt:
-        type: string
-    required:
-    - jwt
-    type: object
-  object.AuthSuccessResponse:
-    properties:
-      message:
-        example: Authentication successfully
         type: string
     type: object
   object.DailyReportInternalServerErrorResponse:
@@ -101,14 +84,11 @@ definitions:
         type: string
       end_time:
         type: string
-      jwt:
-        type: string
       start_time:
         type: string
     required:
     - email
     - end_time
-    - jwt
     - start_time
     type: object
   object.DailyReportResponse:
@@ -125,12 +105,9 @@ definitions:
     type: object
   object.DeleteServerRequest:
     properties:
-      jwt:
-        type: string
       server_id:
         type: string
     required:
-    - jwt
     - server_id
     type: object
   object.DeleteServerResponse:
@@ -170,12 +147,6 @@ definitions:
     properties:
       error:
         example: Failed to retrieve server details
-        type: string
-    type: object
-  object.ExportExcelStatusNotFoundResponse:
-    properties:
-      message:
-        example: No servers found with the given requirements
         type: string
     type: object
   object.ExportExcelSuccessResponse:
@@ -226,6 +197,24 @@ definitions:
         example: Excel file imported successfully
         type: string
     type: object
+  object.LoginBadRequestResponse:
+    properties:
+      error:
+        example: Invalid request body
+        type: string
+      message:
+        example: Invalid request body
+        type: string
+    type: object
+  object.LoginInternalServerErrorResponse:
+    properties:
+      error:
+        example: Error generating token
+        type: string
+      message:
+        example: Error generating token
+        type: string
+    type: object
   object.LoginRequest:
     properties:
       password:
@@ -236,10 +225,37 @@ definitions:
     - password
     - username
     type: object
-  object.LoginResponse:
+  object.LoginSuccessResponse:
     properties:
       message:
         example: Login successful
+        type: string
+    type: object
+  object.LoginUnauthorizedResponse:
+    properties:
+      error:
+        example: Invalid credentials
+        type: string
+      message:
+        example: Invalid credentials
+        type: string
+    type: object
+  object.RegisterBadRequestResponse:
+    properties:
+      message:
+        example: Invalid request body
+        type: string
+    type: object
+  object.RegisterConflictResponse:
+    properties:
+      message:
+        example: Account already exists
+        type: string
+    type: object
+  object.RegisterInternalServerErrorResponse:
+    properties:
+      message:
+        example: Internal server error
         type: string
     type: object
   object.RegisterRequest:
@@ -261,7 +277,7 @@ definitions:
     - password
     - username
     type: object
-  object.RegisterResponse:
+  object.RegisterSuccessResponse:
     properties:
       message:
         example: Registration successful
@@ -310,9 +326,6 @@ definitions:
     properties:
       ipv4:
         description: IPv4 address of the server
-        type: string
-      jwt:
-        description: JWT token for authentication
         type: string
       server_id:
         type: string
@@ -379,33 +392,6 @@ info:
   title: VCS System Management API
   version: "1.0"
 paths:
-  /auth:
-    post:
-      consumes:
-      - application/json
-      description: Handle user authentication by validating JWT token and returning
-        username
-      parameters:
-      - description: Authentication request
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/object.AuthRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Authentication successfully
-          schema:
-            $ref: '#/definitions/object.AuthSuccessResponse'
-        "401":
-          description: Authentication failed
-          schema:
-            $ref: '#/definitions/object.AuthErrorResponse'
-      summary: Handle user authentication
-      tags:
-      - Auth
   /servers/add_server:
     post:
       consumes:
@@ -413,6 +399,11 @@ paths:
       description: Handle adding a new server by validating input and storing server
         information
       parameters:
+      - description: JWT token for authentication
+        in: header
+        name: jwt
+        required: true
+        type: string
       - description: Add server request
         in: body
         name: request
@@ -454,6 +445,11 @@ paths:
         An email will be sent to the specified recipients at 00:00:00 UTC.
         Example date format: 2025-07-23T12:00:00Z
       parameters:
+      - description: JWT token for authentication
+        in: header
+        name: jwt
+        required: true
+        type: string
       - description: Send email request
         in: body
         name: request
@@ -488,6 +484,11 @@ paths:
       - application/json
       description: Delete a server by its unique ID
       parameters:
+      - description: JWT token for authentication
+        in: header
+        name: jwt
+        required: true
+        type: string
       - description: Delete server request
         in: body
         name: request
@@ -524,8 +525,9 @@ paths:
         ordering
       parameters:
       - description: JWT token for authentication
-        in: query
+        in: header
         name: jwt
+        required: true
         type: string
       - description: Order of results, either 'asc' or 'desc'. If not provided or
           using the wrong order format, the default order is ascending
@@ -556,10 +558,6 @@ paths:
           description: Authentication failed
           schema:
             $ref: '#/definitions/object.AuthErrorResponse'
-        "404":
-          description: No servers found with the given requirements
-          schema:
-            $ref: '#/definitions/object.ExportExcelStatusNotFoundResponse'
         "500":
           description: Failed to export Excel
           schema:
@@ -573,16 +571,16 @@ paths:
       - multipart/form-data
       description: Import server data from an Excel file
       parameters:
-      - description: Excel file to import
-        in: formData
-        name: file
-        required: true
-        type: file
       - description: JWT token for authentication
         in: header
         name: jwt
         required: true
         type: string
+      - description: Excel file to import
+        in: formData
+        name: file
+        required: true
+        type: file
       produces:
       - application/json
       responses:
@@ -612,6 +610,11 @@ paths:
       description: Handle updating an existing server by validating input and updating
         server information
       parameters:
+      - description: JWT token for authentication
+        in: header
+        name: jwt
+        required: true
+        type: string
       - description: Update server request
         in: body
         name: request
@@ -713,7 +716,19 @@ paths:
         "200":
           description: Login successful
           schema:
-            $ref: '#/definitions/object.LoginResponse'
+            $ref: '#/definitions/object.LoginSuccessResponse'
+        "400":
+          description: Invalid request body
+          schema:
+            $ref: '#/definitions/object.LoginBadRequestResponse'
+        "401":
+          description: Invalid credentials
+          schema:
+            $ref: '#/definitions/object.LoginUnauthorizedResponse'
+        "500":
+          description: Error generating token
+          schema:
+            $ref: '#/definitions/object.LoginInternalServerErrorResponse'
       summary: Handle user login
       tags:
       - Users
@@ -736,7 +751,19 @@ paths:
         "201":
           description: Registration successful
           schema:
-            $ref: '#/definitions/object.RegisterResponse'
+            $ref: '#/definitions/object.RegisterSuccessResponse'
+        "400":
+          description: Invalid request body
+          schema:
+            $ref: '#/definitions/object.RegisterBadRequestResponse'
+        "409":
+          description: Account already exists
+          schema:
+            $ref: '#/definitions/object.RegisterConflictResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/object.RegisterInternalServerErrorResponse'
       summary: Handle user registration
       tags:
       - Users

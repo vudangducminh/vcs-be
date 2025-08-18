@@ -19,46 +19,6 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/auth": {
-            "post": {
-                "description": "Handle user authentication by validating JWT token and returning username",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Auth"
-                ],
-                "summary": "Handle user authentication",
-                "parameters": [
-                    {
-                        "description": "Authentication request",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/object.AuthRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Authentication successfully",
-                        "schema": {
-                            "$ref": "#/definitions/object.AuthSuccessResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Authentication failed",
-                        "schema": {
-                            "$ref": "#/definitions/object.AuthErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
         "/servers/add_server": {
             "post": {
                 "description": "Handle adding a new server by validating input and storing server information",
@@ -73,6 +33,13 @@ const docTemplate = `{
                 ],
                 "summary": "Handle adding a new server",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "JWT token for authentication",
+                        "name": "jwt",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "description": "Add server request",
                         "name": "request",
@@ -132,6 +99,13 @@ const docTemplate = `{
                 "summary": "Create a request to send daily report email",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "JWT token for authentication",
+                        "name": "jwt",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
                         "description": "Send email request",
                         "name": "request",
                         "in": "body",
@@ -183,6 +157,13 @@ const docTemplate = `{
                 ],
                 "summary": "Delete a server by ID",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "JWT token for authentication",
+                        "name": "jwt",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "description": "Delete server request",
                         "name": "request",
@@ -239,7 +220,8 @@ const docTemplate = `{
                         "type": "string",
                         "description": "JWT token for authentication",
                         "name": "jwt",
-                        "in": "query"
+                        "in": "header",
+                        "required": true
                     },
                     {
                         "type": "string",
@@ -279,12 +261,6 @@ const docTemplate = `{
                             "$ref": "#/definitions/object.AuthErrorResponse"
                         }
                     },
-                    "404": {
-                        "description": "No servers found with the given requirements",
-                        "schema": {
-                            "$ref": "#/definitions/object.ExportExcelStatusNotFoundResponse"
-                        }
-                    },
                     "500": {
                         "description": "Failed to export Excel",
                         "schema": {
@@ -309,17 +285,17 @@ const docTemplate = `{
                 "summary": "Import file from excel",
                 "parameters": [
                     {
-                        "type": "file",
-                        "description": "Excel file to import",
-                        "name": "file",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
                         "type": "string",
                         "description": "JWT token for authentication",
                         "name": "jwt",
                         "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "Excel file to import",
+                        "name": "file",
+                        "in": "formData",
                         "required": true
                     }
                 ],
@@ -365,6 +341,13 @@ const docTemplate = `{
                 ],
                 "summary": "Handle updating an existing server",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "JWT token for authentication",
+                        "name": "jwt",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "description": "Update server request",
                         "name": "request",
@@ -510,7 +493,25 @@ const docTemplate = `{
                     "200": {
                         "description": "Login successful",
                         "schema": {
-                            "$ref": "#/definitions/object.LoginResponse"
+                            "$ref": "#/definitions/object.LoginSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "$ref": "#/definitions/object.LoginBadRequestResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid credentials",
+                        "schema": {
+                            "$ref": "#/definitions/object.LoginUnauthorizedResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error generating token",
+                        "schema": {
+                            "$ref": "#/definitions/object.LoginInternalServerErrorResponse"
                         }
                     }
                 }
@@ -544,7 +545,25 @@ const docTemplate = `{
                     "201": {
                         "description": "Registration successful",
                         "schema": {
-                            "$ref": "#/definitions/object.RegisterResponse"
+                            "$ref": "#/definitions/object.RegisterSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "$ref": "#/definitions/object.RegisterBadRequestResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Account already exists",
+                        "schema": {
+                            "$ref": "#/definitions/object.RegisterConflictResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/object.RegisterInternalServerErrorResponse"
                         }
                     }
                 }
@@ -581,9 +600,6 @@ const docTemplate = `{
         },
         "object.AddServerRequest": {
             "type": "object",
-            "required": [
-                "jwt"
-            ],
             "properties": {
                 "created_time": {
                     "description": "ISO 8601 format",
@@ -591,9 +607,6 @@ const docTemplate = `{
                 },
                 "ipv4": {
                     "description": "IPv4 address of the server",
-                    "type": "string"
-                },
-                "jwt": {
                     "type": "string"
                 },
                 "last_updated_time": {
@@ -644,26 +657,6 @@ const docTemplate = `{
                 }
             }
         },
-        "object.AuthRequest": {
-            "type": "object",
-            "required": [
-                "jwt"
-            ],
-            "properties": {
-                "jwt": {
-                    "type": "string"
-                }
-            }
-        },
-        "object.AuthSuccessResponse": {
-            "type": "object",
-            "properties": {
-                "message": {
-                    "type": "string",
-                    "example": "Authentication successfully"
-                }
-            }
-        },
         "object.DailyReportInternalServerErrorResponse": {
             "type": "object",
             "properties": {
@@ -695,7 +688,6 @@ const docTemplate = `{
             "required": [
                 "email",
                 "end_time",
-                "jwt",
                 "start_time"
             ],
             "properties": {
@@ -703,9 +695,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "end_time": {
-                    "type": "string"
-                },
-                "jwt": {
                     "type": "string"
                 },
                 "start_time": {
@@ -734,13 +723,9 @@ const docTemplate = `{
         "object.DeleteServerRequest": {
             "type": "object",
             "required": [
-                "jwt",
                 "server_id"
             ],
             "properties": {
-                "jwt": {
-                    "type": "string"
-                },
                 "server_id": {
                     "type": "string"
                 }
@@ -800,15 +785,6 @@ const docTemplate = `{
                 "error": {
                     "type": "string",
                     "example": "Failed to retrieve server details"
-                }
-            }
-        },
-        "object.ExportExcelStatusNotFoundResponse": {
-            "type": "object",
-            "properties": {
-                "message": {
-                    "type": "string",
-                    "example": "No servers found with the given requirements"
                 }
             }
         },
@@ -883,6 +859,32 @@ const docTemplate = `{
                 }
             }
         },
+        "object.LoginBadRequestResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Invalid request body"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Invalid request body"
+                }
+            }
+        },
+        "object.LoginInternalServerErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Error generating token"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Error generating token"
+                }
+            }
+        },
         "object.LoginRequest": {
             "type": "object",
             "required": [
@@ -898,12 +900,52 @@ const docTemplate = `{
                 }
             }
         },
-        "object.LoginResponse": {
+        "object.LoginSuccessResponse": {
             "type": "object",
             "properties": {
                 "message": {
                     "type": "string",
                     "example": "Login successful"
+                }
+            }
+        },
+        "object.LoginUnauthorizedResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Invalid credentials"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Invalid credentials"
+                }
+            }
+        },
+        "object.RegisterBadRequestResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "Invalid request body"
+                }
+            }
+        },
+        "object.RegisterConflictResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "Account already exists"
+                }
+            }
+        },
+        "object.RegisterInternalServerErrorResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "Internal server error"
                 }
             }
         },
@@ -934,7 +976,7 @@ const docTemplate = `{
                 }
             }
         },
-        "object.RegisterResponse": {
+        "object.RegisterSuccessResponse": {
             "type": "object",
             "properties": {
                 "message": {
@@ -1005,10 +1047,6 @@ const docTemplate = `{
             "properties": {
                 "ipv4": {
                     "description": "IPv4 address of the server",
-                    "type": "string"
-                },
-                "jwt": {
-                    "description": "JWT token for authentication",
                     "type": "string"
                 },
                 "server_id": {

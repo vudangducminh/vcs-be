@@ -16,6 +16,7 @@ import (
 // @Description  Example date format: 2025-07-23T12:00:00Z
 // @Accept       json
 // @Produce      json
+// @Param        jwt header string true "JWT token for authentication"
 // @Param        request body object.DailyReportRequest true "Send email request"
 // @Success      200 {object} object.DailyReportResponse "Email sent successfully"
 // @Failure      400 {object} object.DailyReportInvalidRequestResponse "Invalid request"
@@ -26,12 +27,6 @@ func DailyReportEmailRequest(c *gin.Context) {
 	var req object.DailyReportRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
-		return
-	}
-
-	username := redis_query.GetUsernameByJWTToken(req.JWT)
-	if username == "" {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid JWT token"})
 		return
 	}
 

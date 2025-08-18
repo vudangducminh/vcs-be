@@ -26,4 +26,5 @@ func ConnectToEs() {
 		log.Println("Error creating the client:", err)
 	}
 	isConnected = true
+	log.Println("Connected to Elasticsearch successfully")
 }

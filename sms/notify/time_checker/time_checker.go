@@ -8,7 +8,7 @@ import (
 )
 
 func TimeCheckerForSendingEmails() {
-	var secs int64 = 3600
+	var secs int64 = 86400
 	for {
 		var currentTime = int64(time.Now().Unix())
 		// Check if it's time to send daily report emails

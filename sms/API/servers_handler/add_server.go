@@ -6,7 +6,6 @@ import (
 	"sms/object"
 	"time"
 
-	redis_query "sms/server/database/cache/redis/query"
 	elastic_query "sms/server/database/elasticsearch/query"
 
 	"github.com/gin-gonic/gin"
@@ -17,6 +16,7 @@ import (
 // @Description  Handle adding a new server by validating input and storing server information
 // @Accept       json
 // @Produce      json
+// @Param        jwt header string true "JWT token for authentication"
 // @Param        request body object.AddServerRequest true "Add server request"
 // @Success      201 {object} object.AddServerSuccessResponse "Server added"
 // @Failure      400 {object} object.AddServerBadRequestResponse "Invalid request body"
@@ -29,12 +29,6 @@ func AddServer(c *gin.Context) {
 	var req object.AddServerRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
-		return
-	}
-
-	username := redis_query.GetUsernameByJWTToken(req.JWT)
-	if username == "" {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed"})
 		return
 	}
 

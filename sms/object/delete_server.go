@@ -1,7 +1,6 @@
 package object
 
 type DeleteServerRequest struct {
-	JWT      string `json:"jwt" binding:"required"`
 	ServerId string `json:"server_id" binding:"required"`
 }
 type DeleteServerResponse struct {

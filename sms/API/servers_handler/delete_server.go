@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"sms/object"
-	redis_query "sms/server/database/cache/redis/query"
 	elastic_query "sms/server/database/elasticsearch/query"
 
 	"github.com/gin-gonic/gin"
@@ -15,6 +14,7 @@ import (
 // @Description  Delete a server by its unique ID
 // @Accept       json
 // @Produce      json
+// @Param        jwt header string true "JWT token for authentication"
 // @Param        request body object.DeleteServerRequest true "Delete server request"
 // @Success      200 {object} object.DeleteServerResponse "Server deleted successfully"
 // @Failure      401 {object} object.AuthErrorResponse "Authentication failed"
@@ -25,12 +25,6 @@ func DeleteServer(c *gin.Context) {
 	var req object.DeleteServerRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
-		return
-	}
-
-	username := redis_query.GetUsernameByJWTToken(req.JWT)
-	if username == "" {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid JWT token"})
 		return
 	}
 

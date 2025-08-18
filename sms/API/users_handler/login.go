@@ -19,7 +19,10 @@ import (
 // @Accept       json
 // @Produce      json
 // @Param        request body object.LoginRequest true "Login request"
-// @Success      200 {object} object.LoginResponse "Login successful"
+// @Success      200 {object} object.LoginSuccessResponse "Login successful"
+// @Failure      400 {object} object.LoginBadRequestResponse "Invalid request body"
+// @Failure      401 {object} object.LoginUnauthorizedResponse "Invalid credentials"
+// @Failure      500 {object} object.LoginInternalServerErrorResponse "Error generating token
 // @Router       /users/login [post]
 func HandleLogin(c *gin.Context) {
 	var req object.LoginRequest

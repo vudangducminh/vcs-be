@@ -3,8 +3,8 @@ package swagger
 import (
 	"sms/API/servers_handler"
 	"sms/API/users_handler"
-	"sms/API/website_handler"
 	_ "sms/docs"
+	"sms/middleware"
 
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
@@ -18,11 +18,8 @@ func ConnectToSwagger() {
 		users.POST("/login", users_handler.HandleLogin)
 		users.POST("/register", users_handler.HandleRegister)
 	}
-	auth := r.Group("api/v1/auth")
-	{
-		auth.POST("/", website_handler.Authentication)
-	}
 	servers := r.Group("api/v1/servers")
+	servers.Use(middleware.AuthMiddleWare())
 	{
 		servers.POST("/add_server", servers_handler.AddServer)
 		servers.GET("/view_servers/:order/:filter/:string", servers_handler.ViewServer)

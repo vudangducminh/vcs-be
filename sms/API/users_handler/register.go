@@ -15,7 +15,10 @@ import (
 // @Accept       json
 // @Produce      json
 // @Param        request body object.RegisterRequest true "Registration request"
-// @Success      201 {object} object.RegisterResponse "Registration successful"
+// @Success      201 {object} object.RegisterSuccessResponse "Registration successful"
+// @Failure      400 {object} object.RegisterBadRequestResponse "Invalid request body"
+// @Failure      409 {object} object.RegisterConflictResponse "Account already exists"
+// @Failure      500 {object} object.RegisterInternalServerErrorResponse "Internal server error
 // @Router       /users/register [post]
 func HandleRegister(c *gin.Context) {
 	var req object.RegisterRequest
