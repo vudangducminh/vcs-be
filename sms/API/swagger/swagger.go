@@ -18,8 +18,7 @@ func ConnectToSwagger() {
 		users.POST("/login", users_handler.HandleLogin)
 		users.POST("/register", users_handler.HandleRegister)
 	}
-	servers := r.Group("api/v1/servers")
-	servers.Use(middleware.AuthMiddleWare())
+	servers := r.Group("api/v1/servers", middleware.AuthMiddleWare())
 	{
 		servers.POST("/add_server", servers_handler.AddServer)
 		servers.GET("/view_servers/:order/:filter/:string", servers_handler.ViewServer)

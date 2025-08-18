@@ -28,3 +28,14 @@
 2025/08/18 11:14:04 JWT token saved to Redis successfully
 2025/08/18 11:14:24 JWT token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTU0OTQwNDMsInBhc3N3b3JkIjoiMTIzIiwidXNlcm5hbWUiOiJLYXdhaWkifQ.HfGbiv1-N9tKbBdv5g1MSqEZcXqlLdlk-X9whzt_1Fs
 2025/08/18 11:14:24 Username from JWT token: Kawaii
+2025/08/18 11:18:35 Logger initialized. Subsequent logs will be written to log/server.log
+2025/08/18 11:18:35 Connected to PostgreSQL database successfully
+2025/08/18 11:18:36 Connected to Redis successfully
+2025/08/18 11:18:36 Connected to Elasticsearch successfully
+2025/08/18 11:18:51 JWT token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTU0OTQwNDMsInBhc3N3b3JkIjoiMTIzIiwidXNlcm5hbWUiOiJLYXdhaWkifQ.HfGbiv1-N9tKbBdv5g1MSqEZcXqlLdlk-X9whzt_1Fs
+2025/08/18 11:18:52 Username from JWT token: Kawaii
+2025/08/18 11:19:28 JWT token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTU0OTQwNDMsInBhc3N3b3JkIjoiMTIzIiwidXNlcm5hbWUiOiJLYXdhaWkifQ.HfGbiv1-N9tKbBdv5g1MSqEZcXqlLdlk-X9whzt_1Fs
+2025/08/18 11:19:28 Username from JWT token: Kawaii
+2025/08/18 11:19:36 JWT token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTU0OTQwNDMsInBhc3N3b3JkIjoiMTIzIiwidXNlcm5hbWUiOiJLYXdhaWkifQ.HfGbiv1-N9tKbBdv5g1MSqEZcXqlLdlk-d9whzt_1Fs
+2025/08/18 11:19:37 Username from JWT token: 
+2025/08/18 11:19:37 Error while fetching username using JWT token
