@@ -1,10 +1,10 @@
 package swagger
 
 import (
+	"sms/API/middleware"
 	"sms/API/servers_handler"
 	"sms/API/users_handler"
 	_ "sms/docs"
-	"sms/middleware"
 
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
