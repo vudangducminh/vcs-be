@@ -1,0 +1,777 @@
+basePath: /api/v1
+definitions:
+  object.AddServerBadRequestResponse:
+    properties:
+      error:
+        example: Invalid request body
+        type: string
+    type: object
+  object.AddServerConflictResponse:
+    properties:
+      error:
+        example: Server already exists
+        type: string
+    type: object
+  object.AddServerInternalServerErrorResponse:
+    properties:
+      error:
+        example: Internal server error
+        type: string
+    type: object
+  object.AddServerRequest:
+    properties:
+      created_time:
+        description: ISO 8601 format
+        type: string
+      ipv4:
+        description: IPv4 address of the server
+        type: string
+      last_updated_time:
+        description: ISO 8601 format
+        type: string
+      server_name:
+        type: string
+      status:
+        description: e.g., "active", "inactive", "maintenance"
+        type: string
+      uptime:
+        description: e.g., "3666" for 1 hour 1 minute and 6 seconds
+        type: integer
+    type: object
+  object.AddServerSuccessResponse:
+    properties:
+      ipv4:
+        description: IPv4 address of the server
+        type: string
+      message:
+        description: Confirmation message
+        example: Server added
+        type: string
+      server_id:
+        description: Unique identifier for the server
+        type: string
+      server_name:
+        description: Name of the server
+        type: string
+    type: object
+  object.AuthErrorResponse:
+    properties:
+      error:
+        example: Authentication failed
+        type: string
+    type: object
+  object.DailyReportInternalServerErrorResponse:
+    properties:
+      error:
+        example: Failed to save request
+        type: string
+      message:
+        example: Internal server error
+        type: string
+    type: object
+  object.DailyReportInvalidRequestResponse:
+    properties:
+      error:
+        example: Invalid request body
+        type: string
+      message:
+        example: Invalid request
+        type: string
+    type: object
+  object.DailyReportRequest:
+    properties:
+      email:
+        type: string
+      end_time:
+        type: string
+      start_time:
+        type: string
+    required:
+    - email
+    - end_time
+    - start_time
+    type: object
+  object.DailyReportResponse:
+    properties:
+      message:
+        example: Request saved successfully
+        type: string
+    type: object
+  object.DeleteServerInternalServerErrorResponse:
+    properties:
+      error:
+        example: Internal server error
+        type: string
+    type: object
+  object.DeleteServerRequest:
+    properties:
+      server_id:
+        type: string
+    required:
+    - server_id
+    type: object
+  object.DeleteServerResponse:
+    properties:
+      ipv4:
+        description: IPv4 address of the deleted server
+        type: string
+      message:
+        example: Server deleted successfully
+        type: string
+      server_id:
+        description: Unique identifier for the deleted server
+        type: string
+      server_name:
+        description: Name of the deleted server
+        type: string
+    type: object
+  object.DeleteServerStatusNotFoundResponse:
+    properties:
+      error:
+        example: Server not found
+        type: string
+    type: object
+  object.ExportExcelBadRequestResponse:
+    properties:
+      error:
+        example: Invalid request parameters
+        type: string
+    type: object
+  object.ExportExcelExportFailedResponse:
+    properties:
+      error:
+        example: Failed to export Excel
+        type: string
+    type: object
+  object.ExportExcelInternalServerErrorResponse:
+    properties:
+      error:
+        example: Failed to retrieve server details
+        type: string
+    type: object
+  object.ExportExcelSuccessResponse:
+    properties:
+      message:
+        example: Excel file exported successfully
+        type: string
+    type: object
+  object.ImportExcelElasticsearchErrorResponse:
+    properties:
+      error:
+        example: Failed to add server to Elasticsearch from Excel row
+        type: string
+    type: object
+  object.ImportExcelInvalidFileFormatResponse:
+    properties:
+      error:
+        example: Invalid file format
+        type: string
+    type: object
+  object.ImportExcelOpenFileFailedResponse:
+    properties:
+      error:
+        example: Failed to open file
+        type: string
+    type: object
+  object.ImportExcelReadFileFailedResponse:
+    properties:
+      error:
+        example: Failed to read Excel rows
+        type: string
+    type: object
+  object.ImportExcelRetrieveFailedResponse:
+    properties:
+      error:
+        example: Failed to retrieve file
+        type: string
+    type: object
+  object.ImportExcelSuccessResponse:
+    properties:
+      added_servers:
+        example: 5
+        type: integer
+      error_servers:
+        example: 2
+        type: integer
+      message:
+        example: Excel file imported successfully
+        type: string
+    type: object
+  object.LoginBadRequestResponse:
+    properties:
+      error:
+        example: Invalid request body
+        type: string
+      message:
+        example: Invalid request body
+        type: string
+    type: object
+  object.LoginInternalServerErrorResponse:
+    properties:
+      error:
+        example: Error generating token
+        type: string
+      message:
+        example: Error generating token
+        type: string
+    type: object
+  object.LoginRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  object.LoginSuccessResponse:
+    properties:
+      message:
+        example: Login successful
+        type: string
+    type: object
+  object.LoginUnauthorizedResponse:
+    properties:
+      error:
+        example: Invalid credentials
+        type: string
+      message:
+        example: Invalid credentials
+        type: string
+    type: object
+  object.RegisterBadRequestResponse:
+    properties:
+      message:
+        example: Invalid request body
+        type: string
+    type: object
+  object.RegisterConflictResponse:
+    properties:
+      message:
+        example: Account already exists
+        type: string
+    type: object
+  object.RegisterInternalServerErrorResponse:
+    properties:
+      message:
+        example: Internal server error
+        type: string
+    type: object
+  object.RegisterRequest:
+    properties:
+      confirm_password:
+        type: string
+      email:
+        type: string
+      fullname:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - confirm_password
+    - email
+    - fullname
+    - password
+    - username
+    type: object
+  object.RegisterSuccessResponse:
+    properties:
+      message:
+        example: Registration successful
+        type: string
+    type: object
+  object.Server:
+    properties:
+      created_time:
+        description: Unix timestamp
+        type: integer
+      ipv4:
+        type: string
+      last_updated_time:
+        description: Unix timestamp
+        type: integer
+      server_id:
+        type: string
+      server_name:
+        type: string
+      status:
+        description: e.g., "active", "inactive", "maintenance"
+        type: string
+      uptime:
+        description: e.g., "3666" for 1 hour 1 minute and 6 seconds
+        type: integer
+    type: object
+  object.UpdateServerBadRequestResponse:
+    properties:
+      error:
+        example: Invalid request body
+        type: string
+    type: object
+  object.UpdateServerConflictResponse:
+    properties:
+      error:
+        example: Server already exists with the same IPv4 address
+        type: string
+    type: object
+  object.UpdateServerInternalServerErrorResponse:
+    properties:
+      error:
+        example: Internal server error
+        type: string
+    type: object
+  object.UpdateServerRequest:
+    properties:
+      ipv4:
+        description: IPv4 address of the server
+        type: string
+      server_id:
+        type: string
+      server_name:
+        type: string
+      status:
+        description: e.g., "active", "inactive", "maintenance"
+        type: string
+    type: object
+  object.UpdateServerStatusNotFoundResponse:
+    properties:
+      error:
+        example: Server not found
+        type: string
+    type: object
+  object.UpdateServerSuccessResponse:
+    properties:
+      ipv4:
+        description: IPv4 address of the server
+        type: string
+      last_updated_time:
+        description: Last updated time in ISO 8601 format
+        type: string
+      message:
+        description: Confirmation message
+        example: Server updated
+        type: string
+      server_id:
+        description: Unique identifier for the server
+        type: string
+      server_name:
+        description: Name of the server
+        type: string
+      status:
+        description: Status of the server, e.g., "active", "inactive", "maintenance"
+        type: string
+    type: object
+  object.ViewServerBadRequestResponse:
+    properties:
+      error:
+        example: Invalid request parameters
+        type: string
+    type: object
+  object.ViewServerInternalServerErrorResponse:
+    properties:
+      error:
+        example: Failed to retrieve server details
+        type: string
+    type: object
+  object.ViewServerSuccessResponse:
+    properties:
+      servers:
+        items:
+          $ref: '#/definitions/object.Server'
+        type: array
+    type: object
+host: localhost:8800
+info:
+  contact:
+    email: vudangducminh@gmail.com
+    name: Vu Dang Duc Minh
+    url: https://github.com/vudangducminh
+  description: This is a sample server for VCS System Management API.
+  title: VCS System Management API
+  version: "1.0"
+paths:
+  /servers/add_server:
+    post:
+      consumes:
+      - application/json
+      description: Handle adding a new server by validating input and storing server
+        information
+      parameters:
+      - description: JWT token for authentication
+        in: header
+        name: jwt
+        required: true
+        type: string
+      - description: Add server request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/object.AddServerRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Server added
+          schema:
+            $ref: '#/definitions/object.AddServerSuccessResponse'
+        "400":
+          description: Invalid request body
+          schema:
+            $ref: '#/definitions/object.AddServerBadRequestResponse'
+        "401":
+          description: Authentication failed
+          schema:
+            $ref: '#/definitions/object.AuthErrorResponse'
+        "409":
+          description: Server already exists
+          schema:
+            $ref: '#/definitions/object.AddServerConflictResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/object.AddServerInternalServerErrorResponse'
+      summary: Handle adding a new server
+      tags:
+      - Servers
+  /servers/daily_report:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        Create a request to send daily report email from YYYY-MM-DD to YYYY-MM-DD
+        An email will be sent to the specified recipients at 00:00:00 UTC.
+        Example date format: 2025-07-23T12:00:00Z
+      parameters:
+      - description: JWT token for authentication
+        in: header
+        name: jwt
+        required: true
+        type: string
+      - description: Send email request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/object.DailyReportRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Email sent successfully
+          schema:
+            $ref: '#/definitions/object.DailyReportResponse'
+        "400":
+          description: Invalid request
+          schema:
+            $ref: '#/definitions/object.DailyReportInvalidRequestResponse'
+        "401":
+          description: Authentication failed
+          schema:
+            $ref: '#/definitions/object.AuthErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/object.DailyReportInternalServerErrorResponse'
+      summary: Create a request to send daily report email
+      tags:
+      - Servers
+  /servers/delete_server:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a server by its unique ID
+      parameters:
+      - description: JWT token for authentication
+        in: header
+        name: jwt
+        required: true
+        type: string
+      - description: Delete server request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/object.DeleteServerRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Server deleted successfully
+          schema:
+            $ref: '#/definitions/object.DeleteServerResponse'
+        "401":
+          description: Authentication failed
+          schema:
+            $ref: '#/definitions/object.AuthErrorResponse'
+        "404":
+          description: Server not found
+          schema:
+            $ref: '#/definitions/object.DeleteServerStatusNotFoundResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/object.DeleteServerInternalServerErrorResponse'
+      summary: Delete a server by ID
+      tags:
+      - Servers
+  /servers/export_excel/{order}/{filter}/{string}:
+    get:
+      consumes:
+      - application/json
+      description: Export server data to an Excel file with optional filtering and
+        ordering
+      parameters:
+      - description: JWT token for authentication
+        in: header
+        name: jwt
+        required: true
+        type: string
+      - description: Order of results, either 'asc' or 'desc'. If not provided or
+          using the wrong order format, the default order is ascending
+        in: query
+        name: order
+        type: string
+      - description: Filter by server_id, server_name, ipv4, or status. If not provided
+          or using the wrong filter format, then there is no filter applied
+        in: query
+        name: filter
+        type: string
+      - description: Substring to search in server_id, server_name, ipv4, or status
+        in: path
+        name: string
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Excel file exported successfully
+          schema:
+            $ref: '#/definitions/object.ExportExcelSuccessResponse'
+        "400":
+          description: Invalid request parameters
+          schema:
+            $ref: '#/definitions/object.ExportExcelBadRequestResponse'
+        "401":
+          description: Authentication failed
+          schema:
+            $ref: '#/definitions/object.AuthErrorResponse'
+        "500":
+          description: Failed to export Excel
+          schema:
+            $ref: '#/definitions/object.ExportExcelExportFailedResponse'
+      summary: Export server data to Excel
+      tags:
+      - Servers
+  /servers/import_excel:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Import server data from an Excel file
+      parameters:
+      - description: JWT token for authentication
+        in: header
+        name: jwt
+        required: true
+        type: string
+      - description: Excel file to import
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Excel file imported successfully
+          schema:
+            $ref: '#/definitions/object.ImportExcelSuccessResponse'
+        "400":
+          description: Failed to retrieve file
+          schema:
+            $ref: '#/definitions/object.ImportExcelRetrieveFailedResponse'
+        "401":
+          description: Authentication failed
+          schema:
+            $ref: '#/definitions/object.AuthErrorResponse'
+        "500":
+          description: Failed to add server to Elasticsearch from Excel row
+          schema:
+            $ref: '#/definitions/object.ImportExcelElasticsearchErrorResponse'
+      summary: Import file from excel
+      tags:
+      - Servers
+  /servers/update_server:
+    put:
+      consumes:
+      - application/json
+      description: Handle updating an existing server by validating input and updating
+        server information
+      parameters:
+      - description: JWT token for authentication
+        in: header
+        name: jwt
+        required: true
+        type: string
+      - description: Update server request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/object.UpdateServerRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Server updated
+          schema:
+            $ref: '#/definitions/object.UpdateServerSuccessResponse'
+        "400":
+          description: Invalid request body
+          schema:
+            $ref: '#/definitions/object.UpdateServerBadRequestResponse'
+        "401":
+          description: Authentication failed
+          schema:
+            $ref: '#/definitions/object.AuthErrorResponse'
+        "404":
+          description: Server not found
+          schema:
+            $ref: '#/definitions/object.UpdateServerStatusNotFoundResponse'
+        "409":
+          description: Server already exists
+          schema:
+            $ref: '#/definitions/object.UpdateServerConflictResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/object.UpdateServerInternalServerErrorResponse'
+      summary: Handle updating an existing server
+      tags:
+      - Servers
+  /servers/view_servers/{order}/{filter}/{string}:
+    get:
+      consumes:
+      - application/json
+      description: View server details with optional filtering
+      parameters:
+      - description: JWT token for authentication
+        in: query
+        name: jwt
+        type: string
+      - description: Order of results, either 'asc' or 'desc'. If not provided or
+          using the wrong order format, the default order is ascending
+        in: query
+        name: order
+        type: string
+      - description: Filter by server_id, server_name, ipv4, or status. If not provided
+          or using the wrong filter format, the default filter is server_name
+        in: query
+        name: filter
+        type: string
+      - description: Substring to search in server_id, server_name, ipv4, or status
+        in: path
+        name: string
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Server details retrieved successfully
+          schema:
+            $ref: '#/definitions/object.ViewServerSuccessResponse'
+        "400":
+          description: Invalid request parameters
+          schema:
+            $ref: '#/definitions/object.ViewServerBadRequestResponse'
+        "401":
+          description: Authentication failed
+          schema:
+            $ref: '#/definitions/object.AuthErrorResponse'
+        "500":
+          description: Failed to retrieve server details
+          schema:
+            $ref: '#/definitions/object.ViewServerInternalServerErrorResponse'
+      summary: View server details
+      tags:
+      - Servers
+  /users/login:
+    post:
+      consumes:
+      - application/json
+      description: Handle user login by validating credentials and generating a JWT
+        token
+      parameters:
+      - description: Login request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/object.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Login successful
+          schema:
+            $ref: '#/definitions/object.LoginSuccessResponse'
+        "400":
+          description: Invalid request body
+          schema:
+            $ref: '#/definitions/object.LoginBadRequestResponse'
+        "401":
+          description: Invalid credentials
+          schema:
+            $ref: '#/definitions/object.LoginUnauthorizedResponse'
+        "500":
+          description: Error generating token
+          schema:
+            $ref: '#/definitions/object.LoginInternalServerErrorResponse'
+      summary: Handle user login
+      tags:
+      - Users
+  /users/register:
+    post:
+      consumes:
+      - application/json
+      description: Handle user registration by validating input and storing account
+        information
+      parameters:
+      - description: Registration request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/object.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Registration successful
+          schema:
+            $ref: '#/definitions/object.RegisterSuccessResponse'
+        "400":
+          description: Invalid request body
+          schema:
+            $ref: '#/definitions/object.RegisterBadRequestResponse'
+        "409":
+          description: Account already exists
+          schema:
+            $ref: '#/definitions/object.RegisterConflictResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/object.RegisterInternalServerErrorResponse'
+      summary: Handle user registration
+      tags:
+      - Users
+schemes:
+- http
+swagger: "2.0"
+tags:
+- description: '"Operations related to user authentication and management"'
+  name: Users
+- description: '"Operations related to server management"'
+  name: Servers

@@ -1,2 +1,16 @@
 - When using xorm query without the table field, it will assumes the table name of a variable as the variable's struct name
 - We need to set "HttpOnly: true" in cookie to prevent it from being stolen by JS code
+- While annotating API function, there must not be spaces between annotation and the function 
+- When running Elasticsearch without a proper server (for example running using docker), it saves data inside the docker container (/usr/share/elasticsearch/data), therefore, the data can't be access from any other device
+- You should NEVER use the KEYS command in a production environment.
+    The reason is that KEYS is a blocking operation. (When executing KEYS, the Redis server will stop processing everything and scan throughout the database -> freeze server for minutes)
+
+
+
+Note:
+- Swagger initialization:
+    export PATH=$PATH:$(go env GOPATH)/bin
+    swag init -g main.go --dir .,./API/users_handler,./API/servers_handler,./object
+- Go test:
+    go test ./...
+- Remove uptime field in server
