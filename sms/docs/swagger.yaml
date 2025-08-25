@@ -773,7 +773,5 @@ swagger: "2.0"
 tags:
 - description: '"Operations related to user authentication and management"'
   name: Users
-- description: '"Operations related to user authentication"'
-  name: Auth
 - description: '"Operations related to server management"'
   name: Servers

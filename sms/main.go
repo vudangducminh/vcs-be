@@ -29,16 +29,12 @@ import (
 // @host            localhost:8800
 // @Tag.name        Users
 // @Tag.description "Operations related to user authentication and management"
-// @Tag.name		Auth
-// @Tag.description "Operations related to user authentication"
 // @Tag.name		Servers
 // @Tag.description "Operations related to server management"
 func main() {
 	// Set the log file
 	file, err := os.OpenFile("log/server.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if err != nil {
-		// If we can't open the log file, we can't continue.
-		// log.Fatal will print the error and exit the program.
 		log.Fatalf("Failed to open log file: %v", err)
 	}
 	// Set the output of the default logger to the file.

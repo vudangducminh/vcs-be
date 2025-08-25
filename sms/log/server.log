@@ -39,3 +39,21 @@
 2025/08/18 11:19:36 JWT token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTU0OTQwNDMsInBhc3N3b3JkIjoiMTIzIiwidXNlcm5hbWUiOiJLYXdhaWkifQ.HfGbiv1-N9tKbBdv5g1MSqEZcXqlLdlk-d9whzt_1Fs
 2025/08/18 11:19:37 Username from JWT token: 
 2025/08/18 11:19:37 Error while fetching username using JWT token
+2025/08/25 08:38:39 Logger initialized. Subsequent logs will be written to log/server.log
+2025/08/25 08:38:39 Connected to PostgreSQL database successfully
+2025/08/25 08:38:40 Connected to Redis successfully
+2025/08/25 08:38:40 Connected to Elasticsearch successfully
+2025/08/25 08:39:45 Logger initialized. Subsequent logs will be written to log/server.log
+2025/08/25 08:39:45 Connected to PostgreSQL database successfully
+2025/08/25 08:39:46 Connected to Redis successfully
+2025/08/25 08:39:46 Connected to Elasticsearch successfully
+2025/08/25 08:40:44 Logger initialized. Subsequent logs will be written to log/server.log
+2025/08/25 08:40:44 Connected to PostgreSQL database successfully
+2025/08/25 08:40:45 Connected to Redis successfully
+2025/08/25 08:40:45 Connected to Elasticsearch successfully
+2025/08/25 08:41:10 Username: Kawaii
+2025/08/25 08:41:10 Password: 123
+2025/08/25 08:41:10 JWT token saved to Redis successfully
+2025/08/25 08:41:37 JWT token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTYwODYwNzAsInBhc3N3b3JkIjoiMTIzIiwidXNlcm5hbWUiOiJLYXdhaWkifQ.eiWR3R2qs-nPS9BGjhkbgk_7HigG0qTKI10weR0idLY
+2025/08/25 08:41:38 Username from JWT token: Kawaii
+2025/08/25 08:41:38 Sheet Name: Sheet1

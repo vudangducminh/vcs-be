@@ -1136,10 +1136,6 @@ const docTemplate = `{
             "name": "Users"
         },
         {
-            "description": "\"Operations related to user authentication\"",
-            "name": "Auth"
-        },
-        {
             "description": "\"Operations related to server management\"",
             "name": "Servers"
         }
