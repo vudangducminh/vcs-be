@@ -15,7 +15,7 @@ import (
 // @Description  View server details with optional filtering
 // @Accept       json
 // @Produce      json
-// @Param        jwt query string false "JWT token for authentication"
+// @Param        jwt header string true "JWT token for authentication"
 // @Param        order query string false "Order of results, either 'asc' or 'desc'. If not provided or using the wrong order format, the default order is ascending"
 // @Param        filter query string false "Filter by server_id, server_name, ipv4, or status. If not provided or using the wrong filter format, the default filter is server_name"
 // @Param        string path string false "Substring to search in server_id, server_name, ipv4, or status"

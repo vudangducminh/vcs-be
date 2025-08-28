@@ -658,8 +658,9 @@ paths:
       description: View server details with optional filtering
       parameters:
       - description: JWT token for authentication
-        in: query
+        in: header
         name: jwt
+        required: true
         type: string
       - description: Order of results, either 'asc' or 'desc'. If not provided or
           using the wrong order format, the default order is ascending
