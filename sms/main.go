@@ -4,8 +4,7 @@ import (
 	"fmt"
 	"log"
 	"math/rand"
-	"sms/API/swagger"
-	_ "sms/API/users_handler" // Importing users_handler for Swagger documentation
+	"os"
 	"sms/algorithm"
 	_ "sms/docs"
 	"sms/object"
@@ -13,6 +12,9 @@ import (
 	elastic "sms/server/database/elasticsearch/connector"
 	elastic_query "sms/server/database/elasticsearch/query"
 	postgresql "sms/server/database/postgresql/connector"
+	time_checker "sms/service/report_service/time_checker"
+	"sms/service/swagger"
+	_ "sms/service/user_service" // Importing users_handler for Swagger documentation
 	"time"
 )
 
@@ -32,6 +34,18 @@ import (
 // @Tag.name		Servers
 // @Tag.description "Operations related to server management"
 func main() {
+	// Set the log file
+	file, err := os.OpenFile("log/server.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	if err != nil {
+		// If we can't open the log file, we can't continue.
+		// log.Fatal will print the error and exit the program.
+		log.Fatalf("Failed to open log file: %v", err)
+	}
+	// Set the output of the default logger to the file.
+	// All subsequent calls to log.Println, log.Printf, etc. will write to this file.
+	log.SetOutput(file)
+	log.Println("Logger initialized. Subsequent logs will be written to log/server.log")
+
 	// Initialize the database connection
 	postgresql.ConnectToDB()
 	if !postgresql.IsConnected() {
@@ -50,10 +64,10 @@ func main() {
 	}
 
 	// Generate sample servers for testing
-	GenerateServer()
+	// GenerateServer()
 
 	// Start the time checker for daily report email requests
-	// go time_checker.TimeCheckerForSendingEmails()
+	go time_checker.TimeCheckerForSendingEmails()
 
 	// Connect to Swagger for API documentation
 	swagger.ConnectToSwagger()

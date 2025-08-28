@@ -23,4 +23,5 @@ func ConnectToDB() {
 		return
 	}
 	isConnected = true
+	log.Println("Connected to PostgreSQL database successfully")
 }

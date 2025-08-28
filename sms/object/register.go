@@ -8,6 +8,18 @@ type RegisterRequest struct {
 	ConfirmPassword string `json:"confirm_password" binding:"required"`
 }
 
-type RegisterResponse struct {
+type RegisterSuccessResponse struct {
 	Message string `json:"message" example:"Registration successful"`
+}
+
+type RegisterBadRequestResponse struct {
+	Message string `json:"message" example:"Invalid request body"`
+}
+
+type RegisterConflictResponse struct {
+	Message string `json:"message" example:"Account already exists"`
+}
+
+type RegisterInternalServerErrorResponse struct {
+	Message string `json:"message" example:"Internal server error"`
 }

@@ -1,0 +1,25 @@
+2025/08/28 14:53:07 Logger initialized. Subsequent logs will be written to log/server.log
+2025/08/28 14:53:07 Connected to PostgreSQL database successfully
+2025/08/28 14:53:08 Connected to Redis successfully
+2025/08/28 14:53:08 Connected to Elasticsearch successfully
+2025/08/28 14:58:18 Logger initialized. Subsequent logs will be written to log/server.log
+2025/08/28 14:58:18 Connected to PostgreSQL database successfully
+2025/08/28 14:58:18 Connected to Redis successfully
+2025/08/28 14:58:18 Connected to Elasticsearch successfully
+2025/08/28 15:11:18 Logger initialized. Subsequent logs will be written to log/server.log
+2025/08/28 15:11:18 Connected to PostgreSQL database successfully
+2025/08/28 15:11:19 Connected to Redis successfully
+2025/08/28 15:11:19 Connected to Elasticsearch successfully
+2025/08/28 15:12:16 Username: Kawaii
+2025/08/28 15:12:16 Password: 123
+2025/08/28 15:12:16 JWT token saved to Redis successfully
+2025/08/28 15:13:18 JWT token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTYzNzIzMzYsInBhc3N3b3JkIjoiMTIzIiwidXNlcm5hbWUiOiJLYXdhaWkifQ.UCuIgHO8Dr2Yz9e7ABn6w1P2YOT0o2THRjXAVW6FOtA
+2025/08/28 15:13:18 Username from JWT token: Kawaii
+2025/08/28 15:13:27 JWT token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTYzNzIzMzYsInBhc3N3b3JkIjoiMTIzIiwidXNlcm5hbWUiOiJLYXdhaWkifQ.UCuIgHO8Dr2Yz9e7ABn6w1P2YOT0o2THRjXAVW6FOtA
+2025/08/28 15:13:27 Username from JWT token: Kawaii
+2025/08/28 15:13:27 Received request to export server with filter 'ipv4' and substring: '{string}'
+2025/08/28 15:13:27 Received request to export server with filter 'ipv4' and substring: ''
+2025/08/28 15:16:16 JWT token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTYzNzIzMzYsInBhc3N3b3JkIjoiMTIzIiwidXNlcm5hbWUiOiJLYXdhaWkifQ.UCuIgHO8Dr2Yz9e7ABn6w1P2YOT0o2THRjXAVW6FOtA
+2025/08/28 15:16:16 Username from JWT token: Kawaii
+2025/08/28 15:16:16 Received request to export server with filter 'ipv4' and substring: '{string}'
+2025/08/28 15:16:16 Received request to export server with filter 'ipv4' and substring: ''

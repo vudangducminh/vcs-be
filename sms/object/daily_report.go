@@ -1,7 +1,6 @@
 package object
 
 type DailyReportRequest struct {
-	JWT       string `json:"jwt" binding:"required"`
 	Email     string `json:"email" binding:"required,email"`
 	StartTime string `json:"start_time" binding:"required"`
 	EndTime   string `json:"end_time" binding:"required"`
