@@ -416,7 +416,8 @@ const docTemplate = `{
                         "type": "string",
                         "description": "JWT token for authentication",
                         "name": "jwt",
-                        "in": "query"
+                        "in": "header",
+                        "required": true
                     },
                     {
                         "type": "string",

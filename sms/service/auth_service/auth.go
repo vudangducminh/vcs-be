@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func AuthMiddleWare() gin.HandlerFunc {
+func Auth() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		jwt := c.GetHeader("jwt")
 		username := redis_query.GetUsernameByJWTToken(jwt)

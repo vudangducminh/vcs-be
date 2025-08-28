@@ -5,16 +5,16 @@ import (
 	"log"
 	"math/rand"
 	"os"
-	"sms/API/swagger"
-	_ "sms/API/users_handler" // Importing users_handler for Swagger documentation
 	"sms/algorithm"
 	_ "sms/docs"
-	time_checker "sms/notify/time_checker"
 	"sms/object"
 	redis "sms/server/database/cache/redis/connector"
 	elastic "sms/server/database/elasticsearch/connector"
 	elastic_query "sms/server/database/elasticsearch/query"
 	postgresql "sms/server/database/postgresql/connector"
+	time_checker "sms/service/report_service/time_checker"
+	"sms/service/swagger"
+	_ "sms/service/user_service" // Importing users_handler for Swagger documentation
 	"time"
 )
 

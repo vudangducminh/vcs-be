@@ -1,9 +1,9 @@
 package notification
 
 import (
-	template "sms/notify/template"
 	redis_query "sms/server/database/cache/redis/query"
 	elastic_query "sms/server/database/elasticsearch/query"
+	template "sms/service/report_service/template"
 	"time"
 )
 

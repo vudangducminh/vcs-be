@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 2025/08/18 09:45:22 Logger initialized. Subsequent logs will be written to log/server.log
 2025/08/18 09:45:22 Connected to PostgreSQL database successfully
 2025/08/18 09:45:22 Connected to Redis successfully
@@ -57,3 +58,5 @@
 2025/08/25 08:41:37 JWT token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTYwODYwNzAsInBhc3N3b3JkIjoiMTIzIiwidXNlcm5hbWUiOiJLYXdhaWkifQ.eiWR3R2qs-nPS9BGjhkbgk_7HigG0qTKI10weR0idLY
 2025/08/25 08:41:38 Username from JWT token: Kawaii
 2025/08/25 08:41:38 Sheet Name: Sheet1
+=======
+>>>>>>> aba52512e7f200c9d6d7c9145e388861d44d53b1
