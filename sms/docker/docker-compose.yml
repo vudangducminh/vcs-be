@@ -15,6 +15,12 @@ services:
     volumes:
       - elasticsearch-data:/usr/share/elasticsearch/data
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
 
   kibana:
     image: docker.elastic.co/kibana/kibana:8.17.4
@@ -24,20 +30,15 @@ services:
     networks:
       - elastic
     depends_on:
-      - elasticsearch
+      elasticsearch:
+        condition: service_healthy
     restart: unless-stopped
-# web:
-#   image: myapp
-#   command: ["./app"]
-#   depends_on:
-#     - elasticsearch
-#     - kibana
-#   ports:
-#     - 8080:8080
-#   volumes:
-#     - elasticsearch-data:/usr/share/elasticsearch/data
-#   networks:
-#     - elastic
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5601/api/status || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 120s
 networks:
   elastic:
     driver: bridge
