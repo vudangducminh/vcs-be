@@ -1,6 +1,7 @@
 package servers_handler
 
 import (
+	"log"
 	"net/http"
 	"sms/object"
 	redis_query "sms/server/database/cache/redis/query"
@@ -34,20 +35,24 @@ func DailyReportEmailRequest(c *gin.Context) {
 	parsedBeginTime, err := time.Parse(time.RFC3339, beginTime)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to parse begin time"})
+		log.Println("Failed to parse begin time:", err)
 		return
 	}
 	parsedStartTime, err := time.Parse(time.RFC3339, req.StartTime)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to parse time"})
+		log.Println("Failed to parse start time:", err)
 		return
 	}
 	parsedEndTime, err := time.Parse(time.RFC3339, req.EndTime)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to parse time"})
+		log.Println("Failed to parse end time:", err)
 		return
 	}
 	if parsedStartTime.After(parsedEndTime) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Start time must be before end time"})
+		log.Println("Start time must be before end time")
 		return
 	}
 

@@ -602,16 +602,8 @@ const docTemplate = `{
         "object.AddServerRequest": {
             "type": "object",
             "properties": {
-                "created_time": {
-                    "description": "ISO 8601 format",
-                    "type": "string"
-                },
                 "ipv4": {
                     "description": "IPv4 address of the server",
-                    "type": "string"
-                },
-                "last_updated_time": {
-                    "description": "ISO 8601 format",
                     "type": "string"
                 },
                 "server_name": {
