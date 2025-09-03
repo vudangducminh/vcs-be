@@ -1,31 +1,10 @@
-2025/09/03 14:44:20 Logger initialized. Subsequent logs will be written to log/server.log
-2025/09/03 14:44:20 Connected to PostgreSQL database successfully
-2025/09/03 14:44:21 Connected to Redis successfully
-2025/09/03 14:44:21 Connected to Elasticsearch successfully
-2025/09/03 14:44:47 Username: Kawaii
-2025/09/03 14:44:47 Password: 123
-2025/09/03 14:44:47 JWT token saved to Redis successfully
-2025/09/03 14:47:10 Logger initialized. Subsequent logs will be written to log/server.log
-2025/09/03 14:47:10 Connected to PostgreSQL database successfully
-2025/09/03 14:47:11 Connected to Redis successfully
-2025/09/03 14:47:11 Connected to Elasticsearch successfully
-2025/09/03 14:47:38 JWT token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTY4ODkwODcsInBhc3N3b3JkIjoiMTIzIiwidXNlcm5hbWUiOiJLYXdhaWkifQ.SKSAP6swGcRp6f_1HmE6iENVhO4Htu0cdK4IyTJJkPI
-2025/09/03 14:47:38 Username from JWT token: Kawaii
-2025/09/03 14:48:25 JWT token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTY4ODkwODcsInBhc3N3b3JkIjoiMTIzIiwidXNlcm5hbWUiOiJLYXdhaWkifQ.SKSAP6swGcRp6f_1HmE6iENVhO4Htu0cdK4IyTJJkPI
-2025/09/03 14:48:26 Username from JWT token: Kawaii
-2025/09/03 14:48:33 JWT token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTY4ODkwODcsInBhc3N3b3JkIjoiMTIzIiwidXNlcm5hbWUiOiJLYXdhaWkifQ.SKSAP6swGcRp6f_1HmE6iENVhO4Htu0cdK4IyTJJkPI
-2025/09/03 14:48:33 Username from JWT token: Kawaii
-2025/09/03 14:48:44 JWT token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTY4ODkwODcsInBhc3N3b3JkIjoiMTIzIiwidXNlcm5hbWUiOiJLYXdhaWkifQ.SKSAP6swGcRp6f_1HmE6iENVhO4Htu0cdK4IyTJJkPI
-2025/09/03 14:48:45 Username from JWT token: Kawaii
-2025/09/03 14:48:50 JWT token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTY4ODkwODcsInBhc3N3b3JkIjoiMTIzIiwidXNlcm5hbWUiOiJLYXdhaWkifQ.SKSAP6swGcRp6f_1HmE6iENVhO4Htu0cdK4IyTJJkPI
-2025/09/03 14:48:50 Username from JWT token: Kawaii
-2025/09/03 14:48:59 JWT token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTY4ODkwODcsInBhc3N3b3JkIjoiMTIzIiwidXNlcm5hbWUiOiJLYXdhaWkifQ.SKSAP6swGcRp6f_1HmE6iENVhO4Htu0cdK4IyTJJkPI
-2025/09/03 14:48:59 Username from JWT token: Kawaii
-2025/09/03 14:50:48 JWT token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTY4ODkwODcsInBhc3N3b3JkIjoiMTIzIiwidXNlcm5hbWUiOiJLYXdhaWkifQ.SKSAP6swGcRp6f_1HmE6iENVhO4Htu0cdK4IyTJJkPI
-2025/09/03 14:50:48 Username from JWT token: Kawaii
-2025/09/03 14:51:24 Logger initialized. Subsequent logs will be written to log/server.log
-2025/09/03 14:51:24 Connected to PostgreSQL database successfully
-2025/09/03 14:51:25 Connected to Redis successfully
-2025/09/03 14:51:25 Connected to Elasticsearch successfully
-2025/09/03 14:51:41 JWT token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTY4ODkwODcsInBhc3N3b3JkIjoiMTIzIiwidXNlcm5hbWUiOiJLYXdhaWkifQ.SKSAP6swGcRp6f_1HmE6iENVhO4Htu0cdK4IyTJJkPI
-2025/09/03 14:51:42 Username from JWT token: Kawaii
+2025/09/03 14:53:42 JWT token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTY4ODkwODcsInBhc3N3b3JkIjoiMTIzIiwidXNlcm5hbWUiOiJLYXdhaWkifQ.SKSAP6swGcRp6f_1HmE6iENVhO4Htu0cdK4IyTJJkPI
+2025/09/03 14:53:42 Username from JWT token: Kawaii
+2025/09/03 14:54:16 JWT token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTY4ODkwODcsInBhc3N3b3JkIjoiMTIzIiwidXNlcm5hbWUiOiJLYXdhaWkifQ.SKSAP6swGcRp6f_1HmE6iENVhO4Htu0cdK4IyTJJkPI
+2025/09/03 14:54:16 Username from JWT token: Kawaii
+2025/09/03 14:54:59 JWT token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTY4ODkwODcsInBhc3N3b3JkIjoiMTIzIiwidXNlcm5hbWUiOiJLYXdhaWkifQ.SKSAP6swGcRp6f_1HmE6iENVhO4Htu0cdK4IyTJJkPI
+2025/09/03 14:55:00 Username from JWT token: Kawaii
+2025/09/03 14:55:00 Start time must be before end time
+2025/09/03 14:55:08 JWT token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTY4ODkwODcsInBhc3N3b3JkIjoiMTIzIiwidXNlcm5hbWUiOiJLYXdhaWkifQ.SKSAP6swGcRp6f_1HmE6iENVhO4Htu0cdK4IyTJJkPI
+2025/09/03 14:55:08 Username from JWT token: Kawaii
+2025/09/03 14:55:08 Daily report email request saved to Redis successfully
