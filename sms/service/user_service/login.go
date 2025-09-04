@@ -3,7 +3,7 @@ package users_handler
 import (
 	"log"
 	"net/http"
-	"sms/auth"
+	"sms/algorithm"
 	_ "sms/docs"
 	"sms/object"
 
@@ -52,7 +52,7 @@ func HandleLogin(c *gin.Context) {
 	}
 
 	// Generate JWT token before redirecting the user
-	tokenString, err := auth.GenerateJWT(req.Username, req.Password)
+	tokenString, err := algorithm.GenerateJWT(req.Username, req.Password)
 	if err != nil {
 		// handle error
 		c.JSON(http.StatusUnauthorized, gin.H{

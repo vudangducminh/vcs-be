@@ -62,3 +62,5 @@ func UpdateServer(c *gin.Context) {
 		c.JSON(status, gin.H{"error": "Failed to update server"})
 	}
 }
+
+
