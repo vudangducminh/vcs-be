@@ -1,17 +1,36 @@
 package middleware
 
 import (
+	"log"
 	"net/http"
-
-	redis_query "sms/server/database/cache/redis/query"
+	"sms/algorithm"
 
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 func Auth() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		jwt := c.GetHeader("jwt")
-		username := redis_query.GetUsernameByJWTToken(jwt)
+		jwtString := c.GetHeader("jwt")
+		token, err := algorithm.ValidateJWT(jwtString)
+		if err != nil {
+			log.Println("Invalid JWT token:", err)
+			return
+		}
+		if !token.Valid {
+			log.Println("JWT token is not valid")
+			return
+		}
+		claims, ok := token.Claims.(jwt.MapClaims)
+		if !ok {
+			log.Println("JWT claims are not of type jwt.MapClaims")
+			return
+		}
+		username, ok := claims["username"].(string)
+		if !ok {
+			log.Println("Username claim not found or not a string")
+			return
+		}
 		if username == "" {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed"})
 			c.Abort()

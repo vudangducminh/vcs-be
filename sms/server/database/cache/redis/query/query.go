@@ -36,17 +36,6 @@ func SaveJWTToken(tokenStr string, second int) bool {
 	return true
 }
 
-func GetUsernameByJWTToken(tokenStr string) string {
-	log.Println("JWT token:", tokenStr)
-	username, err := connector.RedisClient.Get(context.Background(), tokenStr).Result()
-	log.Println("Username from JWT token:", username)
-	if err != nil {
-		log.Println("Error while fetching username using JWT token")
-		return ""
-	}
-	return username
-}
-
 func SaveDailyReportEmailRequest(email string, second int, startTime int64) bool {
 	// Save the daily report email request to Redis
 	err := connector.RedisClient.Set(context.Background(), "Email: "+email, startTime, time.Duration(second)*time.Second).Err()

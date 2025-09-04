@@ -1,0 +1,4 @@
+2025/09/05 01:22:19 Logger initialized. Subsequent logs will be written to log/server.log
+2025/09/05 01:22:19 Connected to PostgreSQL database successfully
+2025/09/05 01:22:20 Connected to Redis successfully
+2025/09/05 01:22:20 Connected to Elasticsearch successfully
