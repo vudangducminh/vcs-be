@@ -7,7 +7,6 @@ import (
 	_ "sms/docs"
 	"sms/object"
 
-	redis_query "sms/server/database/cache/redis/query"
 	posgresql_query "sms/server/database/postgresql/query"
 
 	"github.com/gin-gonic/gin"
@@ -52,7 +51,8 @@ func HandleLogin(c *gin.Context) {
 	}
 
 	// Generate JWT token before redirecting the user
-	tokenString, err := algorithm.GenerateJWT(req.Username, req.Password)
+	role := posgresql_query.GetRoleByUsername(req.Username)
+	tokenString, err := algorithm.GenerateJWT(req.Username, req.Password, role)
 	if err != nil {
 		// handle error
 		c.JSON(http.StatusUnauthorized, gin.H{
@@ -61,17 +61,9 @@ func HandleLogin(c *gin.Context) {
 		})
 		return
 	}
-	// Set the cookie in the response
-
-	if redis_query.SaveJWTToken(tokenString, 1800) {
-		c.JSON(http.StatusOK, gin.H{
-			"message": "Login successful",
-			"token":   tokenString,
-		})
-	} else {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Error saving JWT token",
-			"error":   "Error saving JWT token",
-		})
-	}
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Login successful",
+		"token":   tokenString,
+		"role":    role,
+	})
 }

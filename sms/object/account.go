@@ -6,4 +6,5 @@ type Account struct {
 	Email    string `xorm:"'email'"`
 	Username string `xorm:"'username'"`
 	Password string `xorm:"'password'"`
+	Role     string `xorm:"'role'"`
 }

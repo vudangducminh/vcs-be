@@ -7,14 +7,14 @@ import (
 )
 
 func TestGenerateJWT(t *testing.T) {
-	_, err := GenerateJWT("sus", "123")
+	_, err := GenerateJWT("sus", "123", "admin")
 	if err != nil {
 		t.Errorf("Error generating JWT: %v", err)
 	}
 }
 
 func TestValidateJWT(t *testing.T) {
-	tokenStr, err := GenerateJWT("sus", "123")
+	tokenStr, err := GenerateJWT("sus", "123", "admin")
 	if err != nil {
 		t.Fatalf("Error generating JWT: %v", err)
 	}

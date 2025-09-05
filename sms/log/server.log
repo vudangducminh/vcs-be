@@ -2,3 +2,21 @@
 2025/09/05 01:22:19 Connected to PostgreSQL database successfully
 2025/09/05 01:22:20 Connected to Redis successfully
 2025/09/05 01:22:20 Connected to Elasticsearch successfully
+2025/09/06 00:27:48 Logger initialized. Subsequent logs will be written to log/server.log
+2025/09/06 00:27:48 Connected to PostgreSQL database successfully
+2025/09/06 00:27:49 Connected to Redis successfully
+2025/09/06 00:27:49 Connected to Elasticsearch successfully
+2025/09/06 00:28:02 Username: Kawaii
+2025/09/06 00:28:02 Password: 123
+2025/09/06 00:28:39 Logger initialized. Subsequent logs will be written to log/server.log
+2025/09/06 00:28:39 Connected to PostgreSQL database successfully
+2025/09/06 00:28:40 Connected to Redis successfully
+2025/09/06 00:28:40 Connected to Elasticsearch successfully
+2025/09/06 00:28:48 Username: admin1
+2025/09/06 00:28:48 Password: 123
+2025/09/06 00:29:19 Logger initialized. Subsequent logs will be written to log/server.log
+2025/09/06 00:29:19 Connected to PostgreSQL database successfully
+2025/09/06 00:29:19 Connected to Redis successfully
+2025/09/06 00:29:19 Connected to Elasticsearch successfully
+2025/09/06 00:29:24 Username: admin1
+2025/09/06 00:29:24 Password: 123

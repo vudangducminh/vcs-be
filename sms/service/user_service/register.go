@@ -44,6 +44,7 @@ func HandleRegister(c *gin.Context) {
 		Email:    req.Email,
 		Username: req.Username,
 		Password: req.Password,
+		Role:     "user",
 	}
 	httpStatus := posgresql_query.AddAccountInfo(account)
 	if httpStatus == http.StatusCreated {

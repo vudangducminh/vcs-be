@@ -7,6 +7,26 @@ import (
 	"sms/server/database/postgresql/connector"
 )
 
+func GetRoleByUsername(username string) string {
+	var account object.Account
+	has, err := connector.Engine.Table("account").
+		Cols("role").
+		Alias("account").
+		Where("username = ?", username).
+		Get(&account)
+
+	if err != nil {
+		log.Println("Error retrieving account role:", err)
+		return ""
+	}
+
+	if !has || account.Role == "" {
+		log.Println("No account found with username:", username)
+		return ""
+	}
+	return account.Role
+}
+
 func GetAccountPasswordByUsername(username string) string {
 	var account object.Account
 	has, err := connector.Engine.Table("account").

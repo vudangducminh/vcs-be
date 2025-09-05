@@ -18,14 +18,17 @@ func ConnectToSwagger() {
 		users.POST("/login", user_service.HandleLogin)
 		users.POST("/register", user_service.HandleRegister)
 	}
-	servers := r.Group("api/v1/servers", auth_service.Auth())
+	servers := r.Group("api/v1/servers", auth_service.AuthUser())
+	{
+		servers.GET("/view_servers/:order/:filter/:string", server_service.ViewServer)
+		servers.GET("/export_excel/:order/:filter/:string", server_service.ExportDataToExcel)
+	}
+	servers = r.Group("api/v1/servers", auth_service.AuthAdmin())
 	{
 		servers.POST("/add_server", server_service.AddServer)
-		servers.GET("/view_servers/:order/:filter/:string", server_service.ViewServer)
 		servers.PUT("/update_server", server_service.UpdateServer)
 		servers.DELETE("/delete_server", server_service.DeleteServer)
 		servers.POST("/import_excel", server_service.ImportExcel)
-		servers.GET("/export_excel/:order/:filter/:string", server_service.ExportDataToExcel)
 		servers.POST("/daily_report", server_service.DailyReportEmailRequest)
 	}
 	// The host should match the @host annotation in main.go
