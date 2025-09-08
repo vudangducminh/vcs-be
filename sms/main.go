@@ -12,7 +12,7 @@ import (
 	elastic "sms/server/database/elasticsearch/connector"
 	elastic_query "sms/server/database/elasticsearch/query"
 	postgresql "sms/server/database/postgresql/connector"
-	time_checker "sms/service/report_service/time_checker"
+	healthcheck_service "sms/service/healthcheck_service"
 	"sms/service/swagger"
 	_ "sms/service/user_service" // Importing users_handler for Swagger documentation
 	"time"
@@ -63,7 +63,7 @@ func main() {
 	// GenerateServer()
 
 	// Start the time checker for daily report email requests
-	go time_checker.TimeCheckerForSendingEmails()
+	go healthcheck_service.HealthCheck()
 
 	// Connect to Swagger for API documentation
 	swagger.ConnectToSwagger()

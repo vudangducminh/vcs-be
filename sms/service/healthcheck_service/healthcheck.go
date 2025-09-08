@@ -1,6 +1,7 @@
 package healthcheckservice
 
 import (
+	"log"
 	"net"
 	"sms/object"
 	elastic_query "sms/server/database/elasticsearch/query"
@@ -23,13 +24,19 @@ func HealthCheck() {
 	if len(ServerList) == 0 {
 		ServerList = elastic_query.GetAllServer()
 	}
-	for _, server := range ServerList {
-		// ping all server
-		isAlive := PingServer(server.IPv4)
-		if isAlive {
-			// update data to elasticsearch
-		} else {
-			// update data to elasticsearch
+	for {
+		for _, server := range ServerList {
+			// ping all server
+			isAlive := PingServer(server.IPv4)
+			if isAlive {
+				log.Println("Server", server.ServerId, "is alive")
+				// update data to elasticsearch
+			} else {
+				log.Println("Server", server.ServerId, "is not alive")
+				// update data to elasticsearch
+			}
 		}
+		time.Sleep(30 * time.Second)
 	}
+
 }
