@@ -75,6 +75,8 @@ services:
       redis:
         condition: service_healthy
     restart: unless-stopped
+    volumes:
+      - ../log:/root/log
     environment:
       - ELASTICSEARCH_URL=http://elasticsearch:9200
       - REDIS_HOST=${REDIS_HOST}
@@ -96,4 +98,6 @@ networks:
 
 volumes:
   elasticsearch-data:
+    driver: local
+  sms-logs:
     driver: local
