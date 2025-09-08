@@ -5,6 +5,7 @@ import (
 
 	"sms/object"
 	elastic_query "sms/server/database/elasticsearch/query"
+	healthcheckservice "sms/service/healthcheck_service"
 
 	"github.com/gin-gonic/gin"
 )
@@ -36,6 +37,14 @@ func DeleteServer(c *gin.Context) {
 	status := elastic_query.DeleteServer(req.ServerId)
 	switch status {
 	case http.StatusOK:
+		for i := 0; i < len(healthcheckservice.ServerList); i++ {
+			if healthcheckservice.ServerList[i].ServerId == req.ServerId {
+				// Remove element from slice
+				healthcheckservice.ServerList[i] = healthcheckservice.ServerList[len(healthcheckservice.ServerList)-1]
+				healthcheckservice.ServerList = healthcheckservice.ServerList[:len(healthcheckservice.ServerList)-1]
+				break
+			}
+		}
 		c.JSON(http.StatusOK, gin.H{
 			"message":     "Server deleted successfully",
 			"server_id":   req.ServerId,

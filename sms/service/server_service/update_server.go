@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"sms/object"
 	elastic_query "sms/server/database/elasticsearch/query"
+	healthcheckservice "sms/service/healthcheck_service"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -57,10 +58,14 @@ func UpdateServer(c *gin.Context) {
 
 	status := elastic_query.UpdateServerInfo(server)
 	if status == http.StatusOK {
+		for i := 0; i < len(healthcheckservice.ServerList); i++ {
+			if healthcheckservice.ServerList[i].ServerId == server.ServerId {
+				healthcheckservice.ServerList[i].IPv4 = server.IPv4
+				break
+			}
+		}
 		c.JSON(http.StatusOK, gin.H{"message": "Server updated successfully"})
 	} else {
 		c.JSON(status, gin.H{"error": "Failed to update server"})
 	}
 }
-
-

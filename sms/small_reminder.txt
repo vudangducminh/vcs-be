@@ -14,3 +14,5 @@ Note:
 - Go test:
     go test ./...
 - http://localhost:8800/swagger/index.html
+
+- Implement server's ping

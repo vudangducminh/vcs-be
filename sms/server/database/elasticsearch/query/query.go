@@ -13,6 +13,60 @@ import (
 	"github.com/elastic/go-elasticsearch/v8/esapi"
 )
 
+func GetAllServer() []object.BriefServerInfo {
+	query := `{
+		"size": 10000,
+		"_source": ["server_id", "ipv4"],
+		"query": {
+			"match_all": { }
+		}
+	}`
+
+	res, err := elastic.Es.Search(
+		elastic.Es.Search.WithIndex("server"),
+		elastic.Es.Search.WithBody(strings.NewReader(query)),
+		elastic.Es.Search.WithPretty(),
+		elastic.Es.Search.WithContext(context.Background()),
+	)
+
+	if err != nil {
+		log.Println("Error getting all servers:", err)
+		return nil
+	}
+	defer res.Body.Close()
+
+	if res.IsError() {
+		log.Println("Error response from Elasticsearch:", res.String())
+		return nil
+	}
+
+	var searchResult struct {
+		Hits struct {
+			Hits []struct {
+				Source struct {
+					ServerId string `json:"server_id"`
+					IPv4     string `json:"ipv4"`
+				} `json:"_source"`
+			} `json:"hits"`
+		} `json:"hits"`
+	}
+
+	if err := json.NewDecoder(res.Body).Decode(&searchResult); err != nil {
+		log.Println("Error decoding search results:", err)
+		return nil
+	}
+
+	var servers []object.BriefServerInfo
+	for _, hit := range searchResult.Hits.Hits {
+		servers = append(servers, object.BriefServerInfo{
+			ServerId: hit.Source.ServerId,
+			IPv4:     hit.Source.IPv4,
+		})
+	}
+
+	return servers
+}
+
 func CheckServerExists(IPv4 string) bool {
 	query := fmt.Sprintf(`{
 		"query": {
