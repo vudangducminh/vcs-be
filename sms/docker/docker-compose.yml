@@ -1,5 +1,26 @@
   
 services:
+  postgresql:
+    image: postgres:15-alpine
+    container_name: postgresql
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=vudangducminh
+      - POSTGRES_PASSWORD=Amogus69420
+    ports:
+      - "5433:5432"
+    networks:
+      - elastic
+    volumes:
+      - postgresql-data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vudangducminh -d postgres"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.17.4
     container_name: elasticsearch
@@ -70,6 +91,8 @@ services:
     networks:
       - elastic
     depends_on:
+      postgresql:
+        condition: service_healthy
       elasticsearch:
         condition: service_healthy
       redis:
@@ -79,6 +102,11 @@ services:
       - ../log:/root/log
     environment:
       - ELASTICSEARCH_URL=http://elasticsearch:9200
+      - POSTGRES_HOST=postgresql
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=vudangducminh
+      - POSTGRES_PASSWORD=Amogus69420
+      - POSTGRES_DB=postgres
       - REDIS_HOST=${REDIS_HOST}
       - REDIS_PORT=${REDIS_PORT}
       - REDIS_USER=${REDIS_USER}
@@ -98,6 +126,8 @@ networks:
 
 volumes:
   elasticsearch-data:
+    driver: local
+  postgresql-data:
     driver: local
   sms-logs:
     driver: local

@@ -1,0 +1,35 @@
+2025/09/10 09:50:52 Logger initialized. Subsequent logs will be written to log/server.log
+2025/09/10 09:50:52 Connected to PostgreSQL database successfully
+2025/09/10 09:50:53 Connected to Redis successfully
+2025/09/10 09:50:53 Connected to Elasticsearch successfully
+2025/09/10 09:51:03 Attempting to fetch server list from Elasticsearch...
+2025/09/10 09:54:11 Username: admin1
+2025/09/10 09:54:11 Password: 123
+2025/09/10 09:54:11 Error retrieving account password: dial tcp [::1]:5432: connect: connection refused
+2025/09/10 09:54:11 Username: admin1
+2025/09/10 09:54:11 Password: 123
+2025/09/10 09:54:11 Stored Password: 
+2025/09/10 10:32:52 Logger initialized. Subsequent logs will be written to log/server.log
+2025/09/10 10:32:52 Attempting to connect to PostgreSQL at postgresql:5432
+2025/09/10 10:32:52 Connected to PostgreSQL database successfully
+2025/09/10 10:32:53 Connected to Redis successfully
+2025/09/10 10:32:53 Connected to Elasticsearch successfully
+2025/09/10 10:33:03 Attempting to fetch server list from Elasticsearch...
+2025/09/10 10:47:18 Username: admin1
+2025/09/10 10:47:18 Password: 123
+2025/09/10 10:47:18 Error retrieving account password: pq: relation "account" does not exist
+2025/09/10 10:47:18 Username: admin1
+2025/09/10 10:47:18 Password: 123
+2025/09/10 10:47:18 Stored Password: 
+2025/09/10 10:48:45 Logger initialized. Subsequent logs will be written to log/server.log
+2025/09/10 10:48:45 Attempting to connect to PostgreSQL at postgresql:5432
+2025/09/10 10:48:45 Connected to PostgreSQL database successfully
+2025/09/10 10:48:46 Connected to Redis successfully
+2025/09/10 10:48:46 Connected to Elasticsearch successfully
+2025/09/10 10:48:56 Attempting to fetch server list from Elasticsearch...
+2025/09/10 10:51:04 Username: admin1
+2025/09/10 10:51:04 Password: 123
+2025/09/10 10:51:04 Error retrieving account password: pq: relation "account" does not exist
+2025/09/10 10:51:04 Username: admin1
+2025/09/10 10:51:04 Password: 123
+2025/09/10 10:51:04 Stored Password: 
