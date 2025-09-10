@@ -14,6 +14,16 @@ import (
 )
 
 func GetAllServer() []object.BriefServerInfo {
+	// Check if Elasticsearch is connected before making the query
+	if !elastic.IsConnected() {
+		log.Println("Elasticsearch not connected, attempting to reconnect...")
+		if err := elastic.Reconnect(); err != nil {
+			log.Println("Failed to reconnect to Elasticsearch:", err)
+			return nil
+		}
+		log.Println("Successfully reconnected to Elasticsearch")
+	}
+
 	query := `{
 		"size": 10000,
 		"_source": ["server_id", "ipv4"],

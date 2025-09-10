@@ -16,11 +16,11 @@ services:
       - elasticsearch-data:/usr/share/elasticsearch/data
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health?wait_for_status=yellow&timeout=10s || exit 1"]
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health?wait_for_status=green&timeout=30s && curl -f http://localhost:9200/_cat/indices || exit 1"]
       interval: 30s
-      timeout: 15s
-      retries: 5
-      start_period: 60s
+      timeout: 30s
+      retries: 10
+      start_period: 90s
 
   kibana:
     image: docker.elastic.co/kibana/kibana:8.17.4
@@ -66,7 +66,7 @@ services:
       dockerfile: Dockerfile
     container_name: sms-app
     ports:
-      - "8080:8080"
+      - "8800:8800"
     networks:
       - elastic
     depends_on:
@@ -85,11 +85,11 @@ services:
       - REDIS_PASSWORD=${REDIS_PASSWORD}
       - REDIS_DB=${REDIS_DB}
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8080/health || exit 1"]
+      test: ["CMD-SHELL", "curl -f http://localhost:8800/health || exit 1"]
       interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 60s
+      timeout: 15s
+      retries: 10
+      start_period: 120s
 
 
 networks:

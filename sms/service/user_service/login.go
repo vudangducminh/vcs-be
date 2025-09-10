@@ -42,6 +42,9 @@ func HandleLogin(c *gin.Context) {
 	}
 
 	storedPassword := posgresql_query.GetAccountPasswordByUsername(req.Username)
+	log.Println("Username:", req.Username)
+	log.Println("Password:", req.Password)
+	log.Println("Stored Password:", storedPassword)
 	if storedPassword != req.Password {
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"message": "Invalid username or password",

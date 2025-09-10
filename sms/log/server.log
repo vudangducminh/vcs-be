@@ -1,5 +1,0 @@
-2025/09/08 06:20:18 Logger initialized. Subsequent logs will be written to log/server.log
-2025/09/08 06:20:18 Connected to PostgreSQL database successfully
-2025/09/08 06:20:18 Connected to Redis successfully
-2025/09/08 06:20:18 Connected to Elasticsearch successfully
-2025/09/08 06:20:18 Error getting all servers: dial tcp [::1]:9200: connect: connection refused

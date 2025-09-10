@@ -14,7 +14,7 @@ func GenerateJWT(username string, password string, role string) (string, error) 
 		"username": username,
 		"password": password,
 		"role":     role,
-		"exp":      time.Now().Add(time.Hour * 1).Unix(), // expires in 1 hour
+		"exp":      time.Now().Add(time.Second * 1).Unix(), // expires in 1 hour
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString(jwtKey)
@@ -31,5 +31,11 @@ func ValidateJWT(tokenStr string) (*jwt.Token, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	// Check if token is valid (includes expiration check)
+	if !token.Valid {
+		return nil, fmt.Errorf("token is invalid or expired")
+	}
+
 	return token, nil
 }
