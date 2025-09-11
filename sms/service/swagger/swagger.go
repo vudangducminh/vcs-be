@@ -3,6 +3,7 @@ package swagger
 import (
 	_ "sms/docs"
 	auth_service "sms/service/auth_service"
+	"sms/service/healthcheck_service"
 	server_service "sms/service/server_service"
 	user_service "sms/service/user_service"
 
@@ -13,6 +14,9 @@ import (
 
 func ConnectToSwagger() {
 	r := gin.Default()
+
+	r.GET("/health", healthcheck_service.ServiceHealthCheck)
+
 	users := r.Group("api/v1/users")
 	{
 		users.POST("/login", user_service.HandleLogin)

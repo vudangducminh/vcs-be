@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"sms/algorithm"
+	posgresql_query "sms/server/database/postgresql/query"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
@@ -14,32 +15,55 @@ func AuthAdmin() gin.HandlerFunc {
 		jwtString := c.GetHeader("jwt")
 		token, err := algorithm.ValidateJWT(jwtString)
 		if err != nil {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed"})
 			log.Println("Invalid JWT token:", err)
+			c.Abort()
 			return
 		}
 		if !token.Valid {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed"})
 			log.Println("JWT token is not valid")
+			c.Abort()
 			return
 		}
 		claims, ok := token.Claims.(jwt.MapClaims)
 		if !ok {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed"})
 			log.Println("JWT claims are not of type jwt.MapClaims")
+			c.Abort()
 			return
 		}
 		username, ok := claims["username"].(string)
 		if !ok {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed"})
 			log.Println("Username claim not found or not a string")
-			return
-		}
-		if username == "" {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Authenticati	on failed"})
 			c.Abort()
 			return
 		}
-
+		if username == "" {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed"})
+			c.Abort()
+			return
+		}
+		password, ok := claims["password"].(string)
+		if !ok {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed"})
+			log.Println("Password claim not found or not a string")
+			c.Abort()
+			return
+		}
+		storedPassword := posgresql_query.GetAccountPasswordByUsername(username)
+		if storedPassword != password {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed"})
+			log.Println("Password does not match")
+			c.Abort()
+			return
+		}
 		role, ok := claims["role"].(string)
 		if !ok {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed"})
 			log.Println("Role claim not found or not a string")
+			c.Abort()
 			return
 		}
 		if role != "admin" {

@@ -1,5 +1,26 @@
   
 services:
+  postgresql:
+    image: postgres:15-alpine
+    container_name: postgresql
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=vudangducminh
+      - POSTGRES_PASSWORD=Amogus69420
+    ports:
+      - "5433:5432"
+    networks:
+      - elastic
+    volumes:
+      - postgresql-data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vudangducminh -d postgres"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.17.4
     container_name: elasticsearch
@@ -16,11 +37,11 @@ services:
       - elasticsearch-data:/usr/share/elasticsearch/data
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health?wait_for_status=yellow&timeout=10s || exit 1"]
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health?wait_for_status=green&timeout=30s && curl -f http://localhost:9200/_cat/indices || exit 1"]
       interval: 30s
-      timeout: 15s
-      retries: 5
-      start_period: 60s
+      timeout: 30s
+      retries: 10
+      start_period: 90s
 
   kibana:
     image: docker.elastic.co/kibana/kibana:8.17.4
@@ -66,10 +87,12 @@ services:
       dockerfile: Dockerfile
     container_name: sms-app
     ports:
-      - "8080:8080"
+      - "8800:8800"
     networks:
       - elastic
     depends_on:
+      postgresql:
+        condition: service_healthy
       elasticsearch:
         condition: service_healthy
       # Remove Redis dependency since it's external
@@ -78,16 +101,22 @@ services:
       - ../log:/root/log
     environment:
       - ELASTICSEARCH_URL=http://elasticsearch:9200
-      - REDIS_ADDR=redis-13990.c251.east-us-mz.azure.redns.redis-cloud.com:13990
-      - REDIS_USERNAME=default
-      - REDIS_PASSWORD=c3QOPfZSpiPqTmfBCINbFuPvaKUSEMM8
-      - REDIS_DB=0
+      - POSTGRES_HOST=postgresql
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=vudangducminh
+      - POSTGRES_PASSWORD=Amogus69420
+      - POSTGRES_DB=postgres
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_USER=${REDIS_USER}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_DB=${REDIS_DB}
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8080/health || exit 1"]
+      test: ["CMD-SHELL", "curl -f http://localhost:8800/health || exit 1"]
       interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 60s
+      timeout: 15s
+      retries: 10
+      start_period: 120s
 
 
 networks:
@@ -96,6 +125,8 @@ networks:
 
 volumes:
   elasticsearch-data:
+    driver: local
+  postgresql-data:
     driver: local
   sms-logs:
     driver: local
