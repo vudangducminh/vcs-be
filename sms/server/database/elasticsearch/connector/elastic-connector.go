@@ -16,7 +16,7 @@ func IsConnected() bool {
 func ConnectToEs() {
 	cfg := elasticsearch.Config{
 		Addresses: []string{
-			"http://localhost:9200",
+			"http://elasticsearch:9200",
 		},
 		APIKey: "",
 	}
@@ -24,6 +24,7 @@ func ConnectToEs() {
 	Es, err = elasticsearch.NewClient(cfg)
 	if err != nil {
 		log.Println("Error creating the client:", err)
+		return
 	}
 	isConnected = true
 	log.Println("Connected to Elasticsearch successfully")

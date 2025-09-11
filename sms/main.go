@@ -57,13 +57,13 @@ func main() {
 	elastic.ConnectToEs()
 	if !elastic.IsConnected() {
 		log.Println("Failed to connect to Elasticsearch")
+	} else {
+		go healthcheck_service.HealthCheck()
 	}
-
 	// Generate sample servers for testing
 	// GenerateServer()
 
 	// Start the time checker for daily report email requests
-	go healthcheck_service.HealthCheck()
 
 	// Connect to Swagger for API documentation
 	swagger.ConnectToSwagger()

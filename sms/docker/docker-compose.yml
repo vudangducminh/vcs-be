@@ -58,7 +58,7 @@ services:
       - REDIS_USER=${REDIS_USER}
       - REDIS_PASSWORD=${REDIS_PASSWORD}
       - REDIS_DB=${REDIS_DB}
-    command: ["sh", "-c", "while true; do sleep 30; done"]
+    # command: ["sh", "-c", "while true; do sleep 30; done"]
 
   sms-app:
     build: 
@@ -72,18 +72,16 @@ services:
     depends_on:
       elasticsearch:
         condition: service_healthy
-      redis:
-        condition: service_healthy
+      # Remove Redis dependency since it's external
     restart: unless-stopped
     volumes:
       - ../log:/root/log
     environment:
       - ELASTICSEARCH_URL=http://elasticsearch:9200
-      - REDIS_HOST=${REDIS_HOST}
-      - REDIS_PORT=${REDIS_PORT}
-      - REDIS_USER=${REDIS_USER}
-      - REDIS_PASSWORD=${REDIS_PASSWORD}
-      - REDIS_DB=${REDIS_DB}
+      - REDIS_ADDR=redis-13990.c251.east-us-mz.azure.redns.redis-cloud.com:13990
+      - REDIS_USERNAME=default
+      - REDIS_PASSWORD=c3QOPfZSpiPqTmfBCINbFuPvaKUSEMM8
+      - REDIS_DB=0
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:8080/health || exit 1"]
       interval: 30s

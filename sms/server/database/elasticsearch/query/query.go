@@ -14,6 +14,10 @@ import (
 )
 
 func GetAllServer() []object.BriefServerInfo {
+	if !elastic.IsConnected() {
+		log.Println("Elasticsearch is not connected")
+		return nil
+	}
 	query := `{
 		"size": 10000,
 		"_source": ["server_id", "ipv4"],
