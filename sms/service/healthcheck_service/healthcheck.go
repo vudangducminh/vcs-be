@@ -1,6 +1,7 @@
 package healthcheck_service
 
 import (
+	"context"
 	"log"
 	"net"
 	"sms/object"
@@ -12,12 +13,22 @@ var ServerList []object.BriefServerInfo
 
 func PingServer(ip string) bool {
 	timeout := time.Second * 3
-	conn, err := net.DialTimeout("ip4:icmp", ip, timeout)
-	if err != nil {
-		return false
+
+	resolver := &net.Resolver{
+		PreferGo: true,
+		Dial: func(ctx context.Context, network, address string) (net.Conn, error) {
+			d := net.Dialer{
+				Timeout: timeout,
+			}
+			return d.DialContext(ctx, network, address)
+		},
 	}
-	defer conn.Close()
-	return true
+
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
+	defer cancel()
+
+	_, err := resolver.LookupAddr(ctx, ip)
+	return err == nil
 }
 
 func HealthCheck() {
@@ -40,15 +51,13 @@ func HealthCheck() {
 
 		for _, server := range ServerList {
 			// ping all server
-			isAlive := PingServer(server.IPv4)
-			if isAlive {
-				// log.Println("IP", server.IPv4, "is alive")
-				// update data to elasticsearch
-			} else {
-				// log.Println("IP", server.IPv4, "is not alive")
-				// update data to elasticsearch
-			}
+			go func(ip string) {
+				isAlive := PingServer(ip)
+				log.Println("IP", ip, "alive status:", isAlive)
+			}(server.IPv4)
 		}
+		// log.Println("Pinging 196.56.217.125 inside container")
+		// log.Println("Status: ", PingServer("196.56.217.125"))
 		time.Sleep(30 * time.Second)
 	}
 
