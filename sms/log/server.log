@@ -1,105 +1,218 @@
-2025/09/08 06:20:18 Logger initialized. Subsequent logs will be written to log/server.log
-2025/09/08 06:20:18 Connected to PostgreSQL database successfully
-2025/09/08 06:20:18 Connected to Redis successfully
-2025/09/08 06:20:18 Connected to Elasticsearch successfully
-2025/09/08 06:20:18 Error getting all servers: dial tcp [::1]:9200: connect: connection refused
-2025/09/08 10:50:40 Logger initialized. Subsequent logs will be written to log/server.log
-2025/09/08 10:50:40 Connected to PostgreSQL database successfully
-2025/09/08 10:50:41 Connected to Redis successfully
-2025/09/08 10:50:41 Connected to Elasticsearch successfully
-2025/09/08 10:50:41 Error getting all servers: dial tcp [::1]:9200: connect: connection refused
-2025/09/08 10:55:37 Logger initialized. Subsequent logs will be written to log/server.log
-2025/09/08 10:55:37 Connected to PostgreSQL database successfully
-2025/09/08 10:55:38 Connected to Redis successfully
-2025/09/08 10:55:38 Connected to Elasticsearch successfully
-2025/09/08 10:55:38 Error getting all servers: dial tcp [::1]:9200: connect: connection refused
-2025/09/08 10:57:10 Logger initialized. Subsequent logs will be written to log/server.log
-2025/09/08 10:57:10 Connected to PostgreSQL database successfully
-2025/09/08 10:57:11 Connected to Redis successfully
-2025/09/08 10:57:11 Connected to Elasticsearch successfully
-2025/09/08 10:57:11 Error getting all servers: dial tcp [::1]:9200: connect: connection refused
-2025/09/08 10:57:54 Logger initialized. Subsequent logs will be written to log/server.log
-2025/09/08 10:57:54 Connected to PostgreSQL database successfully
-2025/09/08 10:57:55 Connected to Redis successfully
-2025/09/08 10:57:55 Connected to Elasticsearch successfully
-2025/09/08 10:57:55 Error getting all servers: dial tcp [::1]:9200: connect: connection refused
-2025/09/08 11:08:48 Logger initialized. Subsequent logs will be written to log/server.log
-2025/09/08 11:08:48 Connected to PostgreSQL database successfully
-2025/09/08 11:08:49 Connected to Redis successfully
-2025/09/08 11:08:49 Connected to Elasticsearch successfully
-2025/09/08 11:08:49 Error getting all servers: dial tcp 172.18.0.2:9200: connect: connection refused
-2025/09/08 11:14:15 Logger initialized. Subsequent logs will be written to log/server.log
-2025/09/08 11:14:15 Connected to PostgreSQL database successfully
-2025/09/08 11:14:16 Connected to Redis successfully
-2025/09/08 11:14:16 Connected to Elasticsearch successfully
-2025/09/08 11:14:16 Error getting all servers: dial tcp 172.18.0.2:9200: connect: connection refused
-2025/09/08 11:20:23 Logger initialized. Subsequent logs will be written to log/server.log
-2025/09/08 11:20:23 Connected to PostgreSQL database successfully
-2025/09/08 11:20:25 Connected to Redis successfully
-2025/09/08 11:20:25 Connected to Elasticsearch successfully
-2025/09/08 11:20:25 Error getting all servers: dial tcp 172.18.0.3:9200: connect: connection refused
-2025/09/08 11:32:34 Logger initialized. Subsequent logs will be written to log/server.log
-2025/09/08 11:32:34 Connected to PostgreSQL database successfully
-2025/09/08 11:32:35 Connected to Redis successfully
-2025/09/08 11:32:35 Connected to Elasticsearch successfully
-2025/09/08 11:32:35 Error getting all servers: dial tcp 172.18.0.3:9200: connect: connection refused
-2025/09/08 11:37:03 Logger initialized. Subsequent logs will be written to log/server.log
-2025/09/08 11:37:03 Connected to PostgreSQL database successfully
-2025/09/08 11:37:04 Connected to Redis successfully
-2025/09/08 11:37:04 Connected to Elasticsearch successfully
-2025/09/08 11:37:04 Error getting all servers: dial tcp 172.18.0.3:9200: connect: connection refused
-2025/09/08 11:41:15 Logger initialized. Subsequent logs will be written to log/server.log
-2025/09/08 11:41:15 Connected to PostgreSQL database successfully
-2025/09/08 11:41:16 Connected to Redis successfully
-2025/09/08 11:41:16 Connected to Elasticsearch successfully
-2025/09/08 11:41:16 Error getting all servers: dial tcp 172.18.0.2:9200: connect: connection refused
-2025/09/08 11:47:59 Logger initialized. Subsequent logs will be written to log/server.log
-2025/09/08 11:47:59 Connected to PostgreSQL database successfully
-2025/09/08 11:48:00 Connected to Redis successfully
-2025/09/08 11:48:00 Connected to Elasticsearch successfully
-2025/09/08 11:48:00 Error getting all servers: dial tcp 172.18.0.2:9200: connect: connection refused
-2025/09/08 12:00:08 Logger initialized. Subsequent logs will be written to log/server.log
-2025/09/08 12:00:08 Connected to PostgreSQL database successfully
-2025/09/08 12:00:09 Connected to Redis successfully
-2025/09/08 12:00:09 Connected to Elasticsearch successfully
-2025/09/08 12:00:09 Error getting all servers: dial tcp 172.18.0.2:9200: connect: connection refused
-2025/09/09 04:21:03 Logger initialized. Subsequent logs will be written to log/server.log
-2025/09/09 04:21:03 Connected to PostgreSQL database successfully
-2025/09/09 04:21:04 Connected to Redis successfully
-2025/09/09 04:21:04 Connected to Elasticsearch successfully
-2025/09/09 04:21:04 Error getting all servers: dial tcp 172.18.0.3:9200: connect: connection refused
-2025/09/10 09:50:52 Logger initialized. Subsequent logs will be written to log/server.log
-2025/09/10 09:50:52 Connected to PostgreSQL database successfully
-2025/09/10 09:50:53 Connected to Redis successfully
-2025/09/10 09:50:53 Connected to Elasticsearch successfully
-2025/09/10 09:51:03 Attempting to fetch server list from Elasticsearch...
-2025/09/10 09:54:11 Username: admin1
-2025/09/10 09:54:11 Password: 123
-2025/09/10 09:54:11 Error retrieving account password: dial tcp [::1]:5432: connect: connection refused
-2025/09/10 09:54:11 Username: admin1
-2025/09/10 09:54:11 Password: 123
-2025/09/10 09:54:11 Stored Password: 
-2025/09/10 10:32:52 Logger initialized. Subsequent logs will be written to log/server.log
-2025/09/10 10:32:52 Attempting to connect to PostgreSQL at postgresql:5432
-2025/09/10 10:32:52 Connected to PostgreSQL database successfully
-2025/09/10 10:32:53 Connected to Redis successfully
-2025/09/10 10:32:53 Connected to Elasticsearch successfully
-2025/09/10 10:33:03 Attempting to fetch server list from Elasticsearch...
-2025/09/10 10:47:18 Username: admin1
-2025/09/10 10:47:18 Password: 123
-2025/09/10 10:47:18 Error retrieving account password: pq: relation "account" does not exist
-2025/09/10 10:47:18 Username: admin1
-2025/09/10 10:47:18 Password: 123
-2025/09/10 10:47:18 Stored Password: 
-2025/09/10 10:48:45 Logger initialized. Subsequent logs will be written to log/server.log
-2025/09/10 10:48:45 Attempting to connect to PostgreSQL at postgresql:5432
-2025/09/10 10:48:45 Connected to PostgreSQL database successfully
-2025/09/10 10:48:46 Connected to Redis successfully
-2025/09/10 10:48:46 Connected to Elasticsearch successfully
-2025/09/10 10:48:56 Attempting to fetch server list from Elasticsearch...
-2025/09/10 10:51:04 Username: admin1
-2025/09/10 10:51:04 Password: 123
-2025/09/10 10:51:04 Error retrieving account password: pq: relation "account" does not exist
-2025/09/10 10:51:04 Username: admin1
-2025/09/10 10:51:04 Password: 123
-2025/09/10 10:51:04 Stored Password:
+2025/09/11 08:15:47 Logger initialized. Subsequent logs will be written to log/server.log
+2025/09/11 08:15:47 Attempting to connect to PostgreSQL at postgresql:5432
+2025/09/11 08:15:47 Connected to PostgreSQL database successfully
+2025/09/11 08:15:48 Connected to Redis successfully
+2025/09/11 08:15:48 Connected to Elasticsearch successfully
+2025/09/11 08:15:58 Attempting to fetch server list from Elasticsearch...
+2025/09/11 08:15:59 Error response from Elasticsearch: [503 Service Unavailable] {
+  "error" : {
+    "root_cause" : [
+      {
+        "type" : "no_shard_available_action_exception",
+        "reason" : null
+      }
+    ],
+    "type" : "search_phase_execution_exception",
+    "reason" : "all shards failed",
+    "phase" : "query",
+    "grouped" : true,
+    "failed_shards" : [
+      {
+        "shard" : 0,
+        "index" : "server",
+        "node" : null,
+        "reason" : {
+          "type" : "no_shard_available_action_exception",
+          "reason" : null
+        }
+      }
+    ]
+  },
+  "status" : 503
+}
+
+2025/09/11 08:15:59 No servers found or Elasticsearch not ready, will retry later
+2025/09/11 08:15:59 Server list is empty, attempting to refresh from Elasticsearch...
+2025/09/11 08:15:59 Error response from Elasticsearch: [503 Service Unavailable] {
+  "error" : {
+    "root_cause" : [
+      {
+        "type" : "no_shard_available_action_exception",
+        "reason" : null
+      }
+    ],
+    "type" : "search_phase_execution_exception",
+    "reason" : "all shards failed",
+    "phase" : "query",
+    "grouped" : true,
+    "failed_shards" : [
+      {
+        "shard" : 0,
+        "index" : "server",
+        "node" : null,
+        "reason" : {
+          "type" : "no_shard_available_action_exception",
+          "reason" : null
+        }
+      }
+    ]
+  },
+  "status" : 503
+}
+
+2025/09/11 08:25:14 Logger initialized. Subsequent logs will be written to log/server.log
+2025/09/11 08:25:14 Attempting to connect to PostgreSQL at postgresql:5432
+2025/09/11 08:25:14 Connected to PostgreSQL database successfully
+2025/09/11 08:25:15 Connected to Redis successfully
+2025/09/11 08:25:15 Connected to Elasticsearch successfully
+2025/09/11 08:25:25 Attempting to fetch server list from Elasticsearch...
+2025/09/11 08:25:25 No servers found or Elasticsearch not ready, will retry later
+2025/09/11 08:25:25 Server list is empty, attempting to refresh from Elasticsearch...
+2025/09/11 08:25:55 Server list is empty, attempting to refresh from Elasticsearch...
+2025/09/11 08:26:25 Server list is empty, attempting to refresh from Elasticsearch...
+2025/09/11 08:26:55 Server list is empty, attempting to refresh from Elasticsearch...
+2025/09/11 08:27:25 Server list is empty, attempting to refresh from Elasticsearch...
+2025/09/11 08:27:55 Server list is empty, attempting to refresh from Elasticsearch...
+2025/09/11 08:30:37 Logger initialized. Subsequent logs will be written to log/server.log
+2025/09/11 08:30:37 Attempting to connect to PostgreSQL at postgresql:5432
+2025/09/11 08:30:37 Connected to PostgreSQL database successfully
+2025/09/11 08:30:38 Connected to Redis successfully
+2025/09/11 08:30:38 Connected to Elasticsearch successfully
+2025/09/11 08:30:48 Attempting to fetch server list from Elasticsearch...
+2025/09/11 08:30:48 No servers found or Elasticsearch not ready, will retry later
+2025/09/11 08:30:48 Server list is empty, attempting to refresh from Elasticsearch...
+2025/09/11 08:31:18 Server list is empty, attempting to refresh from Elasticsearch...
+2025/09/11 08:31:48 Server list is empty, attempting to refresh from Elasticsearch...
+2025/09/11 08:32:18 Server list is empty, attempting to refresh from Elasticsearch...
+2025/09/11 08:32:48 Server list is empty, attempting to refresh from Elasticsearch...
+2025/09/11 08:33:18 Server list is empty, attempting to refresh from Elasticsearch...
+2025/09/11 08:33:48 Server list is empty, attempting to refresh from Elasticsearch...
+2025/09/11 08:34:18 Server list is empty, attempting to refresh from Elasticsearch...
+2025/09/11 08:34:48 Server list is empty, attempting to refresh from Elasticsearch...
+2025/09/11 08:35:18 Server list is empty, attempting to refresh from Elasticsearch...
+2025/09/11 08:35:48 Server list is empty, attempting to refresh from Elasticsearch...
+2025/09/11 08:36:18 Server list is empty, attempting to refresh from Elasticsearch...
+2025/09/11 08:36:48 Server list is empty, attempting to refresh from Elasticsearch...
+2025/09/11 08:37:18 Server list is empty, attempting to refresh from Elasticsearch...
+2025/09/11 08:37:48 Server list is empty, attempting to refresh from Elasticsearch...
+2025/09/11 08:38:18 Server list is empty, attempting to refresh from Elasticsearch...
+2025/09/11 08:38:48 Server list is empty, attempting to refresh from Elasticsearch...
+2025/09/11 08:39:18 Server list is empty, attempting to refresh from Elasticsearch...
+2025/09/11 08:39:48 Server list is empty, attempting to refresh from Elasticsearch...
+2025/09/11 08:40:19 Server list is empty, attempting to refresh from Elasticsearch...
+2025/09/11 08:40:49 Server list is empty, attempting to refresh from Elasticsearch...
+2025/09/11 08:41:19 Server list is empty, attempting to refresh from Elasticsearch...
+2025/09/11 08:41:49 Server list is empty, attempting to refresh from Elasticsearch...
+2025/09/11 08:42:19 Server list is empty, attempting to refresh from Elasticsearch...
+2025/09/11 08:42:49 Server list is empty, attempting to refresh from Elasticsearch...
+2025/09/11 08:43:19 Server list is empty, attempting to refresh from Elasticsearch...
+2025/09/11 08:43:49 Server list is empty, attempting to refresh from Elasticsearch...
+2025/09/11 08:44:19 Server list is empty, attempting to refresh from Elasticsearch...
+2025/09/11 08:44:49 Server list is empty, attempting to refresh from Elasticsearch...
+2025/09/11 08:45:19 Server list is empty, attempting to refresh from Elasticsearch...
+2025/09/11 08:45:49 Server list is empty, attempting to refresh from Elasticsearch...
+2025/09/11 08:46:19 Server list is empty, attempting to refresh from Elasticsearch...
+2025/09/11 08:46:49 Server list is empty, attempting to refresh from Elasticsearch...
+2025/09/11 08:47:19 Server list is empty, attempting to refresh from Elasticsearch...
+2025/09/11 08:47:49 Server list is empty, attempting to refresh from Elasticsearch...
+2025/09/11 08:48:19 Server list is empty, attempting to refresh from Elasticsearch...
+2025/09/11 08:49:53 Logger initialized. Subsequent logs will be written to log/server.log
+2025/09/11 08:49:53 Attempting to connect to PostgreSQL at postgresql:5432
+2025/09/11 08:49:53 Connected to PostgreSQL database successfully
+2025/09/11 08:49:54 Connected to Redis successfully
+2025/09/11 08:49:54 Connected to Elasticsearch successfully
+2025/09/11 08:50:04 Attempting to fetch server list from Elasticsearch...
+2025/09/11 08:50:04 No servers found or Elasticsearch not ready, will retry later
+2025/09/11 08:50:04 Server list is empty, attempting to refresh from Elasticsearch...
+2025/09/11 08:50:34 Server list is empty, attempting to refresh from Elasticsearch...
+2025/09/11 08:51:04 Server list is empty, attempting to refresh from Elasticsearch...
+2025/09/11 08:51:34 Server list is empty, attempting to refresh from Elasticsearch...
+2025/09/11 08:52:54 Logger initialized. Subsequent logs will be written to log/server.log
+2025/09/11 08:52:54 Attempting to connect to PostgreSQL at postgresql:5432
+2025/09/11 08:52:54 Connected to PostgreSQL database successfully
+2025/09/11 08:52:55 Connected to Redis successfully
+2025/09/11 08:52:55 Connected to Elasticsearch successfully
+2025/09/11 08:52:56 Generated and added 10000 sample servers to Elasticsearch
+2025/09/11 08:53:05 Attempting to fetch server list from Elasticsearch...
+2025/09/11 09:18:00 Username: admin1
+2025/09/11 09:18:00 Password: 123
+2025/09/11 09:18:00 Error retrieving account password: pq: relation "account" does not exist
+2025/09/11 09:18:00 Username: admin1
+2025/09/11 09:18:00 Password: 123
+2025/09/11 09:18:00 Stored Password: 
+2025/09/11 09:21:13 Logger initialized. Subsequent logs will be written to log/server.log
+2025/09/11 09:21:13 Attempting to connect to PostgreSQL at postgresql:5432
+2025/09/11 09:21:13 Connected to PostgreSQL database successfully
+2025/09/11 09:21:14 Connected to Redis successfully
+2025/09/11 09:21:14 Connected to Elasticsearch successfully
+2025/09/11 09:21:15 Generated and added 10000 sample servers to Elasticsearch
+2025/09/11 09:21:24 Attempting to fetch server list from Elasticsearch...
+2025/09/11 09:22:58 Username: admin1
+2025/09/11 09:22:58 Password: 123
+2025/09/11 09:22:58 No account found with username: admin1
+2025/09/11 09:22:58 Username: admin1
+2025/09/11 09:22:58 Password: 123
+2025/09/11 09:22:58 Stored Password: 
+2025/09/11 09:23:33 Registering Username: user1
+2025/09/11 09:23:33 Password: 123
+2025/09/11 09:23:33 pq: column "ID" does not exist
+2025/09/11 09:25:01 Registering Username: user1
+2025/09/11 09:25:01 Password: 123
+2025/09/11 09:25:01 pq: column "ID" does not exist
+2025/09/11 09:26:20 Logger initialized. Subsequent logs will be written to log/server.log
+2025/09/11 09:26:20 Attempting to connect to PostgreSQL at postgresql:5432
+2025/09/11 09:26:20 Connected to PostgreSQL database successfully
+2025/09/11 09:26:21 Connected to Redis successfully
+2025/09/11 09:26:21 Connected to Elasticsearch successfully
+2025/09/11 09:26:21 Generated and added 10000 sample servers to Elasticsearch
+2025/09/11 09:26:31 Attempting to fetch server list from Elasticsearch...
+2025/09/11 09:28:00 Registering Username: user1
+2025/09/11 09:28:00 Password: 123
+2025/09/11 09:28:00 pq: column "ID" does not exist
+2025/09/11 09:29:41 Registering Username: user1
+2025/09/11 09:29:41 Password: 123
+2025/09/11 09:29:41 pq: column "ID" does not exist
+2025/09/11 09:29:42 Registering Username: user1
+2025/09/11 09:29:42 Password: 123
+2025/09/11 09:29:42 pq: column "ID" does not exist
+2025/09/11 09:32:34 Registering Username: user1
+2025/09/11 09:32:34 Password: 123
+2025/09/11 09:32:34 pq: column "ID" does not exist
+2025/09/11 09:33:33 Logger initialized. Subsequent logs will be written to log/server.log
+2025/09/11 09:33:33 Attempting to connect to PostgreSQL at postgresql:5432
+2025/09/11 09:33:33 Connected to PostgreSQL database successfully
+2025/09/11 09:33:34 Connected to Redis successfully
+2025/09/11 09:33:34 Connected to Elasticsearch successfully
+2025/09/11 09:33:44 Attempting to fetch server list from Elasticsearch...
+2025/09/11 09:34:01 Registering Username: user1
+2025/09/11 09:34:01 Password: 123
+2025/09/11 09:34:01 Account added successfully: user1
+2025/09/11 09:34:18 Username: user1
+2025/09/11 09:34:18 Password: 123
+2025/09/11 09:34:18 Username: user1
+2025/09/11 09:34:18 Password: 123
+2025/09/11 09:34:18 Stored Password: 123
+2025/09/11 09:34:28 Invalid JWT token: token has invalid claims: token is expired
+2025/09/11 09:37:20 Logger initialized. Subsequent logs will be written to log/server.log
+2025/09/11 09:37:20 Attempting to connect to PostgreSQL at postgresql:5432
+2025/09/11 09:37:20 Connected to PostgreSQL database successfully
+2025/09/11 09:37:21 Connected to Redis successfully
+2025/09/11 09:37:21 Connected to Elasticsearch successfully
+2025/09/11 09:37:31 Attempting to fetch server list from Elasticsearch...
+2025/09/11 09:51:05 Logger initialized. Subsequent logs will be written to log/server.log
+2025/09/11 09:51:05 Attempting to connect to PostgreSQL at postgresql:5432
+2025/09/11 09:51:05 Connected to PostgreSQL database successfully
+2025/09/11 09:51:06 Connected to Redis successfully
+2025/09/11 09:51:06 Connected to Elasticsearch successfully
+2025/09/11 09:51:16 Attempting to fetch server list from Elasticsearch...
+2025/09/11 09:59:29 Username: admin1
+2025/09/11 09:59:29 Password: 123
+2025/09/11 09:59:29 Username: admin1
+2025/09/11 09:59:29 Password: 123
+2025/09/11 09:59:29 Stored Password: 123
+2025/09/11 10:04:20 Logger initialized. Subsequent logs will be written to log/server.log
+2025/09/11 10:04:20 Attempting to connect to PostgreSQL at postgresql:5432
+2025/09/11 10:04:20 Connected to PostgreSQL database successfully
+2025/09/11 10:04:22 Connected to Redis successfully
+2025/09/11 10:04:22 Connected to Elasticsearch successfully
+2025/09/11 10:04:32 Attempting to fetch server list from Elasticsearch...

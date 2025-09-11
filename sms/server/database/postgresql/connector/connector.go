@@ -18,7 +18,7 @@ func IsConnected() bool {
 
 func ConnectToDB() {
 	// Get database configuration from environment variables with fallbacks
-	host := getEnv("POSTGRES_HOST", "localhost")
+	host := getEnv("POSTGRES_HOST", "postgresql")
 	port := getEnv("POSTGRES_PORT", "5432")
 	user := getEnv("POSTGRES_USER", "vudangducminh")
 	password := getEnv("POSTGRES_PASSWORD", "Amogus69420")
