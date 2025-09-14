@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"sms/algorithm"
 	"sms/object"
-	healthcheckservice "sms/service/healthcheck_service"
 	"time"
 
 	elastic_query "sms/server/database/elasticsearch/query"
@@ -46,7 +45,7 @@ func AddServer(c *gin.Context) {
 		ServerId:        algorithm.SHA256Hash(time.Now().String()),
 		ServerName:      req.ServerName,
 		Status:          req.Status,
-		Uptime:          0, // Default uptime to 0
+		Uptime:          []int{0}, // Default uptime to 0
 		CreatedTime:     time.Now().Unix(),
 		LastUpdatedTime: time.Now().Unix(),
 		IPv4:            req.IPv4,
@@ -55,10 +54,6 @@ func AddServer(c *gin.Context) {
 	status := elastic_query.AddServerInfo(server)
 	switch status {
 	case http.StatusCreated:
-		healthcheckservice.ServerList = append(healthcheckservice.ServerList, object.BriefServerInfo{
-			ServerId: server.ServerId,
-			IPv4:     server.IPv4,
-		})
 		c.JSON(http.StatusCreated, gin.H{
 			"message":     "Server added successfully to Elasticsearch",
 			"server_id":   server.ServerId,
