@@ -20,6 +20,9 @@ import (
 // @Accept       json
 // @Produce      json
 // @Param        jwt header string true "JWT token for authentication"
+// @Param        order query string false "Order of results, either 'asc' or 'desc'. If not provided or using the wrong order format, the default order is ascending"
+// @Param        filter query string false "Filter by server_id, server_name, ipv4, or status. If not provided or using the wrong filter format, then there is no filter applied"
+// @Param        string path string false "Substring to search in server_id, server_name, ipv4, or status"
 // @Param        request body object.DailyReportRequest true "Send email request"
 // @Success      200 {object} object.DailyReportResponse "Email sent successfully"
 // @Failure      400 {object} object.DailyReportInvalidRequestResponse "Invalid request"
@@ -27,7 +30,7 @@ import (
 // @Failure      500 {object} object.DailyReportInternalServerErrorResponse "Internal server error"
 // @Failure      500 {object} object.ExportExcelFailedResponse "Failed to export into Excel file"
 // @Router       /servers/daily_report [post]
-func DailyReportEmailRequest(c *gin.Context) {
+func DailyReportRequest(c *gin.Context) {
 	order := c.Query("order")
 	if order != "asc" && order != "desc" {
 		order = "asc" // Default order if not specified
@@ -129,14 +132,14 @@ func DailyReportEmailRequest(c *gin.Context) {
 		// Convert timestamps to readable format
 		createdTimeStr := time.Unix(server.CreatedTime, 0).Format("2006-01-02 15:04:05")
 		lastUpdatedTimeStr := time.Unix(server.LastUpdatedTime, 0).Format("2006-01-02 15:04:05")
-
+		serverUptime := time.Unix(int64(server.Uptime[0]), 0).Format("15:04:05")
 		values := []interface{}{
 			rowIdx + 1,
 			server.ServerId,
 			server.ServerName,
 			server.Status,
 			server.IPv4,
-			server.Uptime,
+			serverUptime,
 			createdTimeStr,
 			lastUpdatedTimeStr,
 		}

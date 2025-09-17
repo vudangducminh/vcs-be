@@ -19,6 +19,32 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/health": {
+            "get": {
+                "description": "Check the health status of the application and its dependencies",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Health"
+                ],
+                "summary": "Health check endpoint",
+                "responses": {
+                    "200": {
+                        "description": "Application is healthy",
+                        "schema": {
+                            "$ref": "#/definitions/healthcheck_service.HealthResponse"
+                        }
+                    },
+                    "503": {
+                        "description": "Service unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/healthcheck_service.HealthResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/servers/add_server": {
             "post": {
                 "description": "Handle adding a new server by validating input and storing server information",
@@ -106,6 +132,24 @@ const docTemplate = `{
                         "required": true
                     },
                     {
+                        "type": "string",
+                        "description": "Order of results, either 'asc' or 'desc'. If not provided or using the wrong order format, the default order is ascending",
+                        "name": "order",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter by server_id, server_name, ipv4, or status. If not provided or using the wrong filter format, then there is no filter applied",
+                        "name": "filter",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Substring to search in server_id, server_name, ipv4, or status",
+                        "name": "string",
+                        "in": "path"
+                    },
+                    {
                         "description": "Send email request",
                         "name": "request",
                         "in": "body",
@@ -135,9 +179,9 @@ const docTemplate = `{
                         }
                     },
                     "500": {
-                        "description": "Internal server error",
+                        "description": "Failed to export into Excel file",
                         "schema": {
-                            "$ref": "#/definitions/object.DailyReportInternalServerErrorResponse"
+                            "$ref": "#/definitions/object.ExportExcelFailedResponse"
                         }
                     }
                 }
@@ -262,9 +306,9 @@ const docTemplate = `{
                         }
                     },
                     "500": {
-                        "description": "Failed to export Excel",
+                        "description": "Failed to export into Excel file",
                         "schema": {
-                            "$ref": "#/definitions/object.ExportExcelExportFailedResponse"
+                            "$ref": "#/definitions/object.ExportExcelFailedResponse"
                         }
                     }
                 }
@@ -572,6 +616,23 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "healthcheck_service.HealthResponse": {
+            "type": "object",
+            "properties": {
+                "services": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "status": {
+                    "type": "string"
+                },
+                "timestamp": {
+                    "type": "string"
+                }
+            }
+        },
         "object.AddServerBadRequestResponse": {
             "type": "object",
             "properties": {
@@ -612,10 +673,6 @@ const docTemplate = `{
                 "status": {
                     "description": "e.g., \"active\", \"inactive\", \"maintenance\"",
                     "type": "string"
-                },
-                "uptime": {
-                    "description": "e.g., \"3666\" for 1 hour 1 minute and 6 seconds",
-                    "type": "integer"
                 }
             }
         },
@@ -763,12 +820,12 @@ const docTemplate = `{
                 }
             }
         },
-        "object.ExportExcelExportFailedResponse": {
+        "object.ExportExcelFailedResponse": {
             "type": "object",
             "properties": {
                 "error": {
                     "type": "string",
-                    "example": "Failed to export Excel"
+                    "example": "Failed to export into Excel file"
                 }
             }
         },
@@ -1004,7 +1061,10 @@ const docTemplate = `{
                 },
                 "uptime": {
                     "description": "e.g., \"3666\" for 1 hour 1 minute and 6 seconds",
-                    "type": "integer"
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
                 }
             }
         },

@@ -66,6 +66,7 @@ func HealthCheck() {
 					var uptime []int = srv.Uptime
 					if newUptimeStatus {
 						uptime = append(uptime, 0)
+						// Save data for 1 week only
 						if len(uptime) > 504 {
 							uptime = uptime[len(uptime)-504:]
 						}
@@ -73,9 +74,9 @@ func HealthCheck() {
 					if isAlive {
 						uptime[len(uptime)-1] += 30
 					}
-					if uptime[0] > 0 {
-						log.Println("IP", srv.IPv4, "uptime:", uptime)
-					}
+					// if uptime[0] > 0 {
+					// 	log.Println("IP", srv.IPv4, "uptime:", uptime)
+					// }
 
 					// Send result to channel
 					var status string

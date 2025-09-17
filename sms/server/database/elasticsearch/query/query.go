@@ -572,6 +572,7 @@ func GetTotalCreatedTime() (int64, int) {
 }
 
 func GetTotalLastUpdatedTime() (int64, int) {
+	log.Println("Getting total last updated time...")
 	query := `{
 		"size": 0,
 		"query": {
@@ -592,8 +593,10 @@ func GetTotalLastUpdatedTime() (int64, int) {
 		elastic.Es.Search.WithIndex("server"),
 		elastic.Es.Search.WithBody(strings.NewReader(query)),
 		elastic.Es.Search.WithContext(context.Background()),
+		elastic.Es.Search.WithPretty(),
 	)
-
+	log.Println("Response:", res)
+	log.Println("Response body:", res.Body)
 	if err != nil {
 		return 0, 0
 	}
@@ -740,8 +743,9 @@ func BulkUpdateServerInfo(updates []object.ServerUptimeUpdate) int {
 	return http.StatusOK
 }
 
-func GetServerUptimeInRange(startBlock int, endBlock int) ([]object.ServerUptime, int) {
+func GetServerUptimeInRange(startBlock int, endBlock int) ([]object.Server, int) {
 	query := `{
+		"size": 10000,
 		"query": {
 			"match_all": { }
 		}
@@ -758,4 +762,27 @@ func GetServerUptimeInRange(startBlock int, endBlock int) ([]object.ServerUptime
 	}
 
 	defer res.Body.Close()
+	if res.IsError() {
+		return nil, http.StatusNotFound
+	}
+
+	servers, status := ParseSearchResults(res)
+	if status != http.StatusOK {
+		return nil, status
+	}
+	for i := 0; i < len(servers); i++ {
+		var start = max(0, len(servers[i].Uptime)-startBlock)
+		var end = max(0, len(servers[i].Uptime)-endBlock)
+
+		// Calculate total uptime in the range using simple loop
+		var totalUptime int = 0
+		for j := start; j < end && j < len(servers[i].Uptime); j++ {
+			totalUptime += servers[i].Uptime[j]
+		}
+
+		// Update the server with calculated uptime
+		servers[i].Uptime = []int{totalUptime} // Convert back to expected format
+	}
+
+	return servers, http.StatusOK
 }

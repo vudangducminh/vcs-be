@@ -1,15 +1,7 @@
-curl -X PUT http://localhost:9200/server -H 'Content-Type: application/json' -d'
+curl -X GET http://localhost:9200/server/_search?pretty -H 'Content-Type: application/json' -d'
 {
-  "mappings": {
-    "properties": {
-      "server_id": { "type": "keyword" },
-      "server_name": { "type": "text" },
-      "ipv4": { "type": "text" },
-      "status": { "type": "keyword" },
-      "uptime": { "type": "integer" },
-      "created_time": { "type": "integer" },
-      "last_updated_time": { "type": "integer" }
-    }
-  }
-}
-'
+		"size": 10000,
+		"query": {
+			"match_all": { }
+		}
+	}'

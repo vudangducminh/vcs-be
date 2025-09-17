@@ -26,6 +26,7 @@ func ConnectToSwagger() {
 	{
 		servers.GET("/view_servers/:order/:filter/:string", server_service.ViewServer)
 		servers.GET("/export_excel/:order/:filter/:string", server_service.ExportDataToExcel)
+		servers.GET("/daily_report/:order/:filter/:string", server_service.DailyReportRequest)
 	}
 	servers = r.Group("api/v1/servers", auth_service.AuthAdmin())
 	{
@@ -33,7 +34,6 @@ func ConnectToSwagger() {
 		servers.PUT("/update_server", server_service.UpdateServer)
 		servers.DELETE("/delete_server", server_service.DeleteServer)
 		servers.POST("/import_excel", server_service.ImportExcel)
-		servers.POST("/daily_report", server_service.DailyReportEmailRequest)
 	}
 	// The host should match the @host annotation in main.go
 	url := ginSwagger.URL("http://localhost:8800/swagger/doc.json")
