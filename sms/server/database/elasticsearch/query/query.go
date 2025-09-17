@@ -741,5 +741,21 @@ func BulkUpdateServerInfo(updates []object.ServerUptimeUpdate) int {
 }
 
 func GetServerUptimeInRange(startBlock int, endBlock int) ([]object.ServerUptime, int) {
+	query := `{
+		"query": {
+			"match_all": { }
+		}
+	}`
+	res, err := elastic.Es.Search(
+		elastic.Es.Search.WithIndex("server"),
+		elastic.Es.Search.WithBody(strings.NewReader(query)),
+		elastic.Es.Search.WithPretty(),
+		elastic.Es.Search.WithContext(context.Background()),
+	)
 
+	if err != nil {
+		return nil, http.StatusInternalServerError
+	}
+
+	defer res.Body.Close()
 }

@@ -66,6 +66,9 @@ func HealthCheck() {
 					var uptime []int = srv.Uptime
 					if newUptimeStatus {
 						uptime = append(uptime, 0)
+						if len(uptime) > 504 {
+							uptime = uptime[len(uptime)-504:]
+						}
 					}
 					if isAlive {
 						uptime[len(uptime)-1] += 30
