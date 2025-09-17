@@ -21,6 +21,6 @@ type ExportExcelInternalServerErrorResponse struct {
 	Error string `json:"error" example:"Failed to retrieve server details"`
 }
 
-type ExportExcelExportFailedResponse struct {
-	Error string `json:"error" example:"Failed to export Excel"`
+type ExportExcelFailedResponse struct {
+	Error string `json:"error" example:"Failed to export into Excel file"`
 }

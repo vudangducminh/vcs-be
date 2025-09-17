@@ -1,12 +1,15 @@
-curl -X POST "localhost:9200/server/_search?pretty" -H 'Content-Type: application/json' -d'
+curl -X PUT http://localhost:9200/server -H 'Content-Type: application/json' -d'
 {
-  "size": 10,
-  "query": {
-    "script": {
-      "script": {
-        "source": "doc[\"uptime\"].size() > 0 && doc[\"uptime\"][0] > 0",
-        "lang": "painless"
-      }
+  "mappings": {
+    "properties": {
+      "server_id": { "type": "keyword" },
+      "server_name": { "type": "text" },
+      "ipv4": { "type": "text" },
+      "status": { "type": "keyword" },
+      "uptime": { "type": "integer" },
+      "created_time": { "type": "integer" },
+      "last_updated_time": { "type": "integer" }
     }
   }
-}'
+}
+'

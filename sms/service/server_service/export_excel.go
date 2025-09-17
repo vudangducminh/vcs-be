@@ -24,7 +24,7 @@ import (
 // @Failure      400 {object} object.ExportExcelBadRequestResponse "Invalid request parameters"
 // @Failure      401 {object} object.AuthErrorResponse "Authentication failed"
 // @Failure      500 {object} object.ExportExcelInternalServerErrorResponse "Failed to retrieve server details"
-// @Failure      500 {object} object.ExportExcelExportFailedResponse "Failed to export Excel"
+// @Failure      500 {object} object.ExportExcelFailedResponse "Failed to export into Excel file"
 // @Router       /servers/export_excel/{order}/{filter}/{string} [get]
 func ExportDataToExcel(c *gin.Context) {
 	var servers []object.Server
@@ -115,7 +115,7 @@ func ExportDataToExcel(c *gin.Context) {
 
 	// Write file to response
 	if err := f.Write(c.Writer); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to export Excel"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to export into Excel file"})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"message": "Excel file exported successfully"})

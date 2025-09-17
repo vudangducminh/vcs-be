@@ -64,6 +64,7 @@ func ImportExcel(c *gin.Context) {
 	var isFirstRow bool = true
 	var servers []object.Server
 	var errorServers []object.Server
+	var successServers []object.Server
 	for _, row := range rows {
 		if isFirstRow {
 			isFirstRow = false
@@ -77,21 +78,46 @@ func ImportExcel(c *gin.Context) {
 		server.CreatedTime = time.Now().Unix()
 		server.LastUpdatedTime = server.CreatedTime
 		server.Uptime = []int{0}
-		if elastic_query.CheckServerExists(server.IPv4) {
-			log.Println("Server already exists in Elasticsearch, skipping row:", row)
-			errorServers = append(errorServers, server)
-			continue
-		}
+		// if elastic_query.CheckServerExists(server.IPv4) {
+		// 	log.Println("Server already exists in Elasticsearch, skipping row:", row)
+		// 	errorServers = append(errorServers, server)
+		// 	continue
+		// }
 		servers = append(servers, server)
+		if len(servers) >= 250 {
+			status := elastic_query.BulkServerInfo(servers)
+			if status != http.StatusCreated {
+				for _, s := range servers {
+					status = elastic_query.AddServerInfo(s)
+					if status != http.StatusCreated {
+						errorServers = append(errorServers, s)
+					} else {
+						successServers = append(successServers, s)
+					}
+				}
+			} else {
+				successServers = append(successServers, servers...)
+			}
+			servers = nil
+		}
 	}
 	status := elastic_query.BulkServerInfo(servers)
 	if status != http.StatusCreated {
-		c.JSON(status, gin.H{"error": "Failed to add servers to Elasticsearch from Excel rows"})
-		return
+		for _, s := range servers {
+			status = elastic_query.AddServerInfo(s)
+			if status != http.StatusCreated {
+				errorServers = append(errorServers, s)
+			} else {
+				successServers = append(successServers, s)
+			}
+		}
+	} else {
+		successServers = append(successServers, servers...)
 	}
+	servers = nil
 	c.JSON(http.StatusOK, gin.H{
 		"message":       "Excel file imported successfully",
-		"added_servers": len(servers),
+		"added_servers": len(successServers),
 		"error_servers": len(errorServers),
 	})
 }

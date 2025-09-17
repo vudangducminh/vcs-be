@@ -10,11 +10,6 @@ import (
 )
 
 var ServerList []object.BriefServerInfo
-var stopHealthCheck chan bool
-
-func init() {
-	stopHealthCheck = make(chan bool)
-}
 
 func PingServer(ip string) bool {
 	timeout := time.Second * 3
@@ -48,21 +43,16 @@ func HealthCheck() {
 		}
 	}
 
-	ticker := time.NewTicker(30 * time.Second)
-	defer ticker.Stop()
+	var prevMinute int = -1
 
 	for {
-		select {
-		case <-stopHealthCheck:
-			log.Println("Health check stopped")
-			return
-		case <-ticker.C:
+		if time.Now().Minute() != prevMinute {
 			// Only proceed if we have servers to check
 			updateList := []object.ServerUptimeUpdate{}
 			log.Println("Attempting to refresh from Elasticsearch...")
 			ServerList = elastic_query.GetAllServer()
 			var newUptimeStatus bool = false
-			if time.Now().Minute()%60 == 0 {
+			if time.Now().Minute()%20 == 1 {
 				newUptimeStatus = true
 			}
 
@@ -85,9 +75,16 @@ func HealthCheck() {
 					}
 
 					// Send result to channel
+					var status string
+					if isAlive {
+						status = "active"
+					} else {
+						status = "inactive"
+					}
 					resultsChan <- object.ServerUptimeUpdate{
 						ServerId: srv.ServerId,
 						Uptime:   uptime,
+						Status:   status,
 					}
 				}(server)
 			}
@@ -118,16 +115,8 @@ func HealthCheck() {
 
 			log.Println("Update list length:", len(updateList))
 			elastic_query.BulkUpdateServerInfo(updateList)
+			prevMinute = time.Now().Minute()
 		}
-	}
-}
-
-// StopHealthCheck stops the health check process
-func StopHealthCheck() {
-	select {
-	case stopHealthCheck <- true:
-		log.Println("Stop signal sent")
-	default:
-		log.Println("Stop signal already sent or channel full")
+		time.Sleep(30 * time.Second)
 	}
 }

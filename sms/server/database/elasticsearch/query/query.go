@@ -739,3 +739,7 @@ func BulkUpdateServerInfo(updates []object.ServerUptimeUpdate) int {
 
 	return http.StatusOK
 }
+
+func GetServerUptimeInRange(startBlock int, endBlock int) ([]object.ServerUptime, int) {
+
+}

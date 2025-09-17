@@ -1,12 +1,15 @@
 package servers_handler
 
 import (
+	"log"
 	"net/http"
 	"sms/object"
-	redis_query "sms/server/database/cache/redis/query"
+	elastic_query "sms/server/database/elasticsearch/query"
+	"sort"
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/xuri/excelize/v2"
 )
 
 // @Tags         Servers
@@ -22,8 +25,24 @@ import (
 // @Failure      400 {object} object.DailyReportInvalidRequestResponse "Invalid request"
 // @Failure      401 {object} object.AuthErrorResponse "Authentication failed"
 // @Failure      500 {object} object.DailyReportInternalServerErrorResponse "Internal server error"
+// @Failure      500 {object} object.ExportExcelFailedResponse "Failed to export into Excel file"
 // @Router       /servers/daily_report [post]
 func DailyReportEmailRequest(c *gin.Context) {
+	order := c.Query("order")
+	if order != "asc" && order != "desc" {
+		order = "asc" // Default order if not specified
+	}
+	filter := c.Query("filter")
+	if filter != "server_id" && filter != "server_name" && filter != "ipv4" && filter != "status" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid filter parameter"})
+		return
+	}
+	str := c.Param("string")
+	log.Printf("Received request to export server with filter '%s' and substring: '%s'", filter, str)
+	if str == "undefined" || str == "{string}" {
+		str = ""
+	}
+	log.Printf("Received request to export server with filter '%s' and substring: '%s'", filter, str)
 	var req object.DailyReportRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
@@ -53,22 +72,93 @@ func DailyReportEmailRequest(c *gin.Context) {
 
 	// Only need to save email & duration in redis
 	startTimeInHHMMSS := parsedStartTime.Sub(parsedBeginTime)
-	durationInHHMMSS := parsedEndTime.Sub(parsedStartTime)
-	var startTimeInSecond = int64(startTimeInHHMMSS.Seconds())
-	duration := int(durationInHHMMSS.Seconds())
+	endTimeInHHMMSS := parsedEndTime.Sub(parsedBeginTime)
+	var currentTimeInSecond = time.Now().Unix()
+	var startTimeInSecond = min(int64(startTimeInHHMMSS.Seconds()), currentTimeInSecond)
+	var endTimeInSecond = min(int64(endTimeInHHMMSS.Seconds()), currentTimeInSecond)
+	var roundedStartTime = startTimeInSecond - (startTimeInSecond % 1200) // Round down to nearest 20 minutes
+	var roundedEndTime = endTimeInSecond - (endTimeInSecond % 1200)       // Round down to nearest 20 minutes
+	var roundedCurrentTime = currentTimeInSecond - (currentTimeInSecond % 1200)
+	if startTimeInSecond%1200 == 0 {
+		roundedStartTime -= 1200
+	}
+	if endTimeInSecond%1200 == 0 {
+		roundedEndTime -= 1200
+	}
+	if currentTimeInSecond%1200 == 0 {
+		roundedCurrentTime -= 1200
+	}
+	var beginBlock = int((roundedCurrentTime-roundedStartTime)/1200 + 1)
+	var endBlock = int((roundedCurrentTime-roundedEndTime)/1200 + 1)
+	serverDataList, status := elastic_query.GetServerUptimeInRange(beginBlock, endBlock)
+	if status != http.StatusOK {
+		c.JSON(status, gin.H{"error": "Failed to retrieve server details"})
+		return
+	}
+	sort.Slice(serverDataList, func(i, j int) bool {
+		var less bool
+		switch filter {
+		case "server_id":
+			less = serverDataList[i].ServerId < serverDataList[j].ServerId
+		case "status":
+			less = serverDataList[i].Status < serverDataList[j].Status
+		case "ipv4":
+			less = serverDataList[i].IPv4 < serverDataList[j].IPv4
+		default: // Default to sorting by server_name
+			less = serverDataList[i].ServerName < serverDataList[j].ServerName
+		}
+		if order == "desc" {
+			return !less
+		}
+		return less
+	})
+
+	f := excelize.NewFile()
+	sheet := "Sheet1"
+	f.SetSheetName("Sheet1", sheet)
+
+	// Write header
+	headers := []string{"Index", "Server ID", "Server Name", "Status", "IPv4", "Uptime", "Created Time", "Last Updated Time"}
+	for i, h := range headers {
+		cell, _ := excelize.CoordinatesToCellName(i+1, 1)
+		f.SetCellValue(sheet, cell, h)
+	}
+
+	// Write data
+	for rowIdx, server := range serverDataList {
+		// Convert timestamps to readable format
+		createdTimeStr := time.Unix(server.CreatedTime, 0).Format("2006-01-02 15:04:05")
+		lastUpdatedTimeStr := time.Unix(server.LastUpdatedTime, 0).Format("2006-01-02 15:04:05")
+
+		values := []interface{}{
+			rowIdx + 1,
+			server.ServerId,
+			server.ServerName,
+			server.Status,
+			server.IPv4,
+			server.Uptime,
+			createdTimeStr,
+			lastUpdatedTimeStr,
+		}
+		for colIdx, value := range values {
+			cell, _ := excelize.CoordinatesToCellName(colIdx+1, rowIdx+2)
+			f.SetCellValue(sheet, cell, value)
+		}
+	}
+
+	// Set response headers for file download
+	c.Header("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+	c.Header("Content-Disposition", "attachment; filename=servers.xlsx")
+	c.Header("File-Name", "servers.xlsx")
+	c.Header("Content-Transfer-Encoding", "binary")
+
+	if err := f.Write(c.Writer); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to export into Excel file"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"message": "Servers exported successfully"})
+	// Query from uptime[len - beginBlock] to uptime[len - endBlock]
+	// Needs to provide total uptime of every single servers during this period
 	// log.Println(startTimeInSecond, " ", time.Now().Unix())
-	if startTimeInSecond < time.Now().Unix() {
-		duration -= int(time.Now().Unix() - startTimeInSecond)
-		startTimeInSecond = time.Now().Unix()
-	}
-	if duration <= 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Duration must be greater than 0"})
-		return
-	}
-	ok := redis_query.SaveDailyReportEmailRequest(req.Email, duration, startTimeInSecond)
-	if !ok {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save daily report email request"})
-		return
-	}
-	c.JSON(http.StatusOK, gin.H{"message": "Request saved successfully"})
+
 }

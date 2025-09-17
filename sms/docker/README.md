@@ -114,7 +114,7 @@ docker compose down -v
 
 ```
 ┌─────────────┐    ┌──────────────┐    ┌─────────────┐
-│ Elasticsearch│    │ Redis Cloud  │    │ PostgreSQL  │
+│Elasticsearch│    │  Redis Cloud │    │  PostgreSQL │
 │   (Local)   │    │  (External)  │    │  (External) │
 └──────┬──────┘    └──────┬───────┘    └──────┬──────┘
        │                  │                   │
