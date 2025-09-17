@@ -76,7 +76,7 @@ func ImportExcel(c *gin.Context) {
 		server.IPv4 = row[3]
 		server.CreatedTime = time.Now().Unix()
 		server.LastUpdatedTime = server.CreatedTime
-		server.Uptime = 0
+		server.Uptime = []int{0}
 		if elastic_query.CheckServerExists(server.IPv4) {
 			log.Println("Server already exists in Elasticsearch, skipping row:", row)
 			errorServers = append(errorServers, server)

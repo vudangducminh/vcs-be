@@ -1,6 +1,7 @@
 package healthcheck_service
 
 import (
+	"context"
 	"log"
 	"net"
 	"sms/object"
@@ -9,15 +10,30 @@ import (
 )
 
 var ServerList []object.BriefServerInfo
+var stopHealthCheck chan bool
+
+func init() {
+	stopHealthCheck = make(chan bool)
+}
 
 func PingServer(ip string) bool {
 	timeout := time.Second * 3
-	conn, err := net.DialTimeout("ip4:icmp", ip, timeout)
-	if err != nil {
-		return false
+
+	resolver := &net.Resolver{
+		PreferGo: true,
+		Dial: func(ctx context.Context, network, address string) (net.Conn, error) {
+			d := net.Dialer{
+				Timeout: timeout,
+			}
+			return d.DialContext(ctx, network, address)
+		},
 	}
-	defer conn.Close()
-	return true
+
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
+	defer cancel()
+
+	_, err := resolver.LookupAddr(ctx, ip)
+	return err == nil
 }
 
 func HealthCheck() {
@@ -31,25 +47,87 @@ func HealthCheck() {
 			log.Println("No servers found or Elasticsearch not ready, will retry later")
 		}
 	}
+
+	ticker := time.NewTicker(30 * time.Second)
+	defer ticker.Stop()
+
 	for {
-		// Only proceed if we have servers to check
-		if len(ServerList) == 0 {
-			log.Println("Server list is empty, attempting to refresh from Elasticsearch...")
+		select {
+		case <-stopHealthCheck:
+			log.Println("Health check stopped")
+			return
+		case <-ticker.C:
+			// Only proceed if we have servers to check
+			updateList := []object.ServerUptimeUpdate{}
+			log.Println("Attempting to refresh from Elasticsearch...")
 			ServerList = elastic_query.GetAllServer()
-		}
-
-		for _, server := range ServerList {
-			// ping all server
-			isAlive := PingServer(server.IPv4)
-			if isAlive {
-				// log.Println("IP", server.IPv4, "is alive")
-				// update data to elasticsearch
-			} else {
-				// log.Println("IP", server.IPv4, "is not alive")
-				// update data to elasticsearch
+			var newUptimeStatus bool = false
+			if time.Now().Minute()%60 == 0 {
+				newUptimeStatus = true
 			}
-		}
-		time.Sleep(30 * time.Second)
-	}
 
+			// Use a channel to collect results from goroutines
+			resultsChan := make(chan object.ServerUptimeUpdate, len(ServerList))
+
+			for _, server := range ServerList {
+				// Ping all server
+				go func(srv object.BriefServerInfo) {
+					isAlive := PingServer(srv.IPv4)
+					var uptime []int = srv.Uptime
+					if newUptimeStatus {
+						uptime = append(uptime, 0)
+					}
+					if isAlive {
+						uptime[len(uptime)-1] += 30
+					}
+					if uptime[0] > 0 {
+						log.Println("IP", srv.IPv4, "uptime:", uptime)
+					}
+
+					// Send result to channel
+					resultsChan <- object.ServerUptimeUpdate{
+						ServerId: srv.ServerId,
+						Uptime:   uptime,
+					}
+				}(server)
+			}
+
+			// Collect all results
+
+			// Explanation of how this works:
+
+			// 1) Channel buffer contains (from goroutines):
+			// resultsChan: [struct1, struct2, struct3]
+
+			// 2) First receive:
+			// update := <-resultsChan
+			// Now: update = struct1, channel: [struct2, struct3]
+
+			// 3) Second receive (next loop iteration):
+			// update := <-resultsChan
+			// Now: update = struct2, channel: [struct3]
+
+			// 4) Third receive:
+			// update := <-resultsChan
+			// Now: update = struct3, channel: []
+			for i := 0; i < len(ServerList); i++ {
+				update := <-resultsChan
+				updateList = append(updateList, update)
+			}
+			close(resultsChan) // Close the channel when done
+
+			log.Println("Update list length:", len(updateList))
+			elastic_query.BulkUpdateServerInfo(updateList)
+		}
+	}
+}
+
+// StopHealthCheck stops the health check process
+func StopHealthCheck() {
+	select {
+	case stopHealthCheck <- true:
+		log.Println("Stop signal sent")
+	default:
+		log.Println("Stop signal already sent or channel full")
+	}
 }

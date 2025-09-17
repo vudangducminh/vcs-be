@@ -57,13 +57,13 @@ func main() {
 	elastic.ConnectToEs()
 	if !elastic.IsConnected() {
 		log.Println("Failed to connect to Elasticsearch")
+	} else {
+		go healthcheck_service.HealthCheck()
 	}
-
 	// Generate sample servers for testing
 	// GenerateServer()
 
 	// Start the time checker for daily report email requests
-	go healthcheck_service.HealthCheck()
 
 	// Connect to Swagger for API documentation
 	swagger.ConnectToSwagger()
@@ -98,7 +98,7 @@ func GenerateServer() {
 			ServerName:      "Server " + fmt.Sprintf("%d", i),
 			Status:          status,
 			IPv4:            fmt.Sprintf("%d", rand.Intn(256)) + "." + fmt.Sprintf("%d", rand.Intn(256)) + "." + fmt.Sprintf("%d", rand.Intn(256)) + "." + fmt.Sprintf("%d", rand.Intn(256)),
-			Uptime:          int64(rand.Intn(86400)),                               // 1 hour in seconds
+			Uptime:          []int{0},
 			CreatedTime:     time.Now().Unix() - 86400*2 - int64(rand.Intn(86400)), // Created 2 to 3 days ago
 			LastUpdatedTime: time.Now().Unix(),
 		}

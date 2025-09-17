@@ -1,7 +1,7 @@
 package object
 
 type Account struct {
-	ID       int    `xorm:"'ID' pk autoincr"`
+	ID       int    `xorm:"'id' pk autoincr"`
 	Fullname string `xorm:"'fullname'"`
 	Email    string `xorm:"'email'"`
 	Username string `xorm:"'username'"`
