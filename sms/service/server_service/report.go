@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"sms/object"
 	elastic_query "sms/server/database/elasticsearch/query"
+	report_service "sms/service/report_service/template"
 	"sort"
 	"time"
 
@@ -13,8 +14,8 @@ import (
 )
 
 // @Tags         Servers
-// @Summary      Create a request to send daily report email
-// @Description  Create a request to send daily report email from YYYY-MM-DD to YYYY-MM-DD
+// @Summary      Create a request to send  report email
+// @Description  Create a request to send  report email from YYYY-MM-DD to YYYY-MM-DD
 // @Description  An email will be sent to the specified recipients at 00:00:00 UTC.
 // @Description  Example date format: 2025-07-23T12:00:00Z
 // @Accept       json
@@ -23,15 +24,15 @@ import (
 // @Param        order query string false "Order of results, either 'asc' or 'desc'. If not provided or using the wrong order format, the default order is ascending"
 // @Param        filter query string false "Filter by server_id, server_name, ipv4, or status. If not provided or using the wrong filter format, then there is no filter applied"
 // @Param        string query string false "Substring to search in server_id, server_name, ipv4, or status"
-// @Param        request body object.DailyReportRequest true "Send email request"
-// @Success      200 {object} object.DailyReportResponse "Email sent successfully"
-// @Failure      400 {object} object.DailyReportInvalidRequestResponse "Invalid request"
+// @Param        request body object.ReportRequest true "Send email request"
+// @Success      200 {object} object.ReportResponse "Email sent successfully"
+// @Failure      400 {object} object.ReportInvalidRequestResponse "Invalid request"
 // @Failure      401 {object} object.AuthErrorResponse "Authentication failed"
-// @Failure      500 {object} object.DailyReportInternalServerErrorResponse "Internal server error"
+// @Failure      500 {object} object.ReportInternalServerErrorResponse "Internal server error"
 // @Failure      500 {object} object.ExportExcelFailedResponse "Failed to export into Excel file"
-// @Router       /servers/daily_report/{order}/{filter}/{string} [post]
-func DailyReportRequest(c *gin.Context) {
-	log.Println("Daily report request received")
+// @Router       /servers/report/{order}/{filter}/{string} [post]
+func ReportRequest(c *gin.Context) {
+	log.Println("Report request received")
 	order := c.Query("order")
 	if order != "asc" && order != "desc" {
 		order = "asc" // Default order if not specified
@@ -47,7 +48,7 @@ func DailyReportRequest(c *gin.Context) {
 		str = ""
 	}
 	log.Printf("Received request to export server with filter '%s' and substring: '%s'", filter, str)
-	var req object.DailyReportRequest
+	var req object.ReportRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
 		return
@@ -158,6 +159,13 @@ func DailyReportRequest(c *gin.Context) {
 
 	if err := f.Write(c.Writer); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to export into Excel file"})
+		return
+	}
+
+	// Send email with the Excel file as attachment
+	status = report_service.SendEmail(f, req.Email, "Server Report", "Here is your requested server report.")
+	if status != http.StatusOK {
+		c.JSON(status, gin.H{"error": "Failed to send email"})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"message": "Servers exported successfully"})

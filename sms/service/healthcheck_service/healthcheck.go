@@ -62,7 +62,6 @@ func HealthCheck() {
 			for _, server := range ServerList {
 				// Ping all server
 				go func(srv object.BriefServerInfo) {
-					isAlive := PingServer(srv.IPv4)
 					var uptime []int = srv.Uptime
 					if newUptimeStatus {
 						uptime = append(uptime, 0)
@@ -71,6 +70,7 @@ func HealthCheck() {
 							uptime = uptime[len(uptime)-504:]
 						}
 					}
+					isAlive := PingServer(srv.IPv4)
 					if isAlive {
 						uptime[len(uptime)-1] += 30
 					}

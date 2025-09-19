@@ -745,7 +745,7 @@ func BulkUpdateServerInfo(updates []object.ServerUptimeUpdate) int {
 
 func GetServerUptimeInRange(startBlock int, endBlock int) ([]object.Server, int) {
 	query := `{
-		"size": 10000,
+		"size": 10,
 		"query": {
 			"match_all": { }
 		}

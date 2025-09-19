@@ -107,83 +107,6 @@
                 }
             }
         },
-        "/servers/daily_report/{order}/{filter}/{string}": {
-            "post": {
-                "description": "Create a request to send daily report email from YYYY-MM-DD to YYYY-MM-DD\nAn email will be sent to the specified recipients at 00:00:00 UTC.\nExample date format: 2025-07-23T12:00:00Z",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Servers"
-                ],
-                "summary": "Create a request to send daily report email",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "JWT token for authentication",
-                        "name": "jwt",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Order of results, either 'asc' or 'desc'. If not provided or using the wrong order format, the default order is ascending",
-                        "name": "order",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Filter by server_id, server_name, ipv4, or status. If not provided or using the wrong filter format, then there is no filter applied",
-                        "name": "filter",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Substring to search in server_id, server_name, ipv4, or status",
-                        "name": "string",
-                        "in": "query"
-                    },
-                    {
-                        "description": "Send email request",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/object.DailyReportRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Email sent successfully",
-                        "schema": {
-                            "$ref": "#/definitions/object.DailyReportResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid request",
-                        "schema": {
-                            "$ref": "#/definitions/object.DailyReportInvalidRequestResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Authentication failed",
-                        "schema": {
-                            "$ref": "#/definitions/object.AuthErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Failed to export into Excel file",
-                        "schema": {
-                            "$ref": "#/definitions/object.ExportExcelFailedResponse"
-                        }
-                    }
-                }
-            }
-        },
         "/servers/delete_server": {
             "delete": {
                 "description": "Delete a server by its unique ID",
@@ -363,6 +286,83 @@
                         "description": "Failed to add server to Elasticsearch from Excel row",
                         "schema": {
                             "$ref": "#/definitions/object.ImportExcelElasticsearchErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/servers/report/{order}/{filter}/{string}": {
+            "post": {
+                "description": "Create a request to send  report email from YYYY-MM-DD to YYYY-MM-DD\nAn email will be sent to the specified recipients at 00:00:00 UTC.\nExample date format: 2025-07-23T12:00:00Z",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Servers"
+                ],
+                "summary": "Create a request to send  report email",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "JWT token for authentication",
+                        "name": "jwt",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Order of results, either 'asc' or 'desc'. If not provided or using the wrong order format, the default order is ascending",
+                        "name": "order",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter by server_id, server_name, ipv4, or status. If not provided or using the wrong filter format, then there is no filter applied",
+                        "name": "filter",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Substring to search in server_id, server_name, ipv4, or status",
+                        "name": "string",
+                        "in": "query"
+                    },
+                    {
+                        "description": "Send email request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/object.ReportRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Email sent successfully",
+                        "schema": {
+                            "$ref": "#/definitions/object.ReportResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "schema": {
+                            "$ref": "#/definitions/object.ReportInvalidRequestResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication failed",
+                        "schema": {
+                            "$ref": "#/definitions/object.AuthErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to export into Excel file",
+                        "schema": {
+                            "$ref": "#/definitions/object.ExportExcelFailedResponse"
                         }
                     }
                 }
@@ -704,60 +704,6 @@
                 }
             }
         },
-        "object.DailyReportInternalServerErrorResponse": {
-            "type": "object",
-            "properties": {
-                "error": {
-                    "type": "string",
-                    "example": "Failed to save request"
-                },
-                "message": {
-                    "type": "string",
-                    "example": "Internal server error"
-                }
-            }
-        },
-        "object.DailyReportInvalidRequestResponse": {
-            "type": "object",
-            "properties": {
-                "error": {
-                    "type": "string",
-                    "example": "Invalid request body"
-                },
-                "message": {
-                    "type": "string",
-                    "example": "Invalid request"
-                }
-            }
-        },
-        "object.DailyReportRequest": {
-            "type": "object",
-            "required": [
-                "email",
-                "end_time",
-                "start_time"
-            ],
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "end_time": {
-                    "type": "string"
-                },
-                "start_time": {
-                    "type": "string"
-                }
-            }
-        },
-        "object.DailyReportResponse": {
-            "type": "object",
-            "properties": {
-                "message": {
-                    "type": "string",
-                    "example": "Request saved successfully"
-                }
-            }
-        },
         "object.DeleteServerInternalServerErrorResponse": {
             "type": "object",
             "properties": {
@@ -1029,6 +975,60 @@
                 "message": {
                     "type": "string",
                     "example": "Registration successful"
+                }
+            }
+        },
+        "object.ReportInternalServerErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Failed to save request"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Internal server error"
+                }
+            }
+        },
+        "object.ReportInvalidRequestResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Invalid request body"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Invalid request"
+                }
+            }
+        },
+        "object.ReportRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "end_time",
+                "start_time"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "end_time": {
+                    "type": "string"
+                },
+                "start_time": {
+                    "type": "string"
+                }
+            }
+        },
+        "object.ReportResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "Request saved successfully"
                 }
             }
         },
