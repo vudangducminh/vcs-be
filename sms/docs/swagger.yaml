@@ -457,7 +457,7 @@ paths:
       summary: Handle adding a new server
       tags:
       - Servers
-  /servers/daily_report:
+  /servers/daily_report/{order}/{filter}/{string}:
     post:
       consumes:
       - application/json
@@ -482,7 +482,7 @@ paths:
         name: filter
         type: string
       - description: Substring to search in server_id, server_name, ipv4, or status
-        in: path
+        in: query
         name: string
         type: string
       - description: Send email request
@@ -575,7 +575,7 @@ paths:
         name: filter
         type: string
       - description: Substring to search in server_id, server_name, ipv4, or status
-        in: path
+        in: query
         name: string
         type: string
       produces:
@@ -708,7 +708,7 @@ paths:
         name: filter
         type: string
       - description: Substring to search in server_id, server_name, ipv4, or status
-        in: path
+        in: query
         name: string
         type: string
       produces:

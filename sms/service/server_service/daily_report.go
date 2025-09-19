@@ -22,15 +22,16 @@ import (
 // @Param        jwt header string true "JWT token for authentication"
 // @Param        order query string false "Order of results, either 'asc' or 'desc'. If not provided or using the wrong order format, the default order is ascending"
 // @Param        filter query string false "Filter by server_id, server_name, ipv4, or status. If not provided or using the wrong filter format, then there is no filter applied"
-// @Param        string path string false "Substring to search in server_id, server_name, ipv4, or status"
+// @Param        string query string false "Substring to search in server_id, server_name, ipv4, or status"
 // @Param        request body object.DailyReportRequest true "Send email request"
 // @Success      200 {object} object.DailyReportResponse "Email sent successfully"
 // @Failure      400 {object} object.DailyReportInvalidRequestResponse "Invalid request"
 // @Failure      401 {object} object.AuthErrorResponse "Authentication failed"
 // @Failure      500 {object} object.DailyReportInternalServerErrorResponse "Internal server error"
 // @Failure      500 {object} object.ExportExcelFailedResponse "Failed to export into Excel file"
-// @Router       /servers/daily_report [post]
+// @Router       /servers/daily_report/{order}/{filter}/{string} [post]
 func DailyReportRequest(c *gin.Context) {
+	log.Println("Daily report request received")
 	order := c.Query("order")
 	if order != "asc" && order != "desc" {
 		order = "asc" // Default order if not specified

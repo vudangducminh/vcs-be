@@ -1,0 +1,443 @@
+2025/09/19 01:33:48 Username: admin1
+2025/09/19 01:33:48 Password: 123
+2025/09/19 01:33:48 Username: admin1
+2025/09/19 01:33:48 Password: 123
+2025/09/19 01:33:48 Stored Password: 123
+2025/09/19 01:34:11 Daily report request received
+2025/09/19 01:34:11 Received request to export server with filter 'server_id' and substring: '{string}'
+2025/09/19 01:34:11 Received request to export server with filter 'server_id' and substring: ''
+2025/09/19 01:34:16 Attempting to refresh from Elasticsearch...
+2025/09/19 01:34:20 Update list length: 10000
+2025/09/19 01:34:22 Daily report request received
+2025/09/19 01:34:22 Received request to export server with filter 'server_id' and substring: '{string}'
+2025/09/19 01:34:22 Received request to export server with filter 'server_id' and substring: ''
+2025/09/19 01:34:22 [200 OK] {
+  "took" : 2,
+  "timed_out" : false,
+  "_shards" : {
+    "total" : 1,
+    "successful" : 1,
+    "skipped" : 0,
+    "failed" : 0
+  },
+  "hits" : {
+    "total" : {
+      "value" : 10000,
+      "relation" : "eq"
+    },
+    "max_score" : 1.0,
+    "hits" : [
+      {
+        "_index" : "server",
+        "_id" : "526716f4d29f3f53953e618d82910d4cbf6aafc775e222a38918ee6b2708e22b",
+        "_score" : 1.0,
+        "_source" : {
+          "server_id" : "526716f4d29f3f53953e618d82910d4cbf6aafc775e222a38918ee6b2708e22b",
+          "server_name" : "Server 953",
+          "status" : "inactive",
+          "uptime" : [
+            960
+          ],
+          "created_time" : 1757590313,
+          "last_updated_time" : 1758245660,
+          "ipv4" : "85.43.138.56"
+        }
+      },
+      {
+        "_index" : "server",
+        "_id" : "dc44e004ae17fbbb3b1a94c042bf9caac7c28e5c48858200d7655fc574a81200",
+        "_score" : 1.0,
+        "_source" : {
+          "server_id" : "dc44e004ae17fbbb3b1a94c042bf9caac7c28e5c48858200d7655fc574a81200",
+          "server_name" : "Server 6358",
+          "status" : "active",
+          "uptime" : [
+            1140
+          ],
+          "created_time" : 1757595465,
+          "last_updated_time" : 1758245660,
+          "ipv4" : "186.88.30.196"
+        }
+      },
+      {
+        "_index" : "server",
+        "_id" : "0eb9263b201981527fee841a8864c7fceb9f3e096d5a7c10a5ef0bd988b64e89",
+        "_score" : 1.0,
+        "_source" : {
+          "server_id" : "0eb9263b201981527fee841a8864c7fceb9f3e096d5a7c10a5ef0bd988b64e89",
+          "server_name" : "Server 2865",
+          "status" : "active",
+          "uptime" : [
+            900
+          ],
+          "created_time" : 1757593438,
+          "last_updated_time" : 1758245660,
+          "ipv4" : "153.179.40.234"
+        }
+      },
+      {
+        "_index" : "server",
+        "_id" : "0e1085d9cf73bfaf9399c6a8325a424ae744b4952e110693d567291052d5cb3d",
+        "_score" : 1.0,
+        "_source" : {
+          "server_id" : "0e1085d9cf73bfaf9399c6a8325a424ae744b4952e110693d567291052d5cb3d",
+          "server_name" : "Server 4167",
+          "status" : "inactive",
+          "uptime" : [
+            1020
+          ],
+          "created_time" : 1757620362,
+          "last_updated_time" : 1758245660,
+          "ipv4" : "101.183.74.181"
+        }
+      },
+      {
+        "_index" : "server",
+        "_id" : "e83ae387f33c628cef7fc2c837460ab8a2ce0e7a50e803e38dfbe2a82ee49dff",
+        "_score" : 1.0,
+        "_source" : {
+          "server_id" : "e83ae387f33c628cef7fc2c837460ab8a2ce0e7a50e803e38dfbe2a82ee49dff",
+          "server_name" : "Server 7951",
+          "status" : "inactive",
+          "uptime" : [
+            1140
+          ],
+          "created_time" : 1757610130,
+          "last_updated_time" : 1758245660,
+          "ipv4" : "31.49.200.57"
+        }
+      },
+      {
+        "_index" : "server",
+        "_id" : "907f689bd6e84ea2991dae99cd4dd57852e2840e4d865ce8382c1aabb9685678",
+        "_score" : 1.0,
+        "_source" : {
+          "server_id" : "907f689bd6e84ea2991dae99cd4dd57852e2840e4d865ce8382c1aabb9685678",
+          "server_name" : "Server 919",
+          "status" : "active",
+          "uptime" : [
+            630
+          ],
+          "created_time" : 1757612220,
+          "last_updated_time" : 1758245660,
+          "ipv4" : "210.79.203.149"
+        }
+      },
+      {
+        "_index" : "server",
+        "_id" : "5cf2571e9ba124462ff938e1a62c27452a4d7d633da4f85d30661731e364902a",
+        "_score" : 1.0,
+        "_source" : {
+          "server_id" : "5cf2571e9ba124462ff938e1a62c27452a4d7d633da4f85d30661731e364902a",
+          "server_name" : "Server 3224",
+          "status" : "inactive",
+          "uptime" : [
+            630
+          ],
+          "created_time" : 1757597952,
+          "last_updated_time" : 1758245660,
+          "ipv4" : "137.232.119.148"
+        }
+      },
+      {
+        "_index" : "server",
+        "_id" : "b38119836b51fcfd7c5f5402438f6025017c0497d275b977f6337f1ff6357783",
+        "_score" : 1.0,
+        "_source" : {
+          "server_id" : "b38119836b51fcfd7c5f5402438f6025017c0497d275b977f6337f1ff6357783",
+          "server_name" : "Server 7900",
+          "status" : "inactive",
+          "uptime" : [
+            690
+          ],
+          "created_time" : 1757662426,
+          "last_updated_time" : 1758245660,
+          "ipv4" : "34.226.235.17"
+        }
+      },
+      {
+        "_index" : "server",
+        "_id" : "bc510af66c80a286a56c60070735df6ad705ddff731836be039562a0891bec84",
+        "_score" : 1.0,
+        "_source" : {
+          "server_id" : "bc510af66c80a286a56c60070735df6ad705ddff731836be039562a0891bec84",
+          "server_name" : "Server 642",
+          "status" : "active",
+          "uptime" : [
+            810
+          ],
+          "created_time" : 1757662563,
+          "last_updated_time" : 1758245660,
+          "ipv4" : "132.216.196.134"
+        }
+      },
+      {
+        "_index" : "server",
+        "_id" : "b65648062409ede79582a06bc2807107ba3cc48c81460e82693952d7e9260479",
+        "_score" : 1.0,
+        "_source" : {
+          "server_id" : "b65648062409ede79582a06bc2807107ba3cc48c81460e82693952d7e9260479",
+          "server_name" : "Server 2153",
+          "status" : "active",
+          "uptime" : [
+            930
+          ],
+          "created_time" : 1757607580,
+          "last_updated_time" : 1758245660,
+          "ipv4" : "104.119.33.164"
+        }
+      }
+    ]
+  }
+}
+
+2025/09/19 01:34:22 Start block:  114
+2025/09/19 01:34:22 End block:  42
+2025/09/19 01:34:22 Server ID:  526716f4d29f3f53953e618d82910d4cbf6aafc775e222a38918ee6b2708e22b
+2025/09/19 01:34:22 Uptime data:  [960]
+2025/09/19 01:34:22 Server ID:  dc44e004ae17fbbb3b1a94c042bf9caac7c28e5c48858200d7655fc574a81200
+2025/09/19 01:34:22 Uptime data:  [1140]
+2025/09/19 01:34:22 Server ID:  0eb9263b201981527fee841a8864c7fceb9f3e096d5a7c10a5ef0bd988b64e89
+2025/09/19 01:34:22 Uptime data:  [900]
+2025/09/19 01:34:22 Server ID:  0e1085d9cf73bfaf9399c6a8325a424ae744b4952e110693d567291052d5cb3d
+2025/09/19 01:34:22 Uptime data:  [1020]
+2025/09/19 01:34:22 Server ID:  e83ae387f33c628cef7fc2c837460ab8a2ce0e7a50e803e38dfbe2a82ee49dff
+2025/09/19 01:34:22 Uptime data:  [1140]
+2025/09/19 01:34:22 Server ID:  907f689bd6e84ea2991dae99cd4dd57852e2840e4d865ce8382c1aabb9685678
+2025/09/19 01:34:22 Uptime data:  [630]
+2025/09/19 01:34:22 Server ID:  5cf2571e9ba124462ff938e1a62c27452a4d7d633da4f85d30661731e364902a
+2025/09/19 01:34:22 Uptime data:  [630]
+2025/09/19 01:34:22 Server ID:  b38119836b51fcfd7c5f5402438f6025017c0497d275b977f6337f1ff6357783
+2025/09/19 01:34:22 Uptime data:  [690]
+2025/09/19 01:34:22 Server ID:  bc510af66c80a286a56c60070735df6ad705ddff731836be039562a0891bec84
+2025/09/19 01:34:22 Uptime data:  [810]
+2025/09/19 01:34:22 Server ID:  b65648062409ede79582a06bc2807107ba3cc48c81460e82693952d7e9260479
+2025/09/19 01:34:22 Uptime data:  [930]
+2025/09/19 01:37:51 Logger initialized. Subsequent logs will be written to log/server.log
+2025/09/19 01:37:51 Attempting to connect to PostgreSQL at postgresql:5432
+2025/09/19 01:37:51 Connected to PostgreSQL database successfully
+2025/09/19 01:37:52 Connected to Redis successfully
+2025/09/19 01:37:52 Connected to Elasticsearch successfully
+2025/09/19 01:38:02 Attempting to fetch server list from Elasticsearch...
+2025/09/19 01:38:02 Attempting to refresh from Elasticsearch...
+2025/09/19 01:38:06 Update list length: 10000
+2025/09/19 01:39:08 Attempting to refresh from Elasticsearch...
+2025/09/19 01:39:11 Update list length: 10000
+2025/09/19 01:40:11 Username: admin
+2025/09/19 01:40:11 Password: 123
+2025/09/19 01:40:11 No account found with username: admin
+2025/09/19 01:40:11 Username: admin
+2025/09/19 01:40:11 Password: 123
+2025/09/19 01:40:11 Stored Password: 
+2025/09/19 01:40:12 Attempting to refresh from Elasticsearch...
+2025/09/19 01:40:15 Username: admin1
+2025/09/19 01:40:15 Password: 123
+2025/09/19 01:40:15 Username: admin1
+2025/09/19 01:40:15 Password: 123
+2025/09/19 01:40:15 Stored Password: 123
+2025/09/19 01:40:15 Update list length: 10000
+2025/09/19 01:40:29 Daily report request received
+2025/09/19 01:40:29 Received request to export server with filter 'server_id' and substring: '{string}'
+2025/09/19 01:40:29 Received request to export server with filter 'server_id' and substring: ''
+2025/09/19 01:40:29 [200 OK] {
+  "took" : 3,
+  "timed_out" : false,
+  "_shards" : {
+    "total" : 1,
+    "successful" : 1,
+    "skipped" : 0,
+    "failed" : 0
+  },
+  "hits" : {
+    "total" : {
+      "value" : 10000,
+      "relation" : "eq"
+    },
+    "max_score" : 1.0,
+    "hits" : [
+      {
+        "_index" : "server",
+        "_id" : "95ada854df252801a18149025a625581f44e8a9df243b699477f5913039bbb20",
+        "_score" : 1.0,
+        "_source" : {
+          "server_id" : "95ada854df252801a18149025a625581f44e8a9df243b699477f5913039bbb20",
+          "server_name" : "Server 9356",
+          "status" : "active",
+          "uptime" : [
+            600
+          ],
+          "created_time" : 1757593906,
+          "last_updated_time" : 1758246015,
+          "ipv4" : "50.101.228.66"
+        }
+      },
+      {
+        "_index" : "server",
+        "_id" : "1a5899b98a4f865183e93da649d74682520c380e2da6f55a3ab8e5637f47d4ac",
+        "_score" : 1.0,
+        "_source" : {
+          "server_id" : "1a5899b98a4f865183e93da649d74682520c380e2da6f55a3ab8e5637f47d4ac",
+          "server_name" : "Server 2919",
+          "status" : "maintenance",
+          "uptime" : [
+            0
+          ],
+          "created_time" : 1757654271,
+          "last_updated_time" : 1758246015,
+          "ipv4" : "174.167.211.234"
+        }
+      },
+      {
+        "_index" : "server",
+        "_id" : "de2d792003a46030b5019ea239e2fcfc7d98d1d71f66a79fccc832755508ebeb",
+        "_score" : 1.0,
+        "_source" : {
+          "server_id" : "de2d792003a46030b5019ea239e2fcfc7d98d1d71f66a79fccc832755508ebeb",
+          "server_name" : "Server 9416",
+          "status" : "active",
+          "uptime" : [
+            570
+          ],
+          "created_time" : 1757653448,
+          "last_updated_time" : 1758246015,
+          "ipv4" : "138.217.125.117"
+        }
+      },
+      {
+        "_index" : "server",
+        "_id" : "0e1085d9cf73bfaf9399c6a8325a424ae744b4952e110693d567291052d5cb3d",
+        "_score" : 1.0,
+        "_source" : {
+          "server_id" : "0e1085d9cf73bfaf9399c6a8325a424ae744b4952e110693d567291052d5cb3d",
+          "server_name" : "Server 4167",
+          "status" : "inactive",
+          "uptime" : [
+            1110
+          ],
+          "created_time" : 1757620362,
+          "last_updated_time" : 1758246015,
+          "ipv4" : "101.183.74.181"
+        }
+      },
+      {
+        "_index" : "server",
+        "_id" : "4490fece4d410d48f59bd78f85af0a426130044c7503121c5a5daee3131b17a9",
+        "_score" : 1.0,
+        "_source" : {
+          "server_id" : "4490fece4d410d48f59bd78f85af0a426130044c7503121c5a5daee3131b17a9",
+          "server_name" : "Server 2655",
+          "status" : "active",
+          "uptime" : [
+            1140
+          ],
+          "created_time" : 1757589610,
+          "last_updated_time" : 1758246015,
+          "ipv4" : "83.188.231.210"
+        }
+      },
+      {
+        "_index" : "server",
+        "_id" : "6fb7b3a29ae6b6270e662b28125c0697a4f89756b5a77b5762f9d9888bba20c3",
+        "_score" : 1.0,
+        "_source" : {
+          "server_id" : "6fb7b3a29ae6b6270e662b28125c0697a4f89756b5a77b5762f9d9888bba20c3",
+          "server_name" : "Server 8222",
+          "status" : "active",
+          "uptime" : [
+            960
+          ],
+          "created_time" : 1757594457,
+          "last_updated_time" : 1758246015,
+          "ipv4" : "112.68.97.133"
+        }
+      },
+      {
+        "_index" : "server",
+        "_id" : "f8117302d5b30b839b0589ad9d6cd156274cdc69a2038638b3a30826ae1f3438",
+        "_score" : 1.0,
+        "_source" : {
+          "server_id" : "f8117302d5b30b839b0589ad9d6cd156274cdc69a2038638b3a30826ae1f3438",
+          "server_name" : "Server 5478",
+          "status" : "active",
+          "uptime" : [
+            1170
+          ],
+          "created_time" : 1757604484,
+          "last_updated_time" : 1758246015,
+          "ipv4" : "81.242.164.5"
+        }
+      },
+      {
+        "_index" : "server",
+        "_id" : "f7070e5464214baf5e9758030d85ded0aed91dedc10c288c79be91b648542ff8",
+        "_score" : 1.0,
+        "_source" : {
+          "server_id" : "f7070e5464214baf5e9758030d85ded0aed91dedc10c288c79be91b648542ff8",
+          "server_name" : "Server 6297",
+          "status" : "inactive",
+          "uptime" : [
+            0
+          ],
+          "created_time" : 1757591961,
+          "last_updated_time" : 1758246015,
+          "ipv4" : "241.214.252.28"
+        }
+      },
+      {
+        "_index" : "server",
+        "_id" : "2b9f5803e8c9996dcc7798e5292ed63c1e8077ff4fb9eeceed46622b4e51fc60",
+        "_score" : 1.0,
+        "_source" : {
+          "server_id" : "2b9f5803e8c9996dcc7798e5292ed63c1e8077ff4fb9eeceed46622b4e51fc60",
+          "server_name" : "Server 2315",
+          "status" : "inactive",
+          "uptime" : [
+            0
+          ],
+          "created_time" : 1757607165,
+          "last_updated_time" : 1758246015,
+          "ipv4" : "66.248.12.169"
+        }
+      },
+      {
+        "_index" : "server",
+        "_id" : "b472143b63d5958546682e63ce829368d15fc2518f0ad20ca92b370ebc3c70c5",
+        "_score" : 1.0,
+        "_source" : {
+          "server_id" : "b472143b63d5958546682e63ce829368d15fc2518f0ad20ca92b370ebc3c70c5",
+          "server_name" : "Server 2102",
+          "status" : "active",
+          "uptime" : [
+            720
+          ],
+          "created_time" : 1757646553,
+          "last_updated_time" : 1758246015,
+          "ipv4" : "64.130.13.110"
+        }
+      }
+    ]
+  }
+}
+
+2025/09/19 01:40:29 Start block:  115
+2025/09/19 01:40:29 End block:  43
+2025/09/19 01:40:29 Server IP:  50.101.228.66
+2025/09/19 01:40:29 Uptime data:  [600]
+2025/09/19 01:40:29 Server IP:  174.167.211.234
+2025/09/19 01:40:29 Uptime data:  [0]
+2025/09/19 01:40:29 Server IP:  138.217.125.117
+2025/09/19 01:40:29 Uptime data:  [570]
+2025/09/19 01:40:29 Server IP:  101.183.74.181
+2025/09/19 01:40:29 Uptime data:  [1110]
+2025/09/19 01:40:29 Server IP:  83.188.231.210
+2025/09/19 01:40:29 Uptime data:  [1140]
+2025/09/19 01:40:29 Server IP:  112.68.97.133
+2025/09/19 01:40:29 Uptime data:  [960]
+2025/09/19 01:40:29 Server IP:  81.242.164.5
+2025/09/19 01:40:29 Uptime data:  [1170]
+2025/09/19 01:40:29 Server IP:  241.214.252.28
+2025/09/19 01:40:29 Uptime data:  [0]
+2025/09/19 01:40:29 Server IP:  66.248.12.169
+2025/09/19 01:40:29 Uptime data:  [0]
+2025/09/19 01:40:29 Server IP:  64.130.13.110
+2025/09/19 01:40:29 Uptime data:  [720]

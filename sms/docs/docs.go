@@ -110,7 +110,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/servers/daily_report": {
+        "/servers/daily_report/{order}/{filter}/{string}": {
             "post": {
                 "description": "Create a request to send daily report email from YYYY-MM-DD to YYYY-MM-DD\nAn email will be sent to the specified recipients at 00:00:00 UTC.\nExample date format: 2025-07-23T12:00:00Z",
                 "consumes": [
@@ -147,7 +147,7 @@ const docTemplate = `{
                         "type": "string",
                         "description": "Substring to search in server_id, server_name, ipv4, or status",
                         "name": "string",
-                        "in": "path"
+                        "in": "query"
                     },
                     {
                         "description": "Send email request",
@@ -283,7 +283,7 @@ const docTemplate = `{
                         "type": "string",
                         "description": "Substring to search in server_id, server_name, ipv4, or status",
                         "name": "string",
-                        "in": "path"
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -479,7 +479,7 @@ const docTemplate = `{
                         "type": "string",
                         "description": "Substring to search in server_id, server_name, ipv4, or status",
                         "name": "string",
-                        "in": "path"
+                        "in": "query"
                     }
                 ],
                 "responses": {

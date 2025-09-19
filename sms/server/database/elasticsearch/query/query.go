@@ -756,7 +756,7 @@ func GetServerUptimeInRange(startBlock int, endBlock int) ([]object.Server, int)
 		elastic.Es.Search.WithPretty(),
 		elastic.Es.Search.WithContext(context.Background()),
 	)
-
+	log.Println(res)
 	if err != nil {
 		return nil, http.StatusInternalServerError
 	}
@@ -770,13 +770,17 @@ func GetServerUptimeInRange(startBlock int, endBlock int) ([]object.Server, int)
 	if status != http.StatusOK {
 		return nil, status
 	}
+	log.Println("Start block: ", startBlock)
+	log.Println("End block: ", endBlock)
 	for i := 0; i < len(servers); i++ {
+		log.Println("Server IP: ", servers[i].IPv4)
+		log.Println("Uptime data: ", servers[i].Uptime)
 		var start = max(0, len(servers[i].Uptime)-startBlock)
 		var end = max(0, len(servers[i].Uptime)-endBlock)
 
 		// Calculate total uptime in the range using simple loop
 		var totalUptime int = 0
-		for j := start; j < end && j < len(servers[i].Uptime); j++ {
+		for j := start; j <= end && j < len(servers[i].Uptime); j++ {
 			totalUptime += servers[i].Uptime[j]
 		}
 
