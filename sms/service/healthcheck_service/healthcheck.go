@@ -1,7 +1,6 @@
 package healthcheck_service
 
 import (
-	"context"
 	"log"
 	"net"
 	"sms/object"
@@ -12,23 +11,18 @@ import (
 var ServerList []object.BriefServerInfo
 
 func PingServer(ip string) bool {
+	// Try common server ports
+	ports := []string{"22", "80", "443", "8080", "3389", "21", "25"}
 	timeout := time.Second * 3
 
-	resolver := &net.Resolver{
-		PreferGo: true,
-		Dial: func(ctx context.Context, network, address string) (net.Conn, error) {
-			d := net.Dialer{
-				Timeout: timeout,
-			}
-			return d.DialContext(ctx, network, address)
-		},
+	for _, port := range ports {
+		conn, err := net.DialTimeout("tcp", net.JoinHostPort(ip, port), timeout)
+		if err == nil {
+			conn.Close()
+			return true // Server is reachable on at least one port
+		}
 	}
-
-	ctx, cancel := context.WithTimeout(context.Background(), timeout)
-	defer cancel()
-
-	_, err := resolver.LookupAddr(ctx, ip)
-	return err == nil
+	return false // No ports were reachable
 }
 
 func HealthCheck() {
@@ -52,7 +46,7 @@ func HealthCheck() {
 			log.Println("Attempting to refresh from Elasticsearch...")
 			ServerList = elastic_query.GetAllServer()
 			var newUptimeStatus bool = false
-			if time.Now().Minute()%20 == 1 {
+			if time.Now().Minute()%1 == 0 {
 				newUptimeStatus = true
 			}
 
@@ -74,9 +68,9 @@ func HealthCheck() {
 					if isAlive {
 						uptime[len(uptime)-1] += 30
 					}
-					// if uptime[0] > 0 {
-					// 	log.Println("IP", srv.IPv4, "uptime:", uptime)
-					// }
+					if uptime[0] > 0 {
+						log.Println("IP", srv.IPv4, "uptime:", uptime)
+					}
 
 					// Send result to channel
 					var status string
@@ -121,6 +115,6 @@ func HealthCheck() {
 			elastic_query.BulkUpdateServerInfo(updateList)
 			prevMinute = time.Now().Minute()
 		}
-		time.Sleep(30 * time.Second)
+		time.Sleep(10 * time.Second)
 	}
 }

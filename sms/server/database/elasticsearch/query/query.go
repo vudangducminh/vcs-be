@@ -711,10 +711,10 @@ func BulkUpdateServerInfo(updates []object.ServerUptimeUpdate) int {
 	for _, update := range updates {
 		// Update action
 		bulkRequest.WriteString(fmt.Sprintf(`{"update": {"_index": "server", "_id": "%s"}}%s`, update.ServerId, "\n"))
-
+		uptimeJSON, _ := json.Marshal(update.Uptime)
 		// Document to update
-		bulkRequest.WriteString(fmt.Sprintf(`{"doc": {"uptime": %v, "last_updated_time": %d}}%s`,
-			update.Uptime, time.Now().Unix(), "\n"))
+		bulkRequest.WriteString(fmt.Sprintf(`{"doc": {"uptime": %s, "last_updated_time": %d, "status": "%s"}}%s`,
+			string(uptimeJSON), time.Now().Unix(), update.Status, "\n"))
 	}
 
 	if len(bulkRequest.String()) == 0 {
