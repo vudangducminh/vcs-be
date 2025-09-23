@@ -72,7 +72,7 @@ func main() {
 
 func GenerateServer() {
 	var servers []object.Server
-	for i := 0; i < 10000; i++ {
+	for i := 0; i < 9500; i++ {
 		var rng = rand.Intn(1000)
 		if rng < 600 {
 			rng = 0 // Active status

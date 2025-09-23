@@ -15,8 +15,10 @@ import (
 func ConnectToSwagger() {
 	r := gin.Default()
 
-	r.GET("/health", healthcheck_service.ServiceHealthCheck)
-
+	health := r.Group("api/v1/health")
+	{
+		health.GET("/", healthcheck_service.ServiceHealthCheck)
+	}
 	users := r.Group("api/v1/users")
 	{
 		users.POST("/login", user_service.HandleLogin)

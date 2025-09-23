@@ -26,7 +26,7 @@ func GetAllServer() []object.BriefServerInfo {
 	}
 
 	query := `{
-		"size": 20000,
+		"size": 10000,
 		"_source": ["ipv4", "uptime"],
 		"query": {
 			"match_all": { }
@@ -594,8 +594,6 @@ func GetTotalLastUpdatedTime() (int64, int) {
 		elastic.Es.Search.WithContext(context.Background()),
 		elastic.Es.Search.WithPretty(),
 	)
-	log.Println("Response:", res)
-	log.Println("Response body:", res.Body)
 	if err != nil {
 		return 0, 0
 	}
@@ -742,9 +740,10 @@ func BulkUpdateServerInfo(updates []object.ServerUptimeUpdate) int {
 	return http.StatusOK
 }
 
-func GetServerUptimeInRange(startBlock int, endBlock int) ([]object.Server, int) {
+func GetServerUptimeInRange(startBlock int, endBlock int) ([]object.Server, int, float64) {
+	// Needs to implement order, filter and string
 	query := `{
-		"size": 100,
+		"size": 10000,
 		"query": {
 			"match_all": { }
 		}
@@ -755,37 +754,38 @@ func GetServerUptimeInRange(startBlock int, endBlock int) ([]object.Server, int)
 		elastic.Es.Search.WithPretty(),
 		elastic.Es.Search.WithContext(context.Background()),
 	)
-	log.Println(res)
 	if err != nil {
-		return nil, http.StatusInternalServerError
+		return nil, http.StatusInternalServerError, 0
 	}
 
 	defer res.Body.Close()
 	if res.IsError() {
-		return nil, http.StatusNotFound
+		return nil, http.StatusNotFound, 0
 	}
 
 	servers, status := ParseSearchResults(res)
 	if status != http.StatusOK {
-		return nil, status
+		return nil, status, 0
 	}
-	log.Println("Start block: ", startBlock)
-	log.Println("End block: ", endBlock)
+	// log.Println("Start block: ", startBlock)
+	// log.Println("End block: ", endBlock)
+	var allServerTotalTime float64 = 0
+	var allServerUptime float64 = 0
 	for i := 0; i < len(servers); i++ {
-		log.Println("Server IP: ", servers[i].IPv4)
-		log.Println("Uptime data: ", servers[i].Uptime)
+		// log.Println("Server IP: ", servers[i].IPv4)
+		// log.Println("Uptime data: ", servers[i].Uptime)
 		var start = max(0, len(servers[i].Uptime)-startBlock)
 		var end = max(0, len(servers[i].Uptime)-endBlock)
-
+		allServerTotalTime += float64((start - end + 1) * 1200)
 		// Calculate total uptime in the range using simple loop
 		var totalUptime int = 0
 		for j := start; j <= end && j < len(servers[i].Uptime); j++ {
 			totalUptime += servers[i].Uptime[j]
 		}
-
+		allServerUptime += float64(totalUptime)
 		// Update the server with calculated uptime
 		servers[i].Uptime = []int{totalUptime} // Convert back to expected format
 	}
 
-	return servers, http.StatusOK
+	return servers, http.StatusOK, allServerUptime / allServerTotalTime * 100
 }

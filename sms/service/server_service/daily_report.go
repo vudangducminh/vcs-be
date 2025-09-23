@@ -1,10 +1,12 @@
 package servers_handler
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"sms/object"
 	elastic_query "sms/server/database/elasticsearch/query"
+	report_service "sms/service/report_service/template"
 	"sort"
 	"time"
 
@@ -93,7 +95,7 @@ func DailyReportRequest(c *gin.Context) {
 	}
 	var beginBlock = int((roundedCurrentTime-roundedStartTime)/1200 + 1)
 	var endBlock = int((roundedCurrentTime-roundedEndTime)/1200 + 1)
-	serverDataList, status := elastic_query.GetServerUptimeInRange(beginBlock, endBlock)
+	serverDataList, status, averageUptimePercentage := elastic_query.GetServerUptimeInRange(beginBlock, endBlock)
 	if status != http.StatusOK {
 		c.JSON(status, gin.H{"error": "Failed to retrieve server details"})
 		return
@@ -128,6 +130,7 @@ func DailyReportRequest(c *gin.Context) {
 	}
 
 	// Write data
+
 	for rowIdx, server := range serverDataList {
 		// Convert timestamps to readable format
 		createdTimeStr := time.Unix(server.CreatedTime, 0).Format("2006-01-02 15:04:05")
@@ -159,9 +162,18 @@ func DailyReportRequest(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to export into Excel file"})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"message": "Servers exported successfully"})
-	// Query from uptime[len - beginBlock] to uptime[len - endBlock]
-	// Needs to provide total uptime of every single servers during this period
-	// log.Println(startTimeInSecond, " ", time.Now().Unix())
 
+	emailBody := "Here is your requested server report." + "\n"
+	emailBody += "Total servers in the system: " + fmt.Sprintf("%d", len(serverDataList)) + "\n"
+	emailBody += "Number of active servers: " + fmt.Sprintf("%d", elastic_query.GetTotalActiveServersCount()) + "\n"
+	emailBody += "Number of inactive servers: " + fmt.Sprintf("%d", elastic_query.GetTotalInactiveServersCount()) + "\n"
+	emailBody += "Number of maintenance servers: " + fmt.Sprintf("%d", elastic_query.GetTotalMaintenanceServersCount()) + "\n"
+	emailBody += "Average uptime percentage across all servers: " + fmt.Sprintf("%d", int(averageUptimePercentage)) + "%" + "\n"
+	// Send email with the Excel file as attachment
+	status = report_service.SendEmail(f, req.Email, "Server Report", emailBody)
+	if status != http.StatusOK {
+		c.JSON(status, gin.H{"error": "Failed to send email"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"message": "Servers exported successfully"})
 }

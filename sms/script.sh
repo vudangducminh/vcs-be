@@ -1,5 +1,5 @@
-curl -X DELETE "http://localhost9200/server/_delete_by_query?pretty=true" -H "Content-Type: application/json" -d '{
-   "query": {
-	 "match_all": {}
-   }
- }'
+curl -X POST "http://localhost:9200/server/_delete_by_query?pretty" -H 'Content-Type: application/json' -d'{
+    "query": {
+        "match_all": { }
+    }
+}'
