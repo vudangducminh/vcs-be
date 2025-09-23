@@ -20,7 +20,7 @@ import (
 // @Failure      401 {object} object.AuthErrorResponse "Authentication failed"
 // @Failure      400 {object} object.UpdateServerBadRequestResponse "Invalid request body"
 // @Failure      404 {object} object.UpdateServerStatusNotFoundResponse "Server not found"
-// @Failure      409 {object} object.UpdateServerConflictResponse "Server already exists"
+// @Failure      409 {object} object.UpdateServerConflictResponse "Server IP already exists"
 // @Failure      500 {object} object.UpdateServerInternalServerErrorResponse "Internal server error"
 // @Router       /servers/update_server [put]
 func UpdateServer(c *gin.Context) {
@@ -30,12 +30,12 @@ func UpdateServer(c *gin.Context) {
 		return
 	}
 
-	if req.ServerId == "" {
+	if req.Id == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "ServerId is required"})
 		return
 	}
 
-	server, exists := elastic_query.GetServerById(req.ServerId)
+	server, exists := elastic_query.GetServerById(req.Id)
 	if !exists {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Server not found"})
 		return
@@ -45,6 +45,10 @@ func UpdateServer(c *gin.Context) {
 		server.ServerName = req.ServerName
 	}
 	if req.IPv4 != "" {
+		if elastic_query.CheckServerExists(req.IPv4) && server.IPv4 != req.IPv4 {
+			c.JSON(http.StatusConflict, gin.H{"error": "IPv4 already exists"})
+			return
+		}
 		server.IPv4 = req.IPv4
 	}
 	server.Status = req.Status

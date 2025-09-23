@@ -1,29 +1,10 @@
-2025/09/23 07:05:15 Logger initialized. Subsequent logs will be written to log/server.log
-2025/09/23 07:05:15 Attempting to connect to PostgreSQL at postgresql:5432
-2025/09/23 07:05:15 Connected to PostgreSQL database successfully
-2025/09/23 07:05:16 Connected to Redis successfully
-2025/09/23 07:05:16 Connected to Elasticsearch successfully
-2025/09/23 07:05:26 Attempting to fetch server list from Elasticsearch...
-2025/09/23 07:05:26 No servers found or Elasticsearch not ready, will retry later
-2025/09/23 07:05:26 Attempting to refresh from Elasticsearch...
-2025/09/23 07:05:26 Update list length: 0
-2025/09/23 07:05:26 No updates to process
-2025/09/23 07:10:48 Logger initialized. Subsequent logs will be written to log/server.log
-2025/09/23 07:10:48 Attempting to connect to PostgreSQL at postgresql:5432
-2025/09/23 07:10:49 Connected to PostgreSQL database successfully
-2025/09/23 07:10:49 Connected to Redis successfully
-2025/09/23 07:10:49 Connected to Elasticsearch successfully
-2025/09/23 07:10:54 Generated and added 10000 sample servers to Elasticsearch
-2025/09/23 07:10:59 Attempting to fetch server list from Elasticsearch...
-2025/09/23 07:11:01 Attempting to refresh from Elasticsearch...
-2025/09/23 07:11:26 Update list length: 10000
-2025/09/23 07:12:33 Attempting to refresh from Elasticsearch...
-2025/09/23 07:12:56 Update list length: 10000
-2025/09/23 07:13:59 Attempting to refresh from Elasticsearch...
-2025/09/23 07:14:23 Update list length: 10000
-2025/09/23 07:15:28 Attempting to refresh from Elasticsearch...
-2025/09/23 07:15:51 Update list length: 10000
-2025/09/23 07:16:53 Attempting to refresh from Elasticsearch...
-2025/09/23 07:17:16 Update list length: 10000
-2025/09/23 07:18:17 Attempting to refresh from Elasticsearch...
-2025/09/23 07:18:39 Update list length: 10000
+2025/09/23 11:00:46 Logger initialized. Subsequent logs will be written to log/server.log
+2025/09/23 11:00:46 Attempting to connect to PostgreSQL at postgresql:5432
+2025/09/23 11:00:46 Connected to PostgreSQL database successfully
+2025/09/23 11:00:47 Connected to Redis successfully
+2025/09/23 11:00:47 Connected to Elasticsearch successfully
+2025/09/23 11:00:57 Attempting to fetch server list from Elasticsearch...
+2025/09/23 11:01:00 Attempting to refresh from Elasticsearch...
+2025/09/23 11:01:33 Update list length: 20000
+2025/09/23 11:02:01 Attempting to refresh from Elasticsearch...
+2025/09/23 11:02:28 Update list length: 20000

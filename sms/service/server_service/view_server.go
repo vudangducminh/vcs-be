@@ -17,8 +17,8 @@ import (
 // @Produce      json
 // @Param        jwt header string true "JWT token for authentication"
 // @Param        order query string false "Order of results, either 'asc' or 'desc'. If not provided or using the wrong order format, the default order is ascending"
-// @Param        filter query string false "Filter by server_id, server_name, ipv4, or status. If not provided or using the wrong filter format, the default filter is server_name"
-// @Param        string query string false "Substring to search in server_id, server_name, ipv4, or status"
+// @Param        filter query string false "Filter by _id, server_name, ipv4, or status. If not provided or using the wrong filter format, the default filter is server_name"
+// @Param        string query string false "Substring to search in _id, server_name, ipv4, or status"
 // @Success      200 {object} object.ViewServerSuccessResponse "Server details retrieved successfully"
 // @Failure      400 {object} object.ViewServerBadRequestResponse "Invalid request parameters"
 // @Failure      401 {object} object.AuthErrorResponse "Authentication failed"
@@ -31,7 +31,7 @@ func ViewServer(c *gin.Context) {
 		order = "asc" // Default order if not specified
 	}
 	filter := c.Query("filter")
-	str := c.Param("string")
+	str := c.Query("string")
 	log.Printf("Received request to view server with filter '%s' and substring: '%s'", filter, str)
 	if str == "undefined" || str == "{string}" {
 		str = ""
@@ -40,7 +40,7 @@ func ViewServer(c *gin.Context) {
 	var servers []object.Server
 	var httpStatus int
 	switch filter {
-	case "server_id":
+	case "_id":
 		servers, httpStatus = elastic_query.GetServerByIdSubstr(str)
 	case "server_name":
 		servers, httpStatus = elastic_query.GetServerByNameSubstr(str)
@@ -63,8 +63,8 @@ func ViewServer(c *gin.Context) {
 	sort.Slice(servers, func(i, j int) bool {
 		var less bool
 		switch filter {
-		case "server_id":
-			less = servers[i].ServerId < servers[j].ServerId
+		case "_id":
+			less = servers[i].Id < servers[j].Id
 		case "status":
 			less = servers[i].Status < servers[j].Status
 		case "ipv4":
@@ -82,7 +82,7 @@ func ViewServer(c *gin.Context) {
 	var response []gin.H
 	for _, server := range servers {
 		response = append(response, gin.H{
-			"server_id":         server.ServerId,
+			"_id":               server.Id,
 			"server_name":       server.ServerName,
 			"status":            server.Status,
 			"uptime":            server.Uptime,

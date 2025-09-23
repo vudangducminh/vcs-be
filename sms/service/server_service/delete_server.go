@@ -28,17 +28,17 @@ func DeleteServer(c *gin.Context) {
 		return
 	}
 
-	server, ok := elastic_query.GetServerById(req.ServerId)
+	server, ok := elastic_query.GetServerById(req.Id)
 	if !ok {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Server not found"})
 		return
 	}
-	status := elastic_query.DeleteServer(req.ServerId)
+	status := elastic_query.DeleteServer(req.Id)
 	switch status {
 	case http.StatusOK:
 		c.JSON(http.StatusOK, gin.H{
 			"message":     "Server deleted successfully",
-			"server_id":   req.ServerId,
+			"_id":         req.Id,
 			"server_name": server.ServerName,
 			"server_ipv4": server.IPv4,
 		})

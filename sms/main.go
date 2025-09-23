@@ -5,7 +5,6 @@ import (
 	"log"
 	"math/rand"
 	"os"
-	"sms/algorithm"
 	_ "sms/docs"
 	"sms/object"
 	redis "sms/server/database/cache/redis/connector"
@@ -94,7 +93,6 @@ func GenerateServer() {
 			status = "other"
 		}
 		server := object.Server{
-			ServerId:        algorithm.SHA256Hash(time.Now().String() + fmt.Sprintf("%d", i)),
 			ServerName:      "Server " + fmt.Sprintf("%d", i),
 			Status:          status,
 			IPv4:            fmt.Sprintf("%d", rand.Intn(256)) + "." + fmt.Sprintf("%d", rand.Intn(256)) + "." + fmt.Sprintf("%d", rand.Intn(256)) + "." + fmt.Sprintf("%d", rand.Intn(256)),

@@ -2,7 +2,6 @@ package servers_handler
 
 import (
 	"net/http"
-	"sms/algorithm"
 	"sms/object"
 	"time"
 
@@ -42,7 +41,6 @@ func AddServer(c *gin.Context) {
 	}
 
 	server := object.Server{
-		ServerId:        algorithm.SHA256Hash(time.Now().String()),
 		ServerName:      req.ServerName,
 		Status:          req.Status,
 		Uptime:          []int{0}, // Default uptime to 0
@@ -56,7 +54,6 @@ func AddServer(c *gin.Context) {
 	case http.StatusCreated:
 		c.JSON(http.StatusCreated, gin.H{
 			"message":     "Server added successfully to Elasticsearch",
-			"server_id":   server.ServerId,
 			"server_name": server.ServerName,
 			"ipv4":        server.IPv4,
 		})

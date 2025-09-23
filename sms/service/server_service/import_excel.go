@@ -3,7 +3,6 @@ package servers_handler
 import (
 	"log"
 	"net/http"
-	"sms/algorithm"
 	"sms/object"
 	elastic_query "sms/server/database/elasticsearch/query"
 	"time"
@@ -71,7 +70,6 @@ func ImportExcel(c *gin.Context) {
 			continue
 		}
 		var server object.Server
-		server.ServerId = algorithm.SHA256Hash(time.Now().String())
 		server.ServerName = row[1]
 		server.Status = row[2]
 		server.IPv4 = row[3]

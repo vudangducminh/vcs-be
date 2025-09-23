@@ -42,15 +42,15 @@ definitions:
     type: object
   object.AddServerSuccessResponse:
     properties:
+      _id:
+        description: Unique identifier for the server
+        type: string
       ipv4:
         description: IPv4 address of the server
         type: string
       message:
         description: Confirmation message
         example: Server added
-        type: string
-      server_id:
-        description: Unique identifier for the server
         type: string
       server_name:
         description: Name of the server
@@ -70,21 +70,21 @@ definitions:
     type: object
   object.DeleteServerRequest:
     properties:
-      server_id:
+      _id:
         type: string
     required:
-    - server_id
+    - _id
     type: object
   object.DeleteServerResponse:
     properties:
+      _id:
+        description: Unique identifier for the deleted server
+        type: string
       ipv4:
         description: IPv4 address of the deleted server
         type: string
       message:
         example: Server deleted successfully
-        type: string
-      server_id:
-        description: Unique identifier for the deleted server
         type: string
       server_name:
         description: Name of the deleted server
@@ -287,6 +287,9 @@ definitions:
     type: object
   object.Server:
     properties:
+      _id:
+        description: Unique identifier for the server
+        type: string
       created_time:
         description: Unix timestamp
         type: integer
@@ -295,8 +298,6 @@ definitions:
       last_updated_time:
         description: Unix timestamp
         type: integer
-      server_id:
-        type: string
       server_name:
         type: string
       status:
@@ -328,10 +329,10 @@ definitions:
     type: object
   object.UpdateServerRequest:
     properties:
+      _id:
+        type: string
       ipv4:
         description: IPv4 address of the server
-        type: string
-      server_id:
         type: string
       server_name:
         type: string
@@ -347,6 +348,9 @@ definitions:
     type: object
   object.UpdateServerSuccessResponse:
     properties:
+      _id:
+        description: Unique identifier for the server
+        type: string
       ipv4:
         description: IPv4 address of the server
         type: string
@@ -356,9 +360,6 @@ definitions:
       message:
         description: Confirmation message
         example: Server updated
-        type: string
-      server_id:
-        description: Unique identifier for the server
         type: string
       server_name:
         description: Name of the server
@@ -457,6 +458,62 @@ paths:
       summary: Handle adding a new server
       tags:
       - Servers
+  /servers/daily_report:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        Create a request to send daily report email from YYYY-MM-DD to YYYY-MM-DD
+        An email will be sent to the specified recipients at 00:00:00 UTC.
+        Example date format: 2025-07-23T12:00:00Z
+      parameters:
+      - description: JWT token for authentication
+        in: header
+        name: jwt
+        required: true
+        type: string
+      - description: Order of results, either 'asc' or 'desc'. If not provided or
+          using the wrong order format, the default order is ascending
+        in: query
+        name: order
+        type: string
+      - description: Filter by _id, server_name, ipv4, or status. If not provided
+          or using the wrong filter format, then there is no filter applied
+        in: query
+        name: filter
+        type: string
+      - description: Substring to search in _id, server_name, ipv4, or status
+        in: query
+        name: string
+        type: string
+      - description: Send email request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/object.ReportRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Email sent successfully
+          schema:
+            $ref: '#/definitions/object.ReportResponse'
+        "400":
+          description: Invalid request
+          schema:
+            $ref: '#/definitions/object.ReportInvalidRequestResponse'
+        "401":
+          description: Authentication failed
+          schema:
+            $ref: '#/definitions/object.AuthErrorResponse'
+        "500":
+          description: Failed to export into Excel file
+          schema:
+            $ref: '#/definitions/object.ExportExcelFailedResponse'
+      summary: Create a request to send daily report email
+      tags:
+      - Servers
   /servers/delete_server:
     delete:
       consumes:
@@ -513,12 +570,12 @@ paths:
         in: query
         name: order
         type: string
-      - description: Filter by server_id, server_name, ipv4, or status. If not provided
+      - description: Filter by _id, server_name, ipv4, or status. If not provided
           or using the wrong filter format, then there is no filter applied
         in: query
         name: filter
         type: string
-      - description: Substring to search in server_id, server_name, ipv4, or status
+      - description: Substring to search in _id, server_name, ipv4, or status
         in: query
         name: string
         type: string
@@ -601,12 +658,12 @@ paths:
         in: query
         name: order
         type: string
-      - description: Filter by server_id, server_name, ipv4, or status. If not provided
+      - description: Filter by _id, server_name, ipv4, or status. If not provided
           or using the wrong filter format, then there is no filter applied
         in: query
         name: filter
         type: string
-      - description: Substring to search in server_id, server_name, ipv4, or status
+      - description: Substring to search in _id, server_name, ipv4, or status
         in: query
         name: string
         type: string
@@ -676,7 +733,7 @@ paths:
           schema:
             $ref: '#/definitions/object.UpdateServerStatusNotFoundResponse'
         "409":
-          description: Server already exists
+          description: Server IP already exists
           schema:
             $ref: '#/definitions/object.UpdateServerConflictResponse'
         "500":
@@ -702,12 +759,12 @@ paths:
         in: query
         name: order
         type: string
-      - description: Filter by server_id, server_name, ipv4, or status. If not provided
+      - description: Filter by _id, server_name, ipv4, or status. If not provided
           or using the wrong filter format, the default filter is server_name
         in: query
         name: filter
         type: string
-      - description: Substring to search in server_id, server_name, ipv4, or status
+      - description: Substring to search in _id, server_name, ipv4, or status
         in: query
         name: string
         type: string

@@ -46,7 +46,7 @@ func HealthCheck() {
 			log.Println("Attempting to refresh from Elasticsearch...")
 			ServerList = elastic_query.GetAllServer()
 			var newUptimeStatus bool = false
-			if time.Now().Minute()%1 == 0 {
+			if time.Now().Minute()%20 == 0 {
 				newUptimeStatus = true
 			}
 
@@ -66,10 +66,7 @@ func HealthCheck() {
 					}
 					isAlive := PingServer(srv.IPv4)
 					if isAlive {
-						uptime[len(uptime)-1] += 30
-					}
-					if uptime[0] > 0 {
-						log.Println("IP", srv.IPv4, "uptime:", uptime)
+						uptime[len(uptime)-1] += 60
 					}
 
 					// Send result to channel
@@ -80,9 +77,9 @@ func HealthCheck() {
 						status = "inactive"
 					}
 					resultsChan <- object.ServerUptimeUpdate{
-						ServerId: srv.ServerId,
-						Uptime:   uptime,
-						Status:   status,
+						Id:     srv.Id,
+						Uptime: uptime,
+						Status: status,
 					}
 				}(server)
 			}

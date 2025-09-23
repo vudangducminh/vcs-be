@@ -26,8 +26,8 @@ func GetAllServer() []object.BriefServerInfo {
 	}
 
 	query := `{
-		"size": 10000,
-		"_source": ["server_id", "ipv4", "uptime"],
+		"size": 20000,
+		"_source": ["ipv4", "uptime"],
 		"query": {
 			"match_all": { }
 		}
@@ -54,10 +54,10 @@ func GetAllServer() []object.BriefServerInfo {
 	var searchResult struct {
 		Hits struct {
 			Hits []struct {
+				Id     string `json:"_id"`
 				Source struct {
-					ServerId string `json:"server_id"`
-					IPv4     string `json:"ipv4"`
-					Uptime   []int  `json:"uptime"`
+					IPv4   string `json:"ipv4"`
+					Uptime []int  `json:"uptime"`
 				} `json:"_source"`
 			} `json:"hits"`
 		} `json:"hits"`
@@ -71,9 +71,9 @@ func GetAllServer() []object.BriefServerInfo {
 	var servers []object.BriefServerInfo
 	for _, hit := range searchResult.Hits.Hits {
 		servers = append(servers, object.BriefServerInfo{
-			ServerId: hit.Source.ServerId,
-			IPv4:     hit.Source.IPv4,
-			Uptime:   hit.Source.Uptime,
+			Id:     hit.Id,
+			IPv4:   hit.Source.IPv4,
+			Uptime: hit.Source.Uptime,
 		})
 	}
 
@@ -128,14 +128,13 @@ func AddServerInfo(server object.Server) int {
 	_, err := elastic.Es.Index(
 		"server",
 		strings.NewReader(fmt.Sprintf(`{
-			"server_id": "%s",
 			"server_name": "%s",
 			"status": "%s",
 			"uptime": %d,
 			"created_time": %d,
 			"last_updated_time": %d,
 			"ipv4": "%s"
-		}`, server.ServerId, server.ServerName, server.Status, server.Uptime,
+		}`, server.ServerName, server.Status, server.Uptime,
 			server.CreatedTime, server.LastUpdatedTime, server.IPv4)),
 		elastic.Es.Index.WithRefresh("true"),
 		elastic.Es.Index.WithContext(context.Background()),
@@ -151,8 +150,8 @@ func ParseSearchResults(res *esapi.Response) ([]object.Server, int) {
 	var searchResult struct {
 		Hits struct {
 			Hits []struct {
+				Id     string `json:"_id"`
 				Source struct {
-					ServerId        string `json:"server_id"`
 					ServerName      string `json:"server_name"`
 					Status          string `json:"status"`
 					Uptime          []int  `json:"uptime"`
@@ -169,7 +168,7 @@ func ParseSearchResults(res *esapi.Response) ([]object.Server, int) {
 	var servers []object.Server
 	for _, hit := range searchResult.Hits.Hits {
 		server := object.Server{
-			ServerId:        hit.Source.ServerId,
+			Id:              hit.Id,
 			ServerName:      hit.Source.ServerName,
 			Status:          hit.Source.Status,
 			Uptime:          hit.Source.Uptime,
@@ -190,7 +189,7 @@ func GetServerByIdSubstr(substr string) ([]object.Server, int) {
         "size": 10000,
 		"query": {
 			"wildcard": {
-				"server_id": {
+				"_id": {
 					"value": "*%s*"
 				}
 			}
@@ -311,14 +310,14 @@ func GetServerByStatus(substr string) ([]object.Server, int) {
 	return ParseSearchResults(res)
 }
 
-func GetServerById(serverId string) (object.Server, bool) {
+func GetServerById(Id string) (object.Server, bool) {
 	query := fmt.Sprintf(`{
 		"query": {
 			"term": {
-				"server_id": "%s"
+				"_id": "%s"
 			}
 		}
-	}`, serverId)
+	}`, Id)
 
 	res, err := elastic.Es.Search(
 		elastic.Es.Search.WithIndex("server"),
@@ -348,7 +347,7 @@ func GetServerById(serverId string) (object.Server, bool) {
 func UpdateServerInfo(server object.Server) int {
 	_, err := elastic.Es.Update(
 		"server",
-		server.ServerId,
+		server.Id,
 		strings.NewReader(fmt.Sprintf(`{
 			"doc": {
 				"server_name": "%s",
@@ -369,14 +368,14 @@ func UpdateServerInfo(server object.Server) int {
 	return http.StatusOK
 }
 
-func DeleteServer(serverId string) int {
+func DeleteServer(Id string) int {
 	query := fmt.Sprintf(`{
 		"query": {
 			"term": {
-				"server_id": "%s"
+				"_id": "%s"
 			}
 		}
-	}`, serverId)
+	}`, Id)
 
 	res, err := elastic.Es.DeleteByQuery(
 		[]string{"server"},
@@ -676,9 +675,9 @@ func GetTotalUptime() (int64, int) {
 func BulkServerInfo(servers []object.Server) int {
 	var bulkRequest strings.Builder
 	for _, server := range servers {
-		bulkRequest.WriteString(fmt.Sprintf(`{"index": {"_index": "server", "_id": "%s"}}%s`, server.ServerId, "\n"))
-		bulkRequest.WriteString(fmt.Sprintf(`{"server_id": "%s", "server_name": "%s", "status": "%s", "uptime": %d, "created_time": %d, "last_updated_time": %d, "ipv4": "%s"}%s`,
-			server.ServerId, server.ServerName, server.Status, server.Uptime, server.CreatedTime, server.LastUpdatedTime, server.IPv4, "\n"))
+		bulkRequest.WriteString(fmt.Sprintf(`{"index": {"_index": "server"}}%s`, "\n"))
+		bulkRequest.WriteString(fmt.Sprintf(`{"server_name": "%s", "status": "%s", "uptime": %d, "created_time": %d, "last_updated_time": %d, "ipv4": "%s"}%s`,
+			server.ServerName, server.Status, server.Uptime, server.CreatedTime, server.LastUpdatedTime, server.IPv4, "\n"))
 	}
 
 	if len(bulkRequest.String()) == 0 {
@@ -710,7 +709,7 @@ func BulkUpdateServerInfo(updates []object.ServerUptimeUpdate) int {
 
 	for _, update := range updates {
 		// Update action
-		bulkRequest.WriteString(fmt.Sprintf(`{"update": {"_index": "server", "_id": "%s"}}%s`, update.ServerId, "\n"))
+		bulkRequest.WriteString(fmt.Sprintf(`{"update": {"_index": "server", "_id": "%s"}}%s`, update.Id, "\n"))
 		uptimeJSON, _ := json.Marshal(update.Uptime)
 		// Document to update
 		bulkRequest.WriteString(fmt.Sprintf(`{"doc": {"uptime": %s, "last_updated_time": %d, "status": "%s"}}%s`,

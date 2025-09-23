@@ -21,8 +21,8 @@ import (
 // @Produce      json
 // @Param        jwt header string true "JWT token for authentication"
 // @Param        order query string false "Order of results, either 'asc' or 'desc'. If not provided or using the wrong order format, the default order is ascending"
-// @Param        filter query string false "Filter by server_id, server_name, ipv4, or status. If not provided or using the wrong filter format, then there is no filter applied"
-// @Param        string path string false "Substring to search in server_id, server_name, ipv4, or status"
+// @Param        filter query string false "Filter by _id, server_name, ipv4, or status. If not provided or using the wrong filter format, then there is no filter applied"
+// @Param        string query string false "Substring to search in _id, server_name, ipv4, or status"
 // @Param        request body object.ReportRequest true "Send email request"
 // @Success      200 {object} object.ReportResponse "Email sent successfully"
 // @Failure      400 {object} object.ReportInvalidRequestResponse "Invalid request"
@@ -36,11 +36,11 @@ func DailyReportRequest(c *gin.Context) {
 		order = "asc" // Default order if not specified
 	}
 	filter := c.Query("filter")
-	if filter != "server_id" && filter != "server_name" && filter != "ipv4" && filter != "status" {
+	if filter != "_id" && filter != "server_name" && filter != "ipv4" && filter != "status" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid filter parameter"})
 		return
 	}
-	str := c.Param("string")
+	str := c.Query("string")
 	log.Printf("Received request to export server with filter '%s' and substring: '%s'", filter, str)
 	if str == "undefined" || str == "{string}" {
 		str = ""
@@ -101,8 +101,8 @@ func DailyReportRequest(c *gin.Context) {
 	sort.Slice(serverDataList, func(i, j int) bool {
 		var less bool
 		switch filter {
-		case "server_id":
-			less = serverDataList[i].ServerId < serverDataList[j].ServerId
+		case "_id":
+			less = serverDataList[i].Id < serverDataList[j].Id
 		case "status":
 			less = serverDataList[i].Status < serverDataList[j].Status
 		case "ipv4":
@@ -135,7 +135,7 @@ func DailyReportRequest(c *gin.Context) {
 		serverUptime := time.Unix(int64(server.Uptime[0]), 0).Format("15:04:05")
 		values := []interface{}{
 			rowIdx + 1,
-			server.ServerId,
+			server.Id,
 			server.ServerName,
 			server.Status,
 			server.IPv4,
