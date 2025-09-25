@@ -72,3 +72,40 @@ func AddAccountInfo(account object.Account) int {
 		return http.StatusInternalServerError
 	}
 }
+
+func AddEmailInfo(email object.Email) int {
+	has, err := connector.Engine.Table("email_manager").
+		Where("email = ?", email.Email).
+		Count(new(object.Email))
+	if err != nil {
+		log.Println(err)
+		return http.StatusInternalServerError
+	}
+	if has > 0 {
+		log.Println("Email already exists:", email.Email)
+		return http.StatusConflict
+	}
+	affected, err := connector.Engine.Insert(email)
+	if err != nil {
+		log.Println(err)
+		return http.StatusInternalServerError
+	}
+	if affected > 0 {
+		log.Println("Email added successfully:", email.Email)
+		return http.StatusCreated
+	} else {
+		log.Println("Failed to add email:", email.Email)
+		return http.StatusInternalServerError
+	}
+}
+
+func GetAllEmails() ([]object.Email, int) {
+	var emails []object.Email
+	err := connector.Engine.Table("email_manager").
+		Find(&emails)
+	if err != nil {
+		log.Println("Error retrieving emails:", err)
+		return nil, http.StatusInternalServerError
+	}
+	return emails, http.StatusOK
+}

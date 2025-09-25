@@ -14,10 +14,9 @@ import (
 	"github.com/xuri/excelize/v2"
 )
 
-// @Tags         Servers
-// @Summary      Create a request to send  report email
-// @Description  Create a request to send  report email from YYYY-MM-DD to YYYY-MM-DD
-// @Description  An email will be sent to the specified recipients at 00:00:00 UTC.
+// @Tags         Report
+// @Summary      Create a request to send report email
+// @Description  Create a request to send report email from YYYY-MM-DD to YYYY-MM-DD
 // @Description  Example date format: 2025-07-23T12:00:00Z
 // @Accept       json
 // @Produce      json
@@ -25,7 +24,7 @@ import (
 // @Param        order query string false "Order of results, either 'asc' or 'desc'. If not provided or using the wrong order format, the default order is ascending"
 // @Param        filter query string false "Filter by server_name, ipv4, or status. If not provided or using the wrong filter format, then there is no filter applied"
 // @Param        string query string false "Substring to search in server_name, ipv4, or status"
-// @Param        request body object.ReportRequest true "Send email request"
+// @Param        request body object.ReportRequest true "Report request"
 // @Success      200 {object} object.ReportResponse "Email sent successfully"
 // @Failure      400 {object} object.ReportInvalidRequestResponse "Invalid request"
 // @Failure      401 {object} object.AuthErrorResponse "Authentication failed"

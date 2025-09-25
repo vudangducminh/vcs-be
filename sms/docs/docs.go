@@ -45,9 +45,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/report/report/{order}/{filter}/{string}": {
+        "/report/daily_report": {
             "post": {
-                "description": "Create a request to send  report email from YYYY-MM-DD to YYYY-MM-DD\nAn email will be sent to the specified recipients at 00:00:00 UTC.\nExample date format: 2025-07-23T12:00:00Z",
+                "description": "An email will be sent to the specified recipients at 00:00:00 UTC.\nExample date format: 2025-07-23T12:00:00Z",
                 "consumes": [
                     "application/json"
                 ],
@@ -55,9 +55,61 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Servers"
+                    "Report"
                 ],
-                "summary": "Create a request to send  report email",
+                "summary": "Create a request to send report email",
+                "parameters": [
+                    {
+                        "description": "Daily report request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/object.DailyReportRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Request saved successfully",
+                        "schema": {
+                            "$ref": "#/definitions/object.DailyReportResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "schema": {
+                            "$ref": "#/definitions/object.DailyReportInvalidRequestResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication failed",
+                        "schema": {
+                            "$ref": "#/definitions/object.AuthErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/object.DailyReportInternalServerErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/report/report/{order}/{filter}/{string}": {
+            "post": {
+                "description": "Create a request to send report email from YYYY-MM-DD to YYYY-MM-DD\nExample date format: 2025-07-23T12:00:00Z",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Report"
+                ],
+                "summary": "Create a request to send report email",
                 "parameters": [
                     {
                         "type": "string",
@@ -85,7 +137,7 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
-                        "description": "Send email request",
+                        "description": "Report request",
                         "name": "request",
                         "in": "body",
                         "required": true,
@@ -704,6 +756,41 @@ const docTemplate = `{
                 "error": {
                     "type": "string",
                     "example": "Authentication failed"
+                }
+            }
+        },
+        "object.DailyReportInternalServerErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error example:": {
+                    "type": "string"
+                }
+            }
+        },
+        "object.DailyReportInvalidRequestResponse": {
+            "type": "object",
+            "properties": {
+                "error example:": {
+                    "type": "string"
+                }
+            }
+        },
+        "object.DailyReportRequest": {
+            "type": "object",
+            "required": [
+                "email"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                }
+            }
+        },
+        "object.DailyReportResponse": {
+            "type": "object",
+            "properties": {
+                "message example:": {
+                    "type": "string"
                 }
             }
         },
