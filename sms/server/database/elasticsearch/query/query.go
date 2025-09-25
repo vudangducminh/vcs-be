@@ -880,7 +880,6 @@ func BulkUpdateServerInfo(updates []object.ServerUptimeUpdate) int {
 }
 
 func GetServerUptimeInRange(startBlock int, endBlock int, order string, filter string, substr string) ([]object.Server, int, float64) {
-	// Needs to implement order, filter and string
 	var query string
 	switch filter {
 	case "server_name":
