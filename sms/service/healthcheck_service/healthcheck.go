@@ -2,7 +2,8 @@ package healthcheck_service
 
 import (
 	"log"
-	"net"
+	"os/exec"
+	"runtime"
 	"sms/object"
 	elastic_query "sms/server/database/elasticsearch/query"
 	"time"
@@ -10,19 +11,18 @@ import (
 
 var ServerList []object.BriefServerInfo
 
+// Ping an IP address by attempting to open a TCP connection on common ports
 func PingServer(ip string) bool {
-	// Try common server ports
-	ports := []string{"22", "80", "443", "8080", "3389", "21", "25"}
-	timeout := time.Second * 3
+	var cmd *exec.Cmd
 
-	for _, port := range ports {
-		conn, err := net.DialTimeout("tcp", net.JoinHostPort(ip, port), timeout)
-		if err == nil {
-			conn.Close()
-			return true // Server is reachable on at least one port
-		}
+	if runtime.GOOS == "windows" {
+		cmd = exec.Command("ping", "-n", "1", "-w", "3000", ip)
+	} else {
+		cmd = exec.Command("ping", "-c", "1", "-W", "3", ip)
 	}
-	return false // No ports were reachable
+
+	err := cmd.Run()
+	return err == nil
 }
 
 func HealthCheck() {
@@ -67,6 +67,7 @@ func HealthCheck() {
 					isAlive := PingServer(srv.IPv4)
 					if isAlive {
 						uptime[len(uptime)-1] += 60
+						// log.Printf("IP %s is alive\n", srv.IPv4)
 					}
 
 					// Send result to channel

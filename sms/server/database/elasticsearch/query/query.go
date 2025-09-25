@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"sms/object"
 	elastic "sms/server/database/elasticsearch/connector"
+	"sort"
 	"strings"
 	"time"
 
@@ -421,14 +422,60 @@ func GetTotalServersCount() int {
 	return countResult.Count
 }
 
-func GetTotalActiveServersCount() int {
-	query := `{
-		"query": {
-			"term": {
-				"status": "active"
+func GetTotalActiveServersCount(filter string, substr string) int {
+	var query string
+	switch filter {
+	case "server_name":
+		query = `{
+			"query": {
+				"bool": {
+					"must": [
+						{
+							"wildcard": {
+								"server_name": {
+									"value": "*%s*"
+								}
+							}
+						},
+						{
+							"term": {
+								"status": "active"
+							}
+						}
+					]
+				}
 			}
-		}
-	}`
+		}`
+	case "ipv4":
+		query = `{
+			"query": {
+				"bool": {
+					"must": [
+						{
+							"wildcard": {
+								"ipv4": {
+									"value": "*%s*"
+								}
+							}
+						},
+						{
+							"term": {
+								"status": "active"
+							}
+						}
+					]
+				}
+			}
+		}`
+	default:
+		query = `{
+			"query": {
+				"term": {
+					"status": "active"
+				}
+			}
+		}`
+	}
 
 	res, err := elastic.Es.Count(
 		elastic.Es.Count.WithIndex("server"),
@@ -446,7 +493,7 @@ func GetTotalActiveServersCount() int {
 	}
 
 	var countResult struct {
-		Count int `json:"count"`
+		Count int `json:"value"`
 	}
 	if err := json.NewDecoder(res.Body).Decode(&countResult); err != nil {
 		return 0
@@ -455,14 +502,60 @@ func GetTotalActiveServersCount() int {
 	return countResult.Count
 }
 
-func GetTotalInactiveServersCount() int {
-	query := `{
-		"query": {
-			"term": {
-				"status": "inactive"
+func GetTotalInactiveServersCount(filter string, substr string) int {
+	var query string
+	switch filter {
+	case "server_name":
+		query = `{
+			"query": {
+				"bool": {
+					"must": [
+						{
+							"wildcard": {
+								"server_name": {
+									"value": "*%s*"
+								}
+							}
+						},
+						{
+							"term": {
+								"status": "inactive"
+							}
+						}
+					]
+				}
 			}
-		}
-	}`
+		}`
+	case "ipv4":
+		query = `{
+			"query": {
+				"bool": {
+					"must": [
+						{
+							"wildcard": {
+								"ipv4": {
+									"value": "*%s*"
+								}
+							}
+						},
+						{
+							"term": {
+								"status": "inactive"
+							}
+						}
+					]
+				}
+			}
+		}`
+	default:
+		query = `{
+			"query": {
+				"term": {
+					"status": "inactive"
+				}
+			}
+		}`
+	}
 
 	res, err := elastic.Es.Count(
 		elastic.Es.Count.WithIndex("server"),
@@ -480,7 +573,7 @@ func GetTotalInactiveServersCount() int {
 	}
 
 	var countResult struct {
-		Count int `json:"count"`
+		Count int `json:"value"`
 	}
 	if err := json.NewDecoder(res.Body).Decode(&countResult); err != nil {
 		return 0
@@ -489,14 +582,60 @@ func GetTotalInactiveServersCount() int {
 	return countResult.Count
 }
 
-func GetTotalMaintenanceServersCount() int {
-	query := `{
-		"query": {
-			"term": {
-				"status": "maintenance"
+func GetTotalMaintenanceServersCount(filter string, substr string) int {
+	var query string
+	switch filter {
+	case "server_name":
+		query = `{
+			"query": {
+				"bool": {
+					"must": [
+						{
+							"wildcard": {
+								"server_name": {
+									"value": "*%s*"
+								}
+							}
+						},
+						{
+							"term": {
+								"status": "maintenance"
+							}
+						}
+					]
+				}
 			}
-		}
-	}`
+		}`
+	case "ipv4":
+		query = `{
+			"query": {
+				"bool": {
+					"must": [
+						{
+							"wildcard": {
+								"ipv4": {
+									"value": "*%s*"
+								}
+							}
+						},
+						{
+							"term": {
+								"status": "maintenance"
+							}
+						}
+					]
+				}
+			}
+		}`
+	default:
+		query = `{
+			"query": {
+				"term": {
+					"status": "maintenance"
+				}
+			}
+		}`
+	}
 
 	res, err := elastic.Es.Count(
 		elastic.Es.Count.WithIndex("server"),
@@ -514,7 +653,7 @@ func GetTotalMaintenanceServersCount() int {
 	}
 
 	var countResult struct {
-		Count int `json:"count"`
+		Count int `json:"value"`
 	}
 	if err := json.NewDecoder(res.Body).Decode(&countResult); err != nil {
 		return 0
@@ -740,14 +879,50 @@ func BulkUpdateServerInfo(updates []object.ServerUptimeUpdate) int {
 	return http.StatusOK
 }
 
-func GetServerUptimeInRange(startBlock int, endBlock int) ([]object.Server, int, float64) {
+func GetServerUptimeInRange(startBlock int, endBlock int, order string, filter string, substr string) ([]object.Server, int, float64) {
 	// Needs to implement order, filter and string
-	query := `{
-		"size": 10000,
-		"query": {
-			"match_all": { }
-		}
-	}`
+	var query string
+	switch filter {
+	case "server_name":
+		query = `{
+			"size": 10000,
+			"query": {
+				"wildcard": {
+					"server_name": {
+						"value": "*` + substr + `*"
+					}
+				}
+			}
+		}`
+	case "ipv4":
+		query = `{
+			"size": 10000,
+			"query": {
+				"wildcard": {
+					"ipv4": {
+						"value": "*` + substr + `*"
+					}
+				}
+			}
+		}`
+	case "status":
+		query = `{
+			"size": 10000,
+			"query": {
+				"match": {
+					"status": "` + substr + `"
+				}
+			}
+		}`
+	default:
+		query = `{
+			"size": 10000,
+			"query": {
+				"match_all": { }
+			}
+		}`
+	}
+
 	res, err := elastic.Es.Search(
 		elastic.Es.Search.WithIndex("server"),
 		elastic.Es.Search.WithBody(strings.NewReader(query)),
@@ -787,5 +962,24 @@ func GetServerUptimeInRange(startBlock int, endBlock int) ([]object.Server, int,
 		servers[i].Uptime = []int{totalUptime} // Convert back to expected format
 	}
 
+	sort.Slice(servers, func(i, j int) bool {
+		var less bool
+		switch filter {
+		case "status":
+			less = servers[i].Status < servers[j].Status
+		case "ipv4":
+			less = servers[i].IPv4 < servers[j].IPv4
+		default: // Default to sorting by server_name
+			less = servers[i].ServerName < servers[j].ServerName
+		}
+		if order == "desc" {
+			return !less
+		}
+		return less
+	})
+
+	log.Println("All server total time:", allServerTotalTime)
+	log.Println("All server total uptime:", allServerUptime)
+	log.Println("Uptime percentage:", allServerUptime/allServerTotalTime*100)
 	return servers, http.StatusOK, allServerUptime / allServerTotalTime * 100
 }

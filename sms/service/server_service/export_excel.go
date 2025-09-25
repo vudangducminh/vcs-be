@@ -18,8 +18,8 @@ import (
 // @Produce      json
 // @Param        jwt header string true "JWT token for authentication"
 // @Param        order query string false "Order of results, either 'asc' or 'desc'. If not provided or using the wrong order format, the default order is ascending"
-// @Param        filter query string false "Filter by _id, server_name, ipv4, or status. If not provided or using the wrong filter format, then there is no filter applied"
-// @Param        string query string false "Substring to search in _id, server_name, ipv4, or status"
+// @Param        filter query string false "Filter by server_name, ipv4, or status. If not provided or using the wrong filter format, then there is no filter applied"
+// @Param        string query string false "Substring to search in server_name, ipv4, or status"
 // @Success      200 {object} object.ExportExcelSuccessResponse "Excel file exported successfully"
 // @Failure      400 {object} object.ExportExcelBadRequestResponse "Invalid request parameters"
 // @Failure      401 {object} object.AuthErrorResponse "Authentication failed"
@@ -33,7 +33,7 @@ func ExportDataToExcel(c *gin.Context) {
 		order = "asc" // Default order if not specified
 	}
 	filter := c.Query("filter")
-	if filter != "_id" && filter != "server_name" && filter != "ipv4" && filter != "status" {
+	if filter != "server_name" && filter != "ipv4" && filter != "status" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid filter parameter"})
 		return
 	}
@@ -45,8 +45,6 @@ func ExportDataToExcel(c *gin.Context) {
 	log.Printf("Received request to export server with filter '%s' and substring: '%s'", filter, str)
 	var httpStatus int = 200
 	switch filter {
-	case "_id":
-		servers, httpStatus = elastic_query.GetServerByIdSubstr(str)
 	case "server_name":
 		servers, httpStatus = elastic_query.GetServerByNameSubstr(str)
 	case "ipv4":
@@ -67,8 +65,6 @@ func ExportDataToExcel(c *gin.Context) {
 	sort.Slice(servers, func(i, j int) bool {
 		var less bool
 		switch filter {
-		case "_id":
-			less = servers[i].Id < servers[j].Id
 		case "status":
 			less = servers[i].Status < servers[j].Status
 		case "ipv4":

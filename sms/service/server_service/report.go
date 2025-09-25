@@ -23,8 +23,8 @@ import (
 // @Produce      json
 // @Param        jwt header string true "JWT token for authentication"
 // @Param        order query string false "Order of results, either 'asc' or 'desc'. If not provided or using the wrong order format, the default order is ascending"
-// @Param        filter query string false "Filter by _id, server_name, ipv4, or status. If not provided or using the wrong filter format, then there is no filter applied"
-// @Param        string query string false "Substring to search in _id, server_name, ipv4, or status"
+// @Param        filter query string false "Filter by server_name, ipv4, or status. If not provided or using the wrong filter format, then there is no filter applied"
+// @Param        string query string false "Substring to search in server_name, ipv4, or status"
 // @Param        request body object.ReportRequest true "Send email request"
 // @Success      200 {object} object.ReportResponse "Email sent successfully"
 // @Failure      400 {object} object.ReportInvalidRequestResponse "Invalid request"
@@ -39,7 +39,7 @@ func ReportRequest(c *gin.Context) {
 		order = "asc" // Default order if not specified
 	}
 	filter := c.Query("filter")
-	if filter != "_id" && filter != "server_name" && filter != "ipv4" && filter != "status" {
+	if filter != "server_name" && filter != "ipv4" && filter != "status" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid filter parameter"})
 		return
 	}
@@ -96,7 +96,7 @@ func ReportRequest(c *gin.Context) {
 	}
 	var beginBlock = int((roundedCurrentTime-roundedStartTime)/1200 + 1)
 	var endBlock = int((roundedCurrentTime-roundedEndTime)/1200 + 1)
-	serverDataList, status, averageUptimePercentage := elastic_query.GetServerUptimeInRange(beginBlock, endBlock)
+	serverDataList, status, averageUptimePercentage := elastic_query.GetServerUptimeInRange(beginBlock, endBlock, order, filter, str)
 	if status != http.StatusOK {
 		c.JSON(status, gin.H{"error": "Failed to retrieve server details"})
 		return
@@ -104,8 +104,6 @@ func ReportRequest(c *gin.Context) {
 	sort.Slice(serverDataList, func(i, j int) bool {
 		var less bool
 		switch filter {
-		case "_id":
-			less = serverDataList[i].Id < serverDataList[j].Id
 		case "status":
 			less = serverDataList[i].Status < serverDataList[j].Status
 		case "ipv4":
@@ -166,10 +164,10 @@ func ReportRequest(c *gin.Context) {
 
 	emailBody := "Here is your requested server report." + "\n"
 	emailBody += "Total servers in the system: " + fmt.Sprintf("%d", len(serverDataList)) + "\n"
-	emailBody += "Number of active servers: " + fmt.Sprintf("%d", elastic_query.GetTotalActiveServersCount()) + "\n"
-	emailBody += "Number of inactive servers: " + fmt.Sprintf("%d", elastic_query.GetTotalInactiveServersCount()) + "\n"
-	emailBody += "Number of maintenance servers: " + fmt.Sprintf("%d", elastic_query.GetTotalMaintenanceServersCount()) + "\n"
-	emailBody += "Average uptime percentage across all servers: " + fmt.Sprintf("%d", int(averageUptimePercentage)) + "%" + "\n"
+	emailBody += "Number of active servers: " + fmt.Sprintf("%d", elastic_query.GetTotalActiveServersCount(filter, str)) + "\n"
+	emailBody += "Number of inactive servers: " + fmt.Sprintf("%d", elastic_query.GetTotalInactiveServersCount(filter, str)) + "\n"
+	emailBody += "Number of maintenance servers: " + fmt.Sprintf("%d", elastic_query.GetTotalMaintenanceServersCount(filter, str)) + "\n"
+	emailBody += "Average uptime percentage across all servers: " + fmt.Sprintf("%.2f", averageUptimePercentage) + "%" + "\n"
 	// Send email with the Excel file as attachment
 	status = report_service.SendEmail(f, req.Email, "Server Report", emailBody)
 	if status != http.StatusOK {

@@ -1,5 +1,7 @@
-curl -X POST "http://localhost:9200/server/_delete_by_query?pretty" -H 'Content-Type: application/json' -d'{
+curl -X GET "http://localhost:9200/server/_search?pretty" -H 'Content-Type: application/json' -d'{
     "query": {
-        "match_all": { }
+        "term": {
+            "status": "inactive"
+        }
     }
 }'

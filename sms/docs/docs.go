@@ -110,83 +110,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/servers/daily_report": {
-            "post": {
-                "description": "Create a request to send daily report email from YYYY-MM-DD to YYYY-MM-DD\nAn email will be sent to the specified recipients at 00:00:00 UTC.\nExample date format: 2025-07-23T12:00:00Z",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Servers"
-                ],
-                "summary": "Create a request to send daily report email",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "JWT token for authentication",
-                        "name": "jwt",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Order of results, either 'asc' or 'desc'. If not provided or using the wrong order format, the default order is ascending",
-                        "name": "order",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Filter by _id, server_name, ipv4, or status. If not provided or using the wrong filter format, then there is no filter applied",
-                        "name": "filter",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Substring to search in _id, server_name, ipv4, or status",
-                        "name": "string",
-                        "in": "query"
-                    },
-                    {
-                        "description": "Send email request",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/object.ReportRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Email sent successfully",
-                        "schema": {
-                            "$ref": "#/definitions/object.ReportResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid request",
-                        "schema": {
-                            "$ref": "#/definitions/object.ReportInvalidRequestResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Authentication failed",
-                        "schema": {
-                            "$ref": "#/definitions/object.AuthErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Failed to export into Excel file",
-                        "schema": {
-                            "$ref": "#/definitions/object.ExportExcelFailedResponse"
-                        }
-                    }
-                }
-            }
-        },
         "/servers/delete_server": {
             "delete": {
                 "description": "Delete a server by its unique ID",
@@ -275,13 +198,13 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Filter by _id, server_name, ipv4, or status. If not provided or using the wrong filter format, then there is no filter applied",
+                        "description": "Filter by server_name, ipv4, or status. If not provided or using the wrong filter format, then there is no filter applied",
                         "name": "filter",
                         "in": "query"
                     },
                     {
                         "type": "string",
-                        "description": "Substring to search in _id, server_name, ipv4, or status",
+                        "description": "Substring to search in server_name, ipv4, or status",
                         "name": "string",
                         "in": "query"
                     }
@@ -400,13 +323,13 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Filter by _id, server_name, ipv4, or status. If not provided or using the wrong filter format, then there is no filter applied",
+                        "description": "Filter by server_name, ipv4, or status. If not provided or using the wrong filter format, then there is no filter applied",
                         "name": "filter",
                         "in": "query"
                     },
                     {
                         "type": "string",
-                        "description": "Substring to search in _id, server_name, ipv4, or status",
+                        "description": "Substring to search in server_name, ipv4, or status",
                         "name": "string",
                         "in": "query"
                     },
@@ -548,13 +471,13 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Filter by _id, server_name, ipv4, or status. If not provided or using the wrong filter format, the default filter is server_name",
+                        "description": "Filter by server_name, ipv4, or status. If not provided or using the wrong filter format, the default filter is server_name",
                         "name": "filter",
                         "in": "query"
                     },
                     {
                         "type": "string",
-                        "description": "Substring to search in _id, server_name, ipv4, or status",
+                        "description": "Substring to search in server_name, ipv4, or status",
                         "name": "string",
                         "in": "query"
                     }
