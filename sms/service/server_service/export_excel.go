@@ -11,7 +11,7 @@ import (
 	"github.com/xuri/excelize/v2"
 )
 
-// @Tags         Servers
+// @Tags         Server
 // @Summary      Export server data to Excel
 // @Description  Export server data to an Excel file with optional filtering and ordering
 // @Accept       json
@@ -25,7 +25,7 @@ import (
 // @Failure      401 {object} object.AuthErrorResponse "Authentication failed"
 // @Failure      500 {object} object.ExportExcelInternalServerErrorResponse "Failed to retrieve server details"
 // @Failure      500 {object} object.ExportExcelFailedResponse "Failed to export into Excel file"
-// @Router       /servers/export_excel/{order}/{filter}/{string} [get]
+// @Router       /server/export_excel/{order}/{filter}/{string} [get]
 func ExportDataToExcel(c *gin.Context) {
 	var servers []object.Server
 	order := c.Query("order")

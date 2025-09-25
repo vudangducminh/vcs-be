@@ -11,7 +11,7 @@ import (
 	"github.com/xuri/excelize/v2"
 )
 
-// @Tags         Servers
+// @Tags         Server
 // @Summary      Import file from excel
 // @Description  Import server data from an Excel file
 // @Accept       multipart/form-data
@@ -25,7 +25,7 @@ import (
 // @Failure      500 {object} object.ImportExcelOpenFileFailedResponse "Failed to open file"
 // @Failure      500 {object} object.ImportExcelReadFileFailedResponse "Failed to read Excel rows"
 // @Failure      500 {object} object.ImportExcelElasticsearchErrorResponse "Failed to add server to Elasticsearch from Excel row"
-// @Router       /servers/import_excel [post]
+// @Router       /server/import_excel [post]
 func ImportExcel(c *gin.Context) {
 	file, err := c.FormFile("file")
 	if err != nil {

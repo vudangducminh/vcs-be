@@ -10,7 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// @Tags         Servers
+// @Tags         Server
 // @Summary      View server details
 // @Description  View server details with optional filtering
 // @Accept       json
@@ -23,7 +23,7 @@ import (
 // @Failure      400 {object} object.ViewServerBadRequestResponse "Invalid request parameters"
 // @Failure      401 {object} object.AuthErrorResponse "Authentication failed"
 // @Failure      500 {object} object.ViewServerInternalServerErrorResponse "Failed to retrieve server details"
-// @Router       /servers/view_servers/{order}/{filter}/{string} [get]
+// @Router       /server/view_servers/{order}/{filter}/{string} [get]
 func ViewServer(c *gin.Context) {
 
 	order := c.Query("order")

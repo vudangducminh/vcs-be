@@ -1,4 +1,4 @@
-package servers_handler
+package report_service
 
 import (
 	"fmt"
@@ -31,7 +31,7 @@ import (
 // @Failure      401 {object} object.AuthErrorResponse "Authentication failed"
 // @Failure      500 {object} object.ReportInternalServerErrorResponse "Internal server error"
 // @Failure      500 {object} object.ExportExcelFailedResponse "Failed to export into Excel file"
-// @Router       /servers/report/{order}/{filter}/{string} [post]
+// @Router       /report/report/{order}/{filter}/{string} [post]
 func ReportRequest(c *gin.Context) {
 	log.Println("Report request received")
 	order := c.Query("order")

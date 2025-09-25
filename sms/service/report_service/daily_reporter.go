@@ -7,7 +7,7 @@ import (
 
 var emailList []string
 
-func Reporter() {
+func DailyReporter() {
 	time.Sleep(10 * time.Second) // Initial delay to allow other services to start
 
 	for {

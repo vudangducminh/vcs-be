@@ -42,256 +42,7 @@
                 }
             }
         },
-        "/servers/add_server": {
-            "post": {
-                "description": "Handle adding a new server by validating input and storing server information",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Servers"
-                ],
-                "summary": "Handle adding a new server",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "JWT token for authentication",
-                        "name": "jwt",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "description": "Add server request",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/object.AddServerRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Server added",
-                        "schema": {
-                            "$ref": "#/definitions/object.AddServerSuccessResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid request body",
-                        "schema": {
-                            "$ref": "#/definitions/object.AddServerBadRequestResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Authentication failed",
-                        "schema": {
-                            "$ref": "#/definitions/object.AuthErrorResponse"
-                        }
-                    },
-                    "409": {
-                        "description": "Server already exists",
-                        "schema": {
-                            "$ref": "#/definitions/object.AddServerConflictResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "schema": {
-                            "$ref": "#/definitions/object.AddServerInternalServerErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/servers/delete_server": {
-            "delete": {
-                "description": "Delete a server by its unique ID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Servers"
-                ],
-                "summary": "Delete a server by ID",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "JWT token for authentication",
-                        "name": "jwt",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "description": "Delete server request",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/object.DeleteServerRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Server deleted successfully",
-                        "schema": {
-                            "$ref": "#/definitions/object.DeleteServerResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Authentication failed",
-                        "schema": {
-                            "$ref": "#/definitions/object.AuthErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Server not found",
-                        "schema": {
-                            "$ref": "#/definitions/object.DeleteServerStatusNotFoundResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "schema": {
-                            "$ref": "#/definitions/object.DeleteServerInternalServerErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/servers/export_excel/{order}/{filter}/{string}": {
-            "get": {
-                "description": "Export server data to an Excel file with optional filtering and ordering",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Servers"
-                ],
-                "summary": "Export server data to Excel",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "JWT token for authentication",
-                        "name": "jwt",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Order of results, either 'asc' or 'desc'. If not provided or using the wrong order format, the default order is ascending",
-                        "name": "order",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Filter by server_name, ipv4, or status. If not provided or using the wrong filter format, then there is no filter applied",
-                        "name": "filter",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Substring to search in server_name, ipv4, or status",
-                        "name": "string",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Excel file exported successfully",
-                        "schema": {
-                            "$ref": "#/definitions/object.ExportExcelSuccessResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid request parameters",
-                        "schema": {
-                            "$ref": "#/definitions/object.ExportExcelBadRequestResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Authentication failed",
-                        "schema": {
-                            "$ref": "#/definitions/object.AuthErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Failed to export into Excel file",
-                        "schema": {
-                            "$ref": "#/definitions/object.ExportExcelFailedResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/servers/import_excel": {
-            "post": {
-                "description": "Import server data from an Excel file",
-                "consumes": [
-                    "multipart/form-data"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Servers"
-                ],
-                "summary": "Import file from excel",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "JWT token for authentication",
-                        "name": "jwt",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "type": "file",
-                        "description": "Excel file to import",
-                        "name": "file",
-                        "in": "formData",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Excel file imported successfully",
-                        "schema": {
-                            "$ref": "#/definitions/object.ImportExcelSuccessResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Failed to retrieve file",
-                        "schema": {
-                            "$ref": "#/definitions/object.ImportExcelRetrieveFailedResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Authentication failed",
-                        "schema": {
-                            "$ref": "#/definitions/object.AuthErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Failed to add server to Elasticsearch from Excel row",
-                        "schema": {
-                            "$ref": "#/definitions/object.ImportExcelElasticsearchErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/servers/report/{order}/{filter}/{string}": {
+        "/report/report/{order}/{filter}/{string}": {
             "post": {
                 "description": "Create a request to send  report email from YYYY-MM-DD to YYYY-MM-DD\nAn email will be sent to the specified recipients at 00:00:00 UTC.\nExample date format: 2025-07-23T12:00:00Z",
                 "consumes": [
@@ -368,7 +119,256 @@
                 }
             }
         },
-        "/servers/update_server": {
+        "/server/add_server": {
+            "post": {
+                "description": "Handle adding a new server by validating input and storing server information",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Server"
+                ],
+                "summary": "Handle adding a new server",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "JWT token for authentication",
+                        "name": "jwt",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Add server request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/object.AddServerRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Server added",
+                        "schema": {
+                            "$ref": "#/definitions/object.AddServerSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "$ref": "#/definitions/object.AddServerBadRequestResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication failed",
+                        "schema": {
+                            "$ref": "#/definitions/object.AuthErrorResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Server already exists",
+                        "schema": {
+                            "$ref": "#/definitions/object.AddServerConflictResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/object.AddServerInternalServerErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/server/delete_server": {
+            "delete": {
+                "description": "Delete a server by its unique ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Server"
+                ],
+                "summary": "Delete a server by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "JWT token for authentication",
+                        "name": "jwt",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Delete server request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/object.DeleteServerRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Server deleted successfully",
+                        "schema": {
+                            "$ref": "#/definitions/object.DeleteServerResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication failed",
+                        "schema": {
+                            "$ref": "#/definitions/object.AuthErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Server not found",
+                        "schema": {
+                            "$ref": "#/definitions/object.DeleteServerStatusNotFoundResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/object.DeleteServerInternalServerErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/server/export_excel/{order}/{filter}/{string}": {
+            "get": {
+                "description": "Export server data to an Excel file with optional filtering and ordering",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Server"
+                ],
+                "summary": "Export server data to Excel",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "JWT token for authentication",
+                        "name": "jwt",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Order of results, either 'asc' or 'desc'. If not provided or using the wrong order format, the default order is ascending",
+                        "name": "order",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter by server_name, ipv4, or status. If not provided or using the wrong filter format, then there is no filter applied",
+                        "name": "filter",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Substring to search in server_name, ipv4, or status",
+                        "name": "string",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Excel file exported successfully",
+                        "schema": {
+                            "$ref": "#/definitions/object.ExportExcelSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request parameters",
+                        "schema": {
+                            "$ref": "#/definitions/object.ExportExcelBadRequestResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication failed",
+                        "schema": {
+                            "$ref": "#/definitions/object.AuthErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to export into Excel file",
+                        "schema": {
+                            "$ref": "#/definitions/object.ExportExcelFailedResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/server/import_excel": {
+            "post": {
+                "description": "Import server data from an Excel file",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Server"
+                ],
+                "summary": "Import file from excel",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "JWT token for authentication",
+                        "name": "jwt",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "Excel file to import",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Excel file imported successfully",
+                        "schema": {
+                            "$ref": "#/definitions/object.ImportExcelSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Failed to retrieve file",
+                        "schema": {
+                            "$ref": "#/definitions/object.ImportExcelRetrieveFailedResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication failed",
+                        "schema": {
+                            "$ref": "#/definitions/object.AuthErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to add server to Elasticsearch from Excel row",
+                        "schema": {
+                            "$ref": "#/definitions/object.ImportExcelElasticsearchErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/server/update_server": {
             "put": {
                 "description": "Handle updating an existing server by validating input and updating server information",
                 "consumes": [
@@ -378,7 +378,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Servers"
+                    "Server"
                 ],
                 "summary": "Handle updating an existing server",
                 "parameters": [
@@ -439,7 +439,7 @@
                 }
             }
         },
-        "/servers/view_servers/{order}/{filter}/{string}": {
+        "/server/view_servers/{order}/{filter}/{string}": {
             "get": {
                 "description": "View server details with optional filtering",
                 "consumes": [
@@ -449,7 +449,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Servers"
+                    "Server"
                 ],
                 "summary": "View server details",
                 "parameters": [
@@ -507,7 +507,7 @@
                 }
             }
         },
-        "/users/login": {
+        "/user/login": {
             "post": {
                 "description": "Handle user login by validating credentials and generating a JWT token",
                 "consumes": [
@@ -517,7 +517,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Users"
+                    "User"
                 ],
                 "summary": "Handle user login",
                 "parameters": [
@@ -559,7 +559,7 @@
                 }
             }
         },
-        "/users/register": {
+        "/user/register": {
             "post": {
                 "description": "Handle user registration by validating input and storing account information",
                 "consumes": [
@@ -569,7 +569,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Users"
+                    "User"
                 ],
                 "summary": "Handle user registration",
                 "parameters": [

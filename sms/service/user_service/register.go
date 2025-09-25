@@ -9,7 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// @Tags         Users
+// @Tags         User
 // @Summary      Handle user registration
 // @Description  Handle user registration by validating input and storing account information
 // @Accept       json
@@ -19,7 +19,7 @@ import (
 // @Failure      400 {object} object.RegisterBadRequestResponse "Invalid request body"
 // @Failure      409 {object} object.RegisterConflictResponse "Account already exists"
 // @Failure      500 {object} object.RegisterInternalServerErrorResponse "Internal server error
-// @Router       /users/register [post]
+// @Router       /user/register [post]
 func HandleRegister(c *gin.Context) {
 	var req object.RegisterRequest
 

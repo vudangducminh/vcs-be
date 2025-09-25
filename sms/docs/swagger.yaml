@@ -414,176 +414,7 @@ paths:
       summary: Health check endpoint
       tags:
       - Health
-  /servers/add_server:
-    post:
-      consumes:
-      - application/json
-      description: Handle adding a new server by validating input and storing server
-        information
-      parameters:
-      - description: JWT token for authentication
-        in: header
-        name: jwt
-        required: true
-        type: string
-      - description: Add server request
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/object.AddServerRequest'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Server added
-          schema:
-            $ref: '#/definitions/object.AddServerSuccessResponse'
-        "400":
-          description: Invalid request body
-          schema:
-            $ref: '#/definitions/object.AddServerBadRequestResponse'
-        "401":
-          description: Authentication failed
-          schema:
-            $ref: '#/definitions/object.AuthErrorResponse'
-        "409":
-          description: Server already exists
-          schema:
-            $ref: '#/definitions/object.AddServerConflictResponse'
-        "500":
-          description: Internal server error
-          schema:
-            $ref: '#/definitions/object.AddServerInternalServerErrorResponse'
-      summary: Handle adding a new server
-      tags:
-      - Servers
-  /servers/delete_server:
-    delete:
-      consumes:
-      - application/json
-      description: Delete a server by its unique ID
-      parameters:
-      - description: JWT token for authentication
-        in: header
-        name: jwt
-        required: true
-        type: string
-      - description: Delete server request
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/object.DeleteServerRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Server deleted successfully
-          schema:
-            $ref: '#/definitions/object.DeleteServerResponse'
-        "401":
-          description: Authentication failed
-          schema:
-            $ref: '#/definitions/object.AuthErrorResponse'
-        "404":
-          description: Server not found
-          schema:
-            $ref: '#/definitions/object.DeleteServerStatusNotFoundResponse'
-        "500":
-          description: Internal server error
-          schema:
-            $ref: '#/definitions/object.DeleteServerInternalServerErrorResponse'
-      summary: Delete a server by ID
-      tags:
-      - Servers
-  /servers/export_excel/{order}/{filter}/{string}:
-    get:
-      consumes:
-      - application/json
-      description: Export server data to an Excel file with optional filtering and
-        ordering
-      parameters:
-      - description: JWT token for authentication
-        in: header
-        name: jwt
-        required: true
-        type: string
-      - description: Order of results, either 'asc' or 'desc'. If not provided or
-          using the wrong order format, the default order is ascending
-        in: query
-        name: order
-        type: string
-      - description: Filter by server_name, ipv4, or status. If not provided or using
-          the wrong filter format, then there is no filter applied
-        in: query
-        name: filter
-        type: string
-      - description: Substring to search in server_name, ipv4, or status
-        in: query
-        name: string
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Excel file exported successfully
-          schema:
-            $ref: '#/definitions/object.ExportExcelSuccessResponse'
-        "400":
-          description: Invalid request parameters
-          schema:
-            $ref: '#/definitions/object.ExportExcelBadRequestResponse'
-        "401":
-          description: Authentication failed
-          schema:
-            $ref: '#/definitions/object.AuthErrorResponse'
-        "500":
-          description: Failed to export into Excel file
-          schema:
-            $ref: '#/definitions/object.ExportExcelFailedResponse'
-      summary: Export server data to Excel
-      tags:
-      - Servers
-  /servers/import_excel:
-    post:
-      consumes:
-      - multipart/form-data
-      description: Import server data from an Excel file
-      parameters:
-      - description: JWT token for authentication
-        in: header
-        name: jwt
-        required: true
-        type: string
-      - description: Excel file to import
-        in: formData
-        name: file
-        required: true
-        type: file
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Excel file imported successfully
-          schema:
-            $ref: '#/definitions/object.ImportExcelSuccessResponse'
-        "400":
-          description: Failed to retrieve file
-          schema:
-            $ref: '#/definitions/object.ImportExcelRetrieveFailedResponse'
-        "401":
-          description: Authentication failed
-          schema:
-            $ref: '#/definitions/object.AuthErrorResponse'
-        "500":
-          description: Failed to add server to Elasticsearch from Excel row
-          schema:
-            $ref: '#/definitions/object.ImportExcelElasticsearchErrorResponse'
-      summary: Import file from excel
-      tags:
-      - Servers
-  /servers/report/{order}/{filter}/{string}:
+  /report/report/{order}/{filter}/{string}:
     post:
       consumes:
       - application/json
@@ -639,7 +470,176 @@ paths:
       summary: Create a request to send  report email
       tags:
       - Servers
-  /servers/update_server:
+  /server/add_server:
+    post:
+      consumes:
+      - application/json
+      description: Handle adding a new server by validating input and storing server
+        information
+      parameters:
+      - description: JWT token for authentication
+        in: header
+        name: jwt
+        required: true
+        type: string
+      - description: Add server request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/object.AddServerRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Server added
+          schema:
+            $ref: '#/definitions/object.AddServerSuccessResponse'
+        "400":
+          description: Invalid request body
+          schema:
+            $ref: '#/definitions/object.AddServerBadRequestResponse'
+        "401":
+          description: Authentication failed
+          schema:
+            $ref: '#/definitions/object.AuthErrorResponse'
+        "409":
+          description: Server already exists
+          schema:
+            $ref: '#/definitions/object.AddServerConflictResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/object.AddServerInternalServerErrorResponse'
+      summary: Handle adding a new server
+      tags:
+      - Server
+  /server/delete_server:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a server by its unique ID
+      parameters:
+      - description: JWT token for authentication
+        in: header
+        name: jwt
+        required: true
+        type: string
+      - description: Delete server request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/object.DeleteServerRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Server deleted successfully
+          schema:
+            $ref: '#/definitions/object.DeleteServerResponse'
+        "401":
+          description: Authentication failed
+          schema:
+            $ref: '#/definitions/object.AuthErrorResponse'
+        "404":
+          description: Server not found
+          schema:
+            $ref: '#/definitions/object.DeleteServerStatusNotFoundResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/object.DeleteServerInternalServerErrorResponse'
+      summary: Delete a server by ID
+      tags:
+      - Server
+  /server/export_excel/{order}/{filter}/{string}:
+    get:
+      consumes:
+      - application/json
+      description: Export server data to an Excel file with optional filtering and
+        ordering
+      parameters:
+      - description: JWT token for authentication
+        in: header
+        name: jwt
+        required: true
+        type: string
+      - description: Order of results, either 'asc' or 'desc'. If not provided or
+          using the wrong order format, the default order is ascending
+        in: query
+        name: order
+        type: string
+      - description: Filter by server_name, ipv4, or status. If not provided or using
+          the wrong filter format, then there is no filter applied
+        in: query
+        name: filter
+        type: string
+      - description: Substring to search in server_name, ipv4, or status
+        in: query
+        name: string
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Excel file exported successfully
+          schema:
+            $ref: '#/definitions/object.ExportExcelSuccessResponse'
+        "400":
+          description: Invalid request parameters
+          schema:
+            $ref: '#/definitions/object.ExportExcelBadRequestResponse'
+        "401":
+          description: Authentication failed
+          schema:
+            $ref: '#/definitions/object.AuthErrorResponse'
+        "500":
+          description: Failed to export into Excel file
+          schema:
+            $ref: '#/definitions/object.ExportExcelFailedResponse'
+      summary: Export server data to Excel
+      tags:
+      - Server
+  /server/import_excel:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Import server data from an Excel file
+      parameters:
+      - description: JWT token for authentication
+        in: header
+        name: jwt
+        required: true
+        type: string
+      - description: Excel file to import
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Excel file imported successfully
+          schema:
+            $ref: '#/definitions/object.ImportExcelSuccessResponse'
+        "400":
+          description: Failed to retrieve file
+          schema:
+            $ref: '#/definitions/object.ImportExcelRetrieveFailedResponse'
+        "401":
+          description: Authentication failed
+          schema:
+            $ref: '#/definitions/object.AuthErrorResponse'
+        "500":
+          description: Failed to add server to Elasticsearch from Excel row
+          schema:
+            $ref: '#/definitions/object.ImportExcelElasticsearchErrorResponse'
+      summary: Import file from excel
+      tags:
+      - Server
+  /server/update_server:
     put:
       consumes:
       - application/json
@@ -686,8 +686,8 @@ paths:
             $ref: '#/definitions/object.UpdateServerInternalServerErrorResponse'
       summary: Handle updating an existing server
       tags:
-      - Servers
-  /servers/view_servers/{order}/{filter}/{string}:
+      - Server
+  /server/view_servers/{order}/{filter}/{string}:
     get:
       consumes:
       - application/json
@@ -733,8 +733,8 @@ paths:
             $ref: '#/definitions/object.ViewServerInternalServerErrorResponse'
       summary: View server details
       tags:
-      - Servers
-  /users/login:
+      - Server
+  /user/login:
     post:
       consumes:
       - application/json
@@ -768,8 +768,8 @@ paths:
             $ref: '#/definitions/object.LoginInternalServerErrorResponse'
       summary: Handle user login
       tags:
-      - Users
-  /users/register:
+      - User
+  /user/register:
     post:
       consumes:
       - application/json
@@ -803,7 +803,7 @@ paths:
             $ref: '#/definitions/object.RegisterInternalServerErrorResponse'
       summary: Handle user registration
       tags:
-      - Users
+      - User
 schemes:
 - http
 swagger: "2.0"

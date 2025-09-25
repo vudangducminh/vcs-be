@@ -12,7 +12,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// @Tags         Users
+// @Tags         User
 // @Summary      Handle user login
 // @Description  Handle user login by validating credentials and generating a JWT token
 // @Accept       json
@@ -22,7 +22,7 @@ import (
 // @Failure      400 {object} object.LoginBadRequestResponse "Invalid request body"
 // @Failure      401 {object} object.LoginUnauthorizedResponse "Invalid credentials"
 // @Failure      500 {object} object.LoginInternalServerErrorResponse "Error generating token
-// @Router       /users/login [post]
+// @Router       /user/login [post]
 func HandleLogin(c *gin.Context) {
 	var req object.LoginRequest
 

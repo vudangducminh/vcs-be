@@ -9,7 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// @Tags         Servers
+// @Tags         Server
 // @Summary      Delete a server by ID
 // @Description  Delete a server by its unique ID
 // @Accept       json
@@ -20,7 +20,7 @@ import (
 // @Failure      401 {object} object.AuthErrorResponse "Authentication failed"
 // @Failure      404 {object} object.DeleteServerStatusNotFoundResponse "Server not found"
 // @Failure      500 {object} object.DeleteServerInternalServerErrorResponse "Internal server error"
-// @Router	     /servers/delete_server [delete]
+// @Router	     /server/delete_server [delete]
 func DeleteServer(c *gin.Context) {
 	var req object.DeleteServerRequest
 	if err := c.ShouldBindJSON(&req); err != nil {

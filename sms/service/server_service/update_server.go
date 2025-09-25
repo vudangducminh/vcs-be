@@ -9,7 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// @Tags         Servers
+// @Tags         Server
 // @Summary      Handle updating an existing server
 // @Description  Handle updating an existing server by validating input and updating server information
 // @Accept       json
@@ -22,7 +22,7 @@ import (
 // @Failure      404 {object} object.UpdateServerStatusNotFoundResponse "Server not found"
 // @Failure      409 {object} object.UpdateServerConflictResponse "Server IP already exists"
 // @Failure      500 {object} object.UpdateServerInternalServerErrorResponse "Internal server error"
-// @Router       /servers/update_server [put]
+// @Router       /server/update_server [put]
 func UpdateServer(c *gin.Context) {
 	var req object.UpdateServerRequest
 	if err := c.ShouldBindJSON(&req); err != nil {

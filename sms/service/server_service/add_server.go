@@ -10,7 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// @Tags         Servers
+// @Tags         Server
 // @Summary      Handle adding a new server
 // @Description  Handle adding a new server by validating input and storing server information
 // @Accept       json
@@ -22,7 +22,7 @@ import (
 // @Failure      401 {object} object.AuthErrorResponse "Authentication failed"
 // @Failure      409 {object} object.AddServerConflictResponse "Server already exists"
 // @Failure      500 {object} object.AddServerInternalServerErrorResponse "Internal server error"
-// @Router       /servers/add_server [post]
+// @Router       /server/add_server [post]
 func AddServer(c *gin.Context) {
 	// Implementation for adding a server
 	var req object.AddServerRequest
