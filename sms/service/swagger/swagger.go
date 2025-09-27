@@ -40,7 +40,7 @@ func ConnectToSwagger() {
 	report := r.Group("api/v1/report", auth_service.AuthAdmin())
 	{
 		report.POST("/report/:order/:filter/:string", report_service.ReportRequest)
-		// report.POST("/daily_report", report_service.HandleDailyReportRequest)
+		report.POST("/daily_report", report_service.DailyReport)
 	}
 	// The host should match the @host annotation in main.go
 	url := ginSwagger.URL("http://localhost:8800/swagger/doc.json")

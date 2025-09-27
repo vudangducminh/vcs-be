@@ -14,10 +14,12 @@ import (
 // @Description  Example date format: 2025-07-23T12:00:00Z
 // @Accept       json
 // @Produce      json
+// @Param        jwt header string true "JWT token for authentication"
 // @Param        request body object.DailyReportRequest true "Daily report request"
 // @Success      201 {object} object.DailyReportResponse "Request saved successfully"
 // @Failure      400 {object} object.DailyReportInvalidRequestResponse "Invalid request"
 // @Failure      401 {object} object.AuthErrorResponse "Authentication failed"
+// @Failure      409 {object} object.DailyReportConflictResponse "Email already exists"
 // @Failure      500 {object} object.DailyReportInternalServerErrorResponse "Internal server error"
 // @Router       /report/daily_report [post]
 func DailyReport(c *gin.Context) {
@@ -38,10 +40,15 @@ func DailyReport(c *gin.Context) {
 			"message": "Request saved successfully",
 		})
 	} else {
+		if status == http.StatusConflict {
+			c.JSON(status, gin.H{
+				"error": "Email already exists",
+			})
+			return
+		}
 		c.JSON(status, gin.H{
 			"message": "Failed to save request",
-			"error":   "Internal server error or email already exists",
+			"error":   "Internal server error",
 		})
 	}
-	// save email to email_manager table
 }

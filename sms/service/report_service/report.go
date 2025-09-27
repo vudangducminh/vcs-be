@@ -7,7 +7,6 @@ import (
 	"sms/object"
 	elastic_query "sms/server/database/elasticsearch/query"
 	report_service "sms/service/report_service/template"
-	"sort"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -32,7 +31,6 @@ import (
 // @Failure      500 {object} object.ExportExcelFailedResponse "Failed to export into Excel file"
 // @Router       /report/report/{order}/{filter}/{string} [post]
 func ReportRequest(c *gin.Context) {
-	log.Println("Report request received")
 	order := c.Query("order")
 	if order != "asc" && order != "desc" {
 		order = "asc" // Default order if not specified
@@ -100,21 +98,6 @@ func ReportRequest(c *gin.Context) {
 		c.JSON(status, gin.H{"error": "Failed to retrieve server details"})
 		return
 	}
-	sort.Slice(serverDataList, func(i, j int) bool {
-		var less bool
-		switch filter {
-		case "status":
-			less = serverDataList[i].Status < serverDataList[j].Status
-		case "ipv4":
-			less = serverDataList[i].IPv4 < serverDataList[j].IPv4
-		default: // Default to sorting by server_name
-			less = serverDataList[i].ServerName < serverDataList[j].ServerName
-		}
-		if order == "desc" {
-			return !less
-		}
-		return less
-	})
 
 	f := excelize.NewFile()
 	sheet := "Sheet1"
