@@ -348,6 +348,7 @@ func GetServerById(Id string) (object.Server, bool) {
 }
 
 func UpdateServerInfo(server object.Server) int {
+	uptimeJSON, _ := json.Marshal(server.Uptime)
 	_, err := elastic.Es.Update(
 		"server",
 		server.Id,
@@ -355,16 +356,17 @@ func UpdateServerInfo(server object.Server) int {
 			"doc": {
 				"server_name": "%s",
 				"status": "%s",
-				"uptime": %d,
+				"uptime": %s,
 				"last_updated_time": %d,
 				"ipv4": "%s"
 			}
-		}`, server.ServerName, server.Status, server.Uptime, server.LastUpdatedTime, server.IPv4)),
+		}`, server.ServerName, server.Status, string(uptimeJSON), server.LastUpdatedTime, server.IPv4)),
 		elastic.Es.Update.WithContext(context.Background()),
 		elastic.Es.Update.WithPretty(),
 	)
 
 	if err != nil {
+		log.Println("Update error:", err)
 		return http.StatusInternalServerError
 	}
 
@@ -815,8 +817,9 @@ func BulkServerInfo(servers []object.Server) int {
 	var bulkRequest strings.Builder
 	for _, server := range servers {
 		bulkRequest.WriteString(fmt.Sprintf(`{"index": {"_index": "server", "_id": "%s"}}%s`, algorithm.SHA256Hash(server.IPv4), "\n"))
-		bulkRequest.WriteString(fmt.Sprintf(`{"server_name": "%s", "status": "%s", "uptime": %d, "created_time": %d, "last_updated_time": %d, "ipv4": "%s"}%s`,
-			server.ServerName, server.Status, server.Uptime, server.CreatedTime, server.LastUpdatedTime, server.IPv4, "\n"))
+		uptimeJSON, _ := json.Marshal(server.Uptime)
+		bulkRequest.WriteString(fmt.Sprintf(`{"server_name": "%s", "status": "%s", "uptime": %s, "created_time": %d, "last_updated_time": %d, "ipv4": "%s"}%s`,
+			server.ServerName, server.Status, string(uptimeJSON), server.CreatedTime, server.LastUpdatedTime, server.IPv4, "\n"))
 	}
 
 	if len(bulkRequest.String()) == 0 {

@@ -1217,10 +1217,6 @@ const docTemplate = `{
                 "_id": {
                     "type": "string"
                 },
-                "ipv4": {
-                    "description": "IPv4 address of the server",
-                    "type": "string"
-                },
                 "server_name": {
                     "type": "string"
                 },

@@ -44,13 +44,7 @@ func UpdateServer(c *gin.Context) {
 	if req.ServerName != "" {
 		server.ServerName = req.ServerName
 	}
-	if req.IPv4 != "" {
-		if elastic_query.CheckServerExists(req.IPv4) && server.IPv4 != req.IPv4 {
-			c.JSON(http.StatusConflict, gin.H{"error": "IPv4 already exists"})
-			return
-		}
-		server.IPv4 = req.IPv4
-	}
+
 	server.Status = req.Status
 	server.LastUpdatedTime = time.Now().Unix()
 
