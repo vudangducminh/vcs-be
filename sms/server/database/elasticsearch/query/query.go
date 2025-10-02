@@ -493,7 +493,7 @@ func GetTotalActiveServersCount(filter string, substr string) int {
 	}
 
 	var countResult struct {
-		Count int `json:"value"`
+		Count int `json:"count"`
 	}
 	if err := json.NewDecoder(res.Body).Decode(&countResult); err != nil {
 		return 0
@@ -573,7 +573,7 @@ func GetTotalInactiveServersCount(filter string, substr string) int {
 	}
 
 	var countResult struct {
-		Count int `json:"value"`
+		Count int `json:"count"`
 	}
 	if err := json.NewDecoder(res.Body).Decode(&countResult); err != nil {
 		return 0
@@ -653,7 +653,7 @@ func GetTotalMaintenanceServersCount(filter string, substr string) int {
 	}
 
 	var countResult struct {
-		Count int `json:"value"`
+		Count int `json:"count"`
 	}
 	if err := json.NewDecoder(res.Body).Decode(&countResult); err != nil {
 		return 0
@@ -950,7 +950,7 @@ func GetServerUptimeInRange(startBlock int, endBlock int, order string, filter s
 		// log.Println("Uptime data: ", servers[i].Uptime)
 		var start = max(0, len(servers[i].Uptime)-startBlock)
 		var end = max(0, len(servers[i].Uptime)-endBlock)
-		allServerTotalTime += float64((start - end + 1) * 1200)
+		allServerTotalTime += float64((end - start + 1) * 1200)
 		// Calculate total uptime in the range using simple loop
 		var totalUptime int = 0
 		for j := start; j <= end && j < len(servers[i].Uptime); j++ {

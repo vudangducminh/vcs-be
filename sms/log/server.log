@@ -1,0 +1,61 @@
+2025/09/27 08:50:01 Logger initialized. Subsequent logs will be written to log/server.log
+2025/09/27 08:50:01 Attempting to connect to PostgreSQL at postgresql:5432
+2025/09/27 08:50:01 Connected to PostgreSQL database successfully
+2025/09/27 08:50:02 Connected to Redis successfully
+2025/09/27 08:50:02 Connected to Elasticsearch successfully
+2025/09/27 08:50:12 Attempting to fetch server list from Elasticsearch...
+2025/09/27 08:50:12 Attempting to refresh from Elasticsearch...
+2025/09/27 08:50:21 Update list length: 9050
+2025/09/27 08:50:51 Starting daily report email process...
+2025/09/27 08:50:51 All server total time: 0
+2025/09/27 08:50:51 All server total uptime: 188040
+2025/09/27 08:50:51 Uptime percentage: +Inf
+2025/09/27 08:50:51 Total servers: 9050, Active: 332, Inactive: 8718, Maintenance: 0, Average Uptime: +Inf%
+2025/09/27 08:50:52 Excel file size: 485313 bytes
+2025/09/27 08:51:02 Attempting to refresh from Elasticsearch...
+2025/09/27 08:51:06 Daily report sent to vudangducminh727@gmail.com
+2025/09/27 08:51:08 Update list length: 9050
+2025/09/27 08:51:46 Starting daily report email process...
+2025/09/27 08:51:46 All server total time: 0
+2025/09/27 08:51:46 All server total uptime: 206760
+2025/09/27 08:51:46 Uptime percentage: +Inf
+2025/09/27 08:51:46 Total servers: 9050, Active: 312, Inactive: 8738, Maintenance: 0, Average Uptime: +Inf%
+2025/09/27 08:51:46 Excel file size: 485361 bytes
+2025/09/27 08:51:57 Daily report sent to vudangducminh727@gmail.com
+2025/09/27 08:52:08 Attempting to refresh from Elasticsearch...
+2025/09/27 08:52:14 Update list length: 9050
+2025/09/27 08:53:26 Logger initialized. Subsequent logs will be written to log/server.log
+2025/09/27 08:53:26 Attempting to connect to PostgreSQL at postgresql:5432
+2025/09/27 08:53:26 Connected to PostgreSQL database successfully
+2025/09/27 08:53:27 Connected to Redis successfully
+2025/09/27 08:53:27 Connected to Elasticsearch successfully
+2025/09/27 08:53:37 Attempting to fetch server list from Elasticsearch...
+2025/09/27 08:53:37 Attempting to refresh from Elasticsearch...
+2025/09/27 08:53:45 Update list length: 9050
+2025/09/27 08:53:56 Starting daily report email process...
+2025/09/27 08:53:56 All server total time: 2.172e+07
+2025/09/27 08:53:56 All server total uptime: 245760
+2025/09/27 08:53:56 Uptime percentage: 1.1314917127071822
+2025/09/27 08:53:56 Total servers: 9050, Active: 412, Inactive: 8638, Maintenance: 0, Average Uptime: 1.13%
+2025/09/27 08:53:56 Excel file size: 485553 bytes
+2025/09/27 08:54:06 Attempting to refresh from Elasticsearch...
+2025/09/27 08:54:06 Daily report sent to vudangducminh727@gmail.com
+2025/09/27 08:54:12 Update list length: 9050
+2025/09/27 08:54:46 Starting daily report email process...
+2025/09/27 08:54:46 All server total time: 2.172e+07
+2025/09/27 08:54:46 All server total uptime: 260520
+2025/09/27 08:54:46 Uptime percentage: 1.1994475138121548
+2025/09/27 08:54:46 Total servers: 9050, Active: 246, Inactive: 8804, Maintenance: 0, Average Uptime: 1.20%
+2025/09/27 08:54:46 Excel file size: 485263 bytes
+2025/09/27 08:54:56 Daily report sent to vudangducminh727@gmail.com
+2025/09/27 08:55:02 Attempting to refresh from Elasticsearch...
+2025/09/27 08:55:08 Update list length: 9050
+2025/09/27 08:55:56 Starting daily report email process...
+2025/09/27 08:55:56 All server total time: 2.172e+07
+2025/09/27 08:55:56 All server total uptime: 276840
+2025/09/27 08:55:56 Uptime percentage: 1.274585635359116
+2025/09/27 08:55:56 Total servers: 9050, Active: 272, Inactive: 8778, Maintenance: 0, Average Uptime: 1.27%
+2025/09/27 08:55:56 Excel file size: 485446 bytes
+2025/09/27 08:56:07 Daily report sent to vudangducminh727@gmail.com
+2025/09/27 08:56:09 Attempting to refresh from Elasticsearch...
+2025/09/27 08:56:15 Update list length: 9050

@@ -62,14 +62,22 @@ definitions:
         example: Authentication failed
         type: string
     type: object
+  object.DailyReportConflictResponse:
+    properties:
+      error:
+        example: Email already exists
+        type: string
+    type: object
   object.DailyReportInternalServerErrorResponse:
     properties:
-      'error example:':
+      error:
+        example: Internal server error
         type: string
     type: object
   object.DailyReportInvalidRequestResponse:
     properties:
-      'error example:':
+      error:
+        example: Invalid request body
         type: string
     type: object
   object.DailyReportRequest:
@@ -81,7 +89,8 @@ definitions:
     type: object
   object.DailyReportResponse:
     properties:
-      'message example:':
+      message:
+        example: Request saved successfully
         type: string
     type: object
   object.DeleteServerInternalServerErrorResponse:
@@ -444,6 +453,11 @@ paths:
         An email will be sent to the specified recipients at 00:00:00 UTC.
         Example date format: 2025-07-23T12:00:00Z
       parameters:
+      - description: JWT token for authentication
+        in: header
+        name: jwt
+        required: true
+        type: string
       - description: Daily report request
         in: body
         name: request
@@ -465,6 +479,10 @@ paths:
           description: Authentication failed
           schema:
             $ref: '#/definitions/object.AuthErrorResponse'
+        "409":
+          description: Email already exists
+          schema:
+            $ref: '#/definitions/object.DailyReportConflictResponse'
         "500":
           description: Internal server error
           schema:
@@ -869,3 +887,7 @@ tags:
   name: Users
 - description: '"Operations related to server management"'
   name: Servers
+- description: '"Operations related to generating and sending reports"'
+  name: Report
+- description: '"Health check endpoint"'
+  name: Health

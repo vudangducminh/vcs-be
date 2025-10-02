@@ -85,7 +85,8 @@ func AddEmailInfo(email object.Email) int {
 		log.Println("Email already exists:", email.Email)
 		return http.StatusConflict
 	}
-	affected, err := connector.Engine.Insert(email)
+	affected, err := connector.Engine.Table("email_manager").
+		Insert(email)
 	if err != nil {
 		log.Println(err)
 		return http.StatusInternalServerError

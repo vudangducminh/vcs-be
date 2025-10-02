@@ -60,6 +60,13 @@ const docTemplate = `{
                 "summary": "Create a request to send report email",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "JWT token for authentication",
+                        "name": "jwt",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
                         "description": "Daily report request",
                         "name": "request",
                         "in": "body",
@@ -86,6 +93,12 @@ const docTemplate = `{
                         "description": "Authentication failed",
                         "schema": {
                             "$ref": "#/definitions/object.AuthErrorResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Email already exists",
+                        "schema": {
+                            "$ref": "#/definitions/object.DailyReportConflictResponse"
                         }
                     },
                     "500": {
@@ -759,19 +772,30 @@ const docTemplate = `{
                 }
             }
         },
+        "object.DailyReportConflictResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Email already exists"
+                }
+            }
+        },
         "object.DailyReportInternalServerErrorResponse": {
             "type": "object",
             "properties": {
-                "error example:": {
-                    "type": "string"
+                "error": {
+                    "type": "string",
+                    "example": "Internal server error"
                 }
             }
         },
         "object.DailyReportInvalidRequestResponse": {
             "type": "object",
             "properties": {
-                "error example:": {
-                    "type": "string"
+                "error": {
+                    "type": "string",
+                    "example": "Invalid request body"
                 }
             }
         },
@@ -789,8 +813,9 @@ const docTemplate = `{
         "object.DailyReportResponse": {
             "type": "object",
             "properties": {
-                "message example:": {
-                    "type": "string"
+                "message": {
+                    "type": "string",
+                    "example": "Request saved successfully"
                 }
             }
         },
@@ -1279,6 +1304,14 @@ const docTemplate = `{
         {
             "description": "\"Operations related to server management\"",
             "name": "Servers"
+        },
+        {
+            "description": "\"Operations related to generating and sending reports\"",
+            "name": "Report"
+        },
+        {
+            "description": "\"Health check endpoint\"",
+            "name": "Health"
         }
     ]
 }`

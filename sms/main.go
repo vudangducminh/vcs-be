@@ -12,6 +12,7 @@ import (
 	elastic_query "sms/server/database/elasticsearch/query"
 	postgresql "sms/server/database/postgresql/connector"
 	healthcheck_service "sms/service/healthcheck_service"
+	"sms/service/report_service"
 	"sms/service/swagger"
 	_ "sms/service/user_service" // Importing users_handler for Swagger documentation
 	"time"
@@ -30,6 +31,10 @@ import (
 // @Tag.description "Operations related to user authentication and management"
 // @Tag.name		Servers
 // @Tag.description "Operations related to server management"
+// @Tag.name		Report
+// @Tag.description "Operations related to generating and sending reports"
+// @Tag.name		Health
+// @Tag.description "Health check endpoint"
 func main() {
 	// Set the log file
 	file, err := os.OpenFile("log/server.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
@@ -45,6 +50,8 @@ func main() {
 	postgresql.ConnectToDB()
 	if !postgresql.IsConnected() {
 		log.Println("Failed to connect to postgresql database")
+	} else {
+		go report_service.DailyReporter()
 	}
 	// Initialize the Redis connection
 	redis.ConnectToRedis()
