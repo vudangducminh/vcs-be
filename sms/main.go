@@ -27,9 +27,9 @@ import (
 // @BasePath        /api/v1
 // @schemes         http
 // @host            localhost:8800
-// @Tag.name        Users
+// @Tag.name        User
 // @Tag.description "Operations related to user authentication and management"
-// @Tag.name		Servers
+// @Tag.name		Server
 // @Tag.description "Operations related to server management"
 // @Tag.name		Report
 // @Tag.description "Operations related to generating and sending reports"
@@ -79,7 +79,7 @@ func main() {
 
 func GenerateServer() {
 	var servers []object.Server
-	for i := 0; i < 9500; i++ {
+	for i := 0; i < 9000; i++ {
 		var rng = rand.Intn(1000)
 		if rng < 600 {
 			rng = 0 // Active status

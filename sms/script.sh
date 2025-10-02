@@ -1,20 +1,8 @@
-curl -X POST "http://localhost:9200/server/_count?pretty" -H 'Content-Type: application/json' -d'{
+
+curl -X POST "http://localhost:9200/server/_search?pretty" -H 'Content-Type: application/json' -d'{
     "query": {
-        "bool": {
-            "must": [
-                {
-                    "wildcard": {
-                        "ipv4": {
-                            "value": "*23*"
-                        }
-                    }
-                },
-                {
-                    "term": {
-                        "status": "active"
-                    }
-                }
-            ]
+        "match": {
+            "server_name": "8256"
         }
     }
 }'

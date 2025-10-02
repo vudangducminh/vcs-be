@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"sms/algorithm"
 	"sms/object"
 	elastic "sms/server/database/elasticsearch/connector"
 	"sort"
@@ -137,6 +138,7 @@ func AddServerInfo(server object.Server) int {
 			"ipv4": "%s"
 		}`, server.ServerName, server.Status, server.Uptime,
 			server.CreatedTime, server.LastUpdatedTime, server.IPv4)),
+		elastic.Es.Index.WithDocumentID(algorithm.SHA256Hash(server.IPv4)),
 		elastic.Es.Index.WithRefresh("true"),
 		elastic.Es.Index.WithContext(context.Background()),
 		elastic.Es.Index.WithPretty(),
@@ -812,7 +814,7 @@ func GetTotalUptime() (int64, int) {
 func BulkServerInfo(servers []object.Server) int {
 	var bulkRequest strings.Builder
 	for _, server := range servers {
-		bulkRequest.WriteString(fmt.Sprintf(`{"index": {"_index": "server"}}%s`, "\n"))
+		bulkRequest.WriteString(fmt.Sprintf(`{"index": {"_index": "server", "_id": "%s"}}%s`, algorithm.SHA256Hash(server.IPv4), "\n"))
 		bulkRequest.WriteString(fmt.Sprintf(`{"server_name": "%s", "status": "%s", "uptime": %d, "created_time": %d, "last_updated_time": %d, "ipv4": "%s"}%s`,
 			server.ServerName, server.Status, server.Uptime, server.CreatedTime, server.LastUpdatedTime, server.IPv4, "\n"))
 	}

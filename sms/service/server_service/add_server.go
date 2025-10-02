@@ -11,8 +11,8 @@ import (
 )
 
 // @Tags         Server
-// @Summary      Handle adding a new server
-// @Description  Handle adding a new server by validating input and storing server information
+// @Summary      Add a new server
+// @Description  Add a new server by validating input and storing server information
 // @Accept       json
 // @Produce      json
 // @Param        jwt header string true "JWT token for authentication"
