@@ -230,3 +230,25 @@
 2025/10/02 05:05:32 Attempting to fetch server list from Elasticsearch...
 2025/10/02 05:05:32 Attempting to refresh from Elasticsearch...
 2025/10/02 05:05:56 Update list length: 9293
+2025/10/02 05:07:06 Attempting to refresh from Elasticsearch...
+2025/10/02 05:07:26 Update list length: 9293
+2025/10/02 06:49:17 Logger initialized. Subsequent logs will be written to log/server.log
+2025/10/02 06:49:17 Attempting to connect to PostgreSQL at postgresql:5432
+2025/10/02 06:49:17 Failed to ping PostgreSQL: dial tcp 172.18.0.4:5432: connect: connection refused
+2025/10/02 06:49:17 dial tcp 172.18.0.4:5432: connect: connection refused
+2025/10/02 06:49:21 Logger initialized. Subsequent logs will be written to log/server.log
+2025/10/02 06:49:21 Attempting to connect to PostgreSQL at postgresql:5432
+2025/10/02 06:49:21 Connected to PostgreSQL database successfully
+2025/10/02 06:49:22 Connected to Redis successfully
+2025/10/02 06:49:22 Error pinging Elasticsearch: dial tcp 172.18.0.6:9200: connect: connection refused
+2025/10/02 06:49:22 Failed to connect to Elasticsearch
+2025/10/02 07:06:59 Logger initialized. Subsequent logs will be written to log/server.log
+2025/10/02 07:06:59 Attempting to connect to PostgreSQL at postgresql:5432
+2025/10/02 07:06:59 Failed to ping PostgreSQL: dial tcp 172.18.0.4:5432: connect: connection refused
+2025/10/02 07:06:59 dial tcp 172.18.0.4:5432: connect: connection refused
+2025/10/02 07:07:01 Logger initialized. Subsequent logs will be written to log/server.log
+2025/10/02 07:07:01 Attempting to connect to PostgreSQL at postgresql:5432
+2025/10/02 07:07:02 Connected to PostgreSQL database successfully
+2025/10/02 07:07:02 Connected to Redis successfully
+2025/10/02 07:07:02 Error pinging Elasticsearch: dial tcp 172.18.0.3:9200: connect: connection refused
+2025/10/02 07:07:02 Failed to connect to Elasticsearch
