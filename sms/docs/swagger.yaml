@@ -362,9 +362,6 @@ definitions:
     properties:
       _id:
         type: string
-      ipv4:
-        description: IPv4 address of the server
-        type: string
       server_name:
         type: string
       status:
@@ -430,6 +427,8 @@ info:
 paths:
   /health:
     get:
+      consumes:
+      - application/json
       description: Check the health status of the application and its dependencies
       produces:
       - application/json
@@ -549,8 +548,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: Handle adding a new server by validating input and storing server
-        information
+      description: Add a new server by validating input and storing server information
       parameters:
       - description: JWT token for authentication
         in: header
@@ -586,7 +584,7 @@ paths:
           description: Internal server error
           schema:
             $ref: '#/definitions/object.AddServerInternalServerErrorResponse'
-      summary: Handle adding a new server
+      summary: Add a new server
       tags:
       - Server
   /server/delete_server:
@@ -718,8 +716,8 @@ paths:
     put:
       consumes:
       - application/json
-      description: Handle updating an existing server by validating input and updating
-        server information
+      description: Update an existing server by validating input and updating server
+        information
       parameters:
       - description: JWT token for authentication
         in: header
@@ -759,7 +757,7 @@ paths:
           description: Internal server error
           schema:
             $ref: '#/definitions/object.UpdateServerInternalServerErrorResponse'
-      summary: Handle updating an existing server
+      summary: Update an existing server
       tags:
       - Server
   /server/view_servers/{order}/{filter}/{string}:
@@ -884,9 +882,9 @@ schemes:
 swagger: "2.0"
 tags:
 - description: '"Operations related to user authentication and management"'
-  name: Users
+  name: User
 - description: '"Operations related to server management"'
-  name: Servers
+  name: Server
 - description: '"Operations related to generating and sending reports"'
   name: Report
 - description: '"Health check endpoint"'

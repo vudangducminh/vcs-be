@@ -10,8 +10,8 @@ import (
 )
 
 // @Tags         Server
-// @Summary      Handle updating an existing server
-// @Description  Handle updating an existing server by validating input and updating server information
+// @Summary      Update an existing server
+// @Description  Update an existing server by validating input and updating server information
 // @Accept       json
 // @Produce      json
 // @Param        jwt header string true "JWT token for authentication"
@@ -44,19 +44,16 @@ func UpdateServer(c *gin.Context) {
 	if req.ServerName != "" {
 		server.ServerName = req.ServerName
 	}
-	if req.IPv4 != "" {
-		if elastic_query.CheckServerExists(req.IPv4) && server.IPv4 != req.IPv4 {
-			c.JSON(http.StatusConflict, gin.H{"error": "IPv4 already exists"})
-			return
-		}
-		server.IPv4 = req.IPv4
-	}
+
 	server.Status = req.Status
 	server.LastUpdatedTime = time.Now().Unix()
 
 	status := elastic_query.UpdateServerInfo(server)
 	if status == http.StatusOK {
-		c.JSON(http.StatusOK, gin.H{"message": "Server updated successfully"})
+		c.JSON(http.StatusOK, gin.H{
+			"message": "Server updated successfully",
+			"server":  server,
+		})
 	} else {
 		c.JSON(status, gin.H{"error": "Failed to update server"})
 	}

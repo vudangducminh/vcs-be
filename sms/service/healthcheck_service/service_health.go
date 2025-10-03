@@ -20,6 +20,7 @@ type HealthResponse struct {
 // @Tags         Health
 // @Summary      Health check endpoint
 // @Description  Check the health status of the application and its dependencies
+// @Accept       json
 // @Produce      json
 // @Success      200 {object} HealthResponse "Application is healthy"
 // @Failure      503 {object} HealthResponse "Service unavailable"

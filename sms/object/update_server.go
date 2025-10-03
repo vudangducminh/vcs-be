@@ -4,7 +4,6 @@ type UpdateServerRequest struct {
 	Id         string `json:"_id"`
 	ServerName string `json:"server_name"`
 	Status     string `json:"status"` // e.g., "active", "inactive", "maintenance"
-	IPv4       string `json:"ipv4"`   // IPv4 address of the server
 }
 
 type UpdateServerSuccessResponse struct {

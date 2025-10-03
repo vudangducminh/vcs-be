@@ -22,6 +22,9 @@ const docTemplate = `{
         "/health": {
             "get": {
                 "description": "Check the health status of the application and its dependencies",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -189,7 +192,7 @@ const docTemplate = `{
         },
         "/server/add_server": {
             "post": {
-                "description": "Handle adding a new server by validating input and storing server information",
+                "description": "Add a new server by validating input and storing server information",
                 "consumes": [
                     "application/json"
                 ],
@@ -199,7 +202,7 @@ const docTemplate = `{
                 "tags": [
                     "Server"
                 ],
-                "summary": "Handle adding a new server",
+                "summary": "Add a new server",
                 "parameters": [
                     {
                         "type": "string",
@@ -438,7 +441,7 @@ const docTemplate = `{
         },
         "/server/update_server": {
             "put": {
-                "description": "Handle updating an existing server by validating input and updating server information",
+                "description": "Update an existing server by validating input and updating server information",
                 "consumes": [
                     "application/json"
                 ],
@@ -448,7 +451,7 @@ const docTemplate = `{
                 "tags": [
                     "Server"
                 ],
-                "summary": "Handle updating an existing server",
+                "summary": "Update an existing server",
                 "parameters": [
                     {
                         "type": "string",
@@ -1214,10 +1217,6 @@ const docTemplate = `{
                 "_id": {
                     "type": "string"
                 },
-                "ipv4": {
-                    "description": "IPv4 address of the server",
-                    "type": "string"
-                },
                 "server_name": {
                     "type": "string"
                 },
@@ -1299,11 +1298,11 @@ const docTemplate = `{
     "tags": [
         {
             "description": "\"Operations related to user authentication and management\"",
-            "name": "Users"
+            "name": "User"
         },
         {
             "description": "\"Operations related to server management\"",
-            "name": "Servers"
+            "name": "Server"
         },
         {
             "description": "\"Operations related to generating and sending reports\"",

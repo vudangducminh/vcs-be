@@ -81,7 +81,6 @@ func ViewServer(c *gin.Context) {
 			"_id":               server.Id,
 			"server_name":       server.ServerName,
 			"status":            server.Status,
-			"uptime":            server.Uptime,
 			"created_time":      server.CreatedTime,
 			"last_updated_time": server.LastUpdatedTime,
 			"ipv4":              server.IPv4,
