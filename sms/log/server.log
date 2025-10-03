@@ -257,3 +257,6 @@
 2025/10/03 11:28:57 Connected to PostgreSQL database successfully
 2025/10/03 11:28:58 Connected to Redis successfully
 2025/10/03 11:28:58 Connected to Elasticsearch successfully
+2025/10/03 11:29:08 Attempting to fetch server list from Elasticsearch...
+2025/10/03 11:29:09 Attempting to refresh from Elasticsearch...
+2025/10/03 11:29:16 Update list length: 9050
