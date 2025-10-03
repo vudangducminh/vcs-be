@@ -1,0 +1,5 @@
+package object
+
+type Email struct {
+	Email string `json:"email" xorm:"email" binding:"required,email"`
+}

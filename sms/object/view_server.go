@@ -2,8 +2,8 @@ package object
 
 type ViewServerRequest struct {
 	Order  string `json:"order"`  // e.g., "asc", "desc"
-	Filter string `json:"filter"` // e.g., "server_id", "server_name", "ipv4", "status"
-	String string `json:"string"` // Substring to search in server_id, server_name, ipv4, or status
+	Filter string `json:"filter"` // e.g., "_id", "server_name", "ipv4", "status"
+	String string `json:"string"` // Substring to search in _id, server_name, ipv4, or status
 }
 
 type ViewServerSuccessResponse struct {

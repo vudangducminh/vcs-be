@@ -3,7 +3,7 @@ package redis_query
 import (
 	"context"
 	"log"
-	"sms/auth"
+	"sms/algorithm"
 	"sms/server/database/cache/redis/connector"
 	"testing"
 	"time"
@@ -30,7 +30,7 @@ func TestSaveJWTToken(t *testing.T) {
 	}
 	// Save the JWT token to Redis
 	tokenStr := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTIxNjU2MzcsInBhc3N3b3JkIjoiMTIzIiwidXNlcm5hbWUiOiJLYXdhaWkifQ.Ao5QaAde80cCdf-9QDmCznRW-h0iFlinIdZNnUTJ-kc"
-	token, err := auth.ValidateJWT(tokenStr)
+	token, err := algorithm.ValidateJWT(tokenStr)
 	if err != nil {
 		t.Error("Invalid JWT token:", err)
 		return

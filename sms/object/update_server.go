@@ -1,14 +1,13 @@
 package object
 
 type UpdateServerRequest struct {
-	ServerId   string `json:"server_id"`
+	Id         string `json:"_id"`
 	ServerName string `json:"server_name"`
 	Status     string `json:"status"` // e.g., "active", "inactive", "maintenance"
-	IPv4       string `json:"ipv4"`   // IPv4 address of the server
 }
 
 type UpdateServerSuccessResponse struct {
-	ServerId        string `json:"server_id"`                        // Unique identifier for the server
+	Id              string `json:"_id"`                              // Unique identifier for the server
 	ServerName      string `json:"server_name"`                      // Name of the server
 	ServerIPv4      string `json:"ipv4"`                             // IPv4 address of the server
 	ServerStatus    string `json:"status"`                           // Status of the server, e.g., "active", "inactive", "maintenance"

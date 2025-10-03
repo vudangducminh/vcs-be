@@ -19,9 +19,9 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/servers/add_server": {
-            "post": {
-                "description": "Handle adding a new server by validating input and storing server information",
+        "/health": {
+            "get": {
+                "description": "Check the health status of the application and its dependencies",
                 "consumes": [
                     "application/json"
                 ],
@@ -29,9 +29,180 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Servers"
+                    "Health"
                 ],
-                "summary": "Handle adding a new server",
+                "summary": "Health check endpoint",
+                "responses": {
+                    "200": {
+                        "description": "Application is healthy",
+                        "schema": {
+                            "$ref": "#/definitions/healthcheck_service.HealthResponse"
+                        }
+                    },
+                    "503": {
+                        "description": "Service unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/healthcheck_service.HealthResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/report/daily_report": {
+            "post": {
+                "description": "An email will be sent to the specified recipients at 00:00:00 UTC.\nExample date format: 2025-07-23T12:00:00Z",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Report"
+                ],
+                "summary": "Create a request to send report email",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "JWT token for authentication",
+                        "name": "jwt",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Daily report request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/object.DailyReportRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Request saved successfully",
+                        "schema": {
+                            "$ref": "#/definitions/object.DailyReportResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "schema": {
+                            "$ref": "#/definitions/object.DailyReportInvalidRequestResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication failed",
+                        "schema": {
+                            "$ref": "#/definitions/object.AuthErrorResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Email already exists",
+                        "schema": {
+                            "$ref": "#/definitions/object.DailyReportConflictResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/object.DailyReportInternalServerErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/report/report/{order}/{filter}/{string}": {
+            "post": {
+                "description": "Create a request to send report email from YYYY-MM-DD to YYYY-MM-DD\nExample date format: 2025-07-23T12:00:00Z",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Report"
+                ],
+                "summary": "Create a request to send report email",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "JWT token for authentication",
+                        "name": "jwt",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Order of results, either 'asc' or 'desc'. If not provided or using the wrong order format, the default order is ascending",
+                        "name": "order",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter by server_name, ipv4, or status. If not provided or using the wrong filter format, then there is no filter applied",
+                        "name": "filter",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Substring to search in server_name, ipv4, or status",
+                        "name": "string",
+                        "in": "query"
+                    },
+                    {
+                        "description": "Report request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/object.ReportRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Email sent successfully",
+                        "schema": {
+                            "$ref": "#/definitions/object.ReportResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "schema": {
+                            "$ref": "#/definitions/object.ReportInvalidRequestResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication failed",
+                        "schema": {
+                            "$ref": "#/definitions/object.AuthErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to export into Excel file",
+                        "schema": {
+                            "$ref": "#/definitions/object.ExportExcelFailedResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/server/add_server": {
+            "post": {
+                "description": "Add a new server by validating input and storing server information",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Server"
+                ],
+                "summary": "Add a new server",
                 "parameters": [
                     {
                         "type": "string",
@@ -84,66 +255,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/servers/daily_report": {
-            "post": {
-                "description": "Create a request to send daily report email from YYYY-MM-DD to YYYY-MM-DD\nAn email will be sent to the specified recipients at 00:00:00 UTC.\nExample date format: 2025-07-23T12:00:00Z",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Servers"
-                ],
-                "summary": "Create a request to send daily report email",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "JWT token for authentication",
-                        "name": "jwt",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "description": "Send email request",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/object.DailyReportRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Email sent successfully",
-                        "schema": {
-                            "$ref": "#/definitions/object.DailyReportResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid request",
-                        "schema": {
-                            "$ref": "#/definitions/object.DailyReportInvalidRequestResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Authentication failed",
-                        "schema": {
-                            "$ref": "#/definitions/object.AuthErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "schema": {
-                            "$ref": "#/definitions/object.DailyReportInternalServerErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/servers/delete_server": {
+        "/server/delete_server": {
             "delete": {
                 "description": "Delete a server by its unique ID",
                 "consumes": [
@@ -153,7 +265,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Servers"
+                    "Server"
                 ],
                 "summary": "Delete a server by ID",
                 "parameters": [
@@ -202,7 +314,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/servers/export_excel/{order}/{filter}/{string}": {
+        "/server/export_excel/{order}/{filter}/{string}": {
             "get": {
                 "description": "Export server data to an Excel file with optional filtering and ordering",
                 "consumes": [
@@ -212,7 +324,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Servers"
+                    "Server"
                 ],
                 "summary": "Export server data to Excel",
                 "parameters": [
@@ -231,15 +343,15 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Filter by server_id, server_name, ipv4, or status. If not provided or using the wrong filter format, then there is no filter applied",
+                        "description": "Filter by server_name, ipv4, or status. If not provided or using the wrong filter format, then there is no filter applied",
                         "name": "filter",
                         "in": "query"
                     },
                     {
                         "type": "string",
-                        "description": "Substring to search in server_id, server_name, ipv4, or status",
+                        "description": "Substring to search in server_name, ipv4, or status",
                         "name": "string",
-                        "in": "path"
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -262,15 +374,15 @@ const docTemplate = `{
                         }
                     },
                     "500": {
-                        "description": "Failed to export Excel",
+                        "description": "Failed to export into Excel file",
                         "schema": {
-                            "$ref": "#/definitions/object.ExportExcelExportFailedResponse"
+                            "$ref": "#/definitions/object.ExportExcelFailedResponse"
                         }
                     }
                 }
             }
         },
-        "/servers/import_excel": {
+        "/server/import_excel": {
             "post": {
                 "description": "Import server data from an Excel file",
                 "consumes": [
@@ -280,7 +392,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Servers"
+                    "Server"
                 ],
                 "summary": "Import file from excel",
                 "parameters": [
@@ -327,9 +439,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/servers/update_server": {
+        "/server/update_server": {
             "put": {
-                "description": "Handle updating an existing server by validating input and updating server information",
+                "description": "Update an existing server by validating input and updating server information",
                 "consumes": [
                     "application/json"
                 ],
@@ -337,9 +449,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Servers"
+                    "Server"
                 ],
-                "summary": "Handle updating an existing server",
+                "summary": "Update an existing server",
                 "parameters": [
                     {
                         "type": "string",
@@ -384,7 +496,7 @@ const docTemplate = `{
                         }
                     },
                     "409": {
-                        "description": "Server already exists",
+                        "description": "Server IP already exists",
                         "schema": {
                             "$ref": "#/definitions/object.UpdateServerConflictResponse"
                         }
@@ -398,7 +510,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/servers/view_servers/{order}/{filter}/{string}": {
+        "/server/view_servers/{order}/{filter}/{string}": {
             "get": {
                 "description": "View server details with optional filtering",
                 "consumes": [
@@ -408,7 +520,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Servers"
+                    "Server"
                 ],
                 "summary": "View server details",
                 "parameters": [
@@ -416,7 +528,8 @@ const docTemplate = `{
                         "type": "string",
                         "description": "JWT token for authentication",
                         "name": "jwt",
-                        "in": "query"
+                        "in": "header",
+                        "required": true
                     },
                     {
                         "type": "string",
@@ -426,15 +539,15 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Filter by server_id, server_name, ipv4, or status. If not provided or using the wrong filter format, the default filter is server_name",
+                        "description": "Filter by server_name, ipv4, or status. If not provided or using the wrong filter format, the default filter is server_name",
                         "name": "filter",
                         "in": "query"
                     },
                     {
                         "type": "string",
-                        "description": "Substring to search in server_id, server_name, ipv4, or status",
+                        "description": "Substring to search in server_name, ipv4, or status",
                         "name": "string",
-                        "in": "path"
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -465,7 +578,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/users/login": {
+        "/user/login": {
             "post": {
                 "description": "Handle user login by validating credentials and generating a JWT token",
                 "consumes": [
@@ -475,7 +588,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Users"
+                    "User"
                 ],
                 "summary": "Handle user login",
                 "parameters": [
@@ -517,7 +630,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/users/register": {
+        "/user/register": {
             "post": {
                 "description": "Handle user registration by validating input and storing account information",
                 "consumes": [
@@ -527,7 +640,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Users"
+                    "User"
                 ],
                 "summary": "Handle user registration",
                 "parameters": [
@@ -571,6 +684,23 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "healthcheck_service.HealthResponse": {
+            "type": "object",
+            "properties": {
+                "services": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "status": {
+                    "type": "string"
+                },
+                "timestamp": {
+                    "type": "string"
+                }
+            }
+        },
         "object.AddServerBadRequestResponse": {
             "type": "object",
             "properties": {
@@ -601,16 +731,8 @@ const docTemplate = `{
         "object.AddServerRequest": {
             "type": "object",
             "properties": {
-                "created_time": {
-                    "description": "ISO 8601 format",
-                    "type": "string"
-                },
                 "ipv4": {
                     "description": "IPv4 address of the server",
-                    "type": "string"
-                },
-                "last_updated_time": {
-                    "description": "ISO 8601 format",
                     "type": "string"
                 },
                 "server_name": {
@@ -619,16 +741,16 @@ const docTemplate = `{
                 "status": {
                     "description": "e.g., \"active\", \"inactive\", \"maintenance\"",
                     "type": "string"
-                },
-                "uptime": {
-                    "description": "e.g., \"3666\" for 1 hour 1 minute and 6 seconds",
-                    "type": "integer"
                 }
             }
         },
         "object.AddServerSuccessResponse": {
             "type": "object",
             "properties": {
+                "_id": {
+                    "description": "Unique identifier for the server",
+                    "type": "string"
+                },
                 "ipv4": {
                     "description": "IPv4 address of the server",
                     "type": "string"
@@ -637,10 +759,6 @@ const docTemplate = `{
                     "description": "Confirmation message",
                     "type": "string",
                     "example": "Server added"
-                },
-                "server_id": {
-                    "description": "Unique identifier for the server",
-                    "type": "string"
                 },
                 "server_name": {
                     "description": "Name of the server",
@@ -657,14 +775,19 @@ const docTemplate = `{
                 }
             }
         },
-        "object.DailyReportInternalServerErrorResponse": {
+        "object.DailyReportConflictResponse": {
             "type": "object",
             "properties": {
                 "error": {
                     "type": "string",
-                    "example": "Failed to save request"
-                },
-                "message": {
+                    "example": "Email already exists"
+                }
+            }
+        },
+        "object.DailyReportInternalServerErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
                     "type": "string",
                     "example": "Internal server error"
                 }
@@ -676,28 +799,16 @@ const docTemplate = `{
                 "error": {
                     "type": "string",
                     "example": "Invalid request body"
-                },
-                "message": {
-                    "type": "string",
-                    "example": "Invalid request"
                 }
             }
         },
         "object.DailyReportRequest": {
             "type": "object",
             "required": [
-                "email",
-                "end_time",
-                "start_time"
+                "email"
             ],
             "properties": {
                 "email": {
-                    "type": "string"
-                },
-                "end_time": {
-                    "type": "string"
-                },
-                "start_time": {
                     "type": "string"
                 }
             }
@@ -723,10 +834,10 @@ const docTemplate = `{
         "object.DeleteServerRequest": {
             "type": "object",
             "required": [
-                "server_id"
+                "_id"
             ],
             "properties": {
-                "server_id": {
+                "_id": {
                     "type": "string"
                 }
             }
@@ -734,6 +845,10 @@ const docTemplate = `{
         "object.DeleteServerResponse": {
             "type": "object",
             "properties": {
+                "_id": {
+                    "description": "Unique identifier for the deleted server",
+                    "type": "string"
+                },
                 "ipv4": {
                     "description": "IPv4 address of the deleted server",
                     "type": "string"
@@ -741,10 +856,6 @@ const docTemplate = `{
                 "message": {
                     "type": "string",
                     "example": "Server deleted successfully"
-                },
-                "server_id": {
-                    "description": "Unique identifier for the deleted server",
-                    "type": "string"
                 },
                 "server_name": {
                     "description": "Name of the deleted server",
@@ -770,12 +881,12 @@ const docTemplate = `{
                 }
             }
         },
-        "object.ExportExcelExportFailedResponse": {
+        "object.ExportExcelFailedResponse": {
             "type": "object",
             "properties": {
                 "error": {
                     "type": "string",
-                    "example": "Failed to export Excel"
+                    "example": "Failed to export into Excel file"
                 }
             }
         },
@@ -985,9 +1096,67 @@ const docTemplate = `{
                 }
             }
         },
+        "object.ReportInternalServerErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Failed to save request"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Internal server error"
+                }
+            }
+        },
+        "object.ReportInvalidRequestResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Invalid request body"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Invalid request"
+                }
+            }
+        },
+        "object.ReportRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "end_time",
+                "start_time"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "end_time": {
+                    "type": "string"
+                },
+                "start_time": {
+                    "type": "string"
+                }
+            }
+        },
+        "object.ReportResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "Request saved successfully"
+                }
+            }
+        },
         "object.Server": {
             "type": "object",
             "properties": {
+                "_id": {
+                    "description": "Unique identifier for the server",
+                    "type": "string"
+                },
                 "created_time": {
                     "description": "Unix timestamp",
                     "type": "integer"
@@ -999,9 +1168,6 @@ const docTemplate = `{
                     "description": "Unix timestamp",
                     "type": "integer"
                 },
-                "server_id": {
-                    "type": "string"
-                },
                 "server_name": {
                     "type": "string"
                 },
@@ -1011,7 +1177,10 @@ const docTemplate = `{
                 },
                 "uptime": {
                     "description": "e.g., \"3666\" for 1 hour 1 minute and 6 seconds",
-                    "type": "integer"
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
                 }
             }
         },
@@ -1045,11 +1214,7 @@ const docTemplate = `{
         "object.UpdateServerRequest": {
             "type": "object",
             "properties": {
-                "ipv4": {
-                    "description": "IPv4 address of the server",
-                    "type": "string"
-                },
-                "server_id": {
+                "_id": {
                     "type": "string"
                 },
                 "server_name": {
@@ -1073,6 +1238,10 @@ const docTemplate = `{
         "object.UpdateServerSuccessResponse": {
             "type": "object",
             "properties": {
+                "_id": {
+                    "description": "Unique identifier for the server",
+                    "type": "string"
+                },
                 "ipv4": {
                     "description": "IPv4 address of the server",
                     "type": "string"
@@ -1085,10 +1254,6 @@ const docTemplate = `{
                     "description": "Confirmation message",
                     "type": "string",
                     "example": "Server updated"
-                },
-                "server_id": {
-                    "description": "Unique identifier for the server",
-                    "type": "string"
                 },
                 "server_name": {
                     "description": "Name of the server",
@@ -1133,11 +1298,19 @@ const docTemplate = `{
     "tags": [
         {
             "description": "\"Operations related to user authentication and management\"",
-            "name": "Users"
+            "name": "User"
         },
         {
             "description": "\"Operations related to server management\"",
-            "name": "Servers"
+            "name": "Server"
+        },
+        {
+            "description": "\"Operations related to generating and sending reports\"",
+            "name": "Report"
+        },
+        {
+            "description": "\"Health check endpoint\"",
+            "name": "Health"
         }
     ]
 }`

@@ -10,7 +10,7 @@
 Note:
 - Swagger initialization:
     export PATH=$PATH:$(go env GOPATH)/bin
-    swag init -g main.go --dir .,./API/users_handler,./API/servers_handler,./object
+    swag init -g main.go --dir .,./service/user_service,./service/server_service,./service/healthcheck_service,./object
 - Go test:
     go test ./...
-- Remove uptime field in server
+- http://localhost:8800/swagger/index.html
