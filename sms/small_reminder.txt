@@ -11,6 +11,11 @@ Note:
 - Swagger initialization:
     export PATH=$PATH:$(go env GOPATH)/bin
     swag init -g main.go --dir .,./service/user_service,./service/server_service,./service/healthcheck_service,./object
-- Go test:
+    swag init -g cmd/main.go --dir .,./src
+
+
+- Go test:  
     go test ./...
-- http://localhost:8800/swagger/index.html
+- http://localhost:8800/swagger/index.html (user service)
+- http://localhost:8801/swagger/index.html (server service)
+- Something's wrong with swagger
