@@ -144,11 +144,15 @@ func ReportRequest(c *gin.Context) {
 		return
 	}
 
+	totalActiveServer := elastic_query.GetTotalActiveServersCount(filter, str)
+	totalInactiveServer := elastic_query.GetTotalInactiveServersCount(filter, str)
+	totalMaintenanceServer := elastic_query.GetTotalMaintenanceServersCount(filter, str)
+	totalServer := totalActiveServer + totalInactiveServer + totalMaintenanceServer
 	emailBody := "Here is your requested server report." + "\n"
-	emailBody += "Total servers in the system: " + fmt.Sprintf("%d", len(serverDataList)) + "\n"
-	emailBody += "Number of active servers: " + fmt.Sprintf("%d", elastic_query.GetTotalActiveServersCount(filter, str)) + "\n"
-	emailBody += "Number of inactive servers: " + fmt.Sprintf("%d", elastic_query.GetTotalInactiveServersCount(filter, str)) + "\n"
-	emailBody += "Number of maintenance servers: " + fmt.Sprintf("%d", elastic_query.GetTotalMaintenanceServersCount(filter, str)) + "\n"
+	emailBody += "Total servers in the system: " + fmt.Sprintf("%d", totalServer) + "\n"
+	emailBody += "Number of active servers: " + fmt.Sprintf("%d", totalActiveServer) + "\n"
+	emailBody += "Number of inactive servers: " + fmt.Sprintf("%d", totalInactiveServer) + "\n"
+	emailBody += "Number of maintenance servers: " + fmt.Sprintf("%d", totalMaintenanceServer) + "\n"
 	emailBody += "Average uptime percentage across all servers: " + fmt.Sprintf("%.2f", averageUptimePercentage) + "%" + "\n"
 	// Send email with the Excel file as attachment
 	status = report_service.SendEmail(f, req.Email, "Server Report", emailBody)

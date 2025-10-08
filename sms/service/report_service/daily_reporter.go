@@ -32,7 +32,8 @@ func DailyReporter() {
 				totalActiveServer := elastic_query.GetTotalActiveServersCount("", "")
 				totalInactiveServer := elastic_query.GetTotalInactiveServersCount("", "")
 				totalMaintenanceServer := elastic_query.GetTotalMaintenanceServersCount("", "")
-				log.Printf("Total servers: %d, Active: %d, Inactive: %d, Maintenance: %d, Average Uptime: %.2f%%\n", len(serverDataList), totalActiveServer, totalInactiveServer, totalMaintenanceServer, averageUptimePercentage)
+				totalServer := totalActiveServer + totalInactiveServer + totalMaintenanceServer
+				log.Printf("Total servers: %d, Active: %d, Inactive: %d, Maintenance: %d, Average Uptime: %.2f%%\n", totalServer, totalActiveServer, totalInactiveServer, totalMaintenanceServer, averageUptimePercentage)
 				if status != http.StatusOK {
 					log.Println("Failed to retrieve server details from Elasticsearch")
 					time.Sleep(20 * time.Second)
@@ -72,11 +73,12 @@ func DailyReporter() {
 					}
 				}
 				emailBody := "Here is your requested server report." + "\n"
-				emailBody += "Total servers in the system: " + fmt.Sprintf("%d", len(serverDataList)) + "\n"
+				emailBody += "Total servers in the system: " + fmt.Sprintf("%d", totalServer) + "\n"
 				emailBody += "Number of active servers: " + fmt.Sprintf("%d", totalActiveServer) + "\n"
 				emailBody += "Number of inactive servers: " + fmt.Sprintf("%d", totalInactiveServer) + "\n"
 				emailBody += "Number of maintenance servers: " + fmt.Sprintf("%d", totalMaintenanceServer) + "\n"
 				emailBody += "Average uptime percentage across all servers: " + fmt.Sprintf("%.2f", averageUptimePercentage) + "%" + "\n"
+
 				for _, email := range emailList {
 					// Send email with the Excel file as attachment
 					status = report_service.SendEmail(f, email.Email, "Server Report", emailBody)
