@@ -1,0 +1,27 @@
+services:
+  healthcheck-service:
+    build:
+      context: ../
+      dockerfile: Dockerfile
+    container_name: healthcheck-service
+    ports:
+      - "8803:8803"
+    environment:
+      - GO_ENV=production
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+    networks:
+      - healthcheck_service_network
+      - server_service_network
+    restart: unless-stopped
+    volumes:
+      - ./logs:/app/logs  # Mount logs directory
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8803/health || exit 1"]
+      interval: 30s
+  
+networks:
+  healthcheck_service_network:
+    driver: bridge
+  server_service_network:
+    external: true
+    name: config_server_service_network

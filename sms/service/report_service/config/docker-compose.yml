@@ -34,6 +34,3 @@ networks:
   server_service_network:
     external: true
     name: config_server_service_network
-
-volumes:
-  elasticsearch-data:

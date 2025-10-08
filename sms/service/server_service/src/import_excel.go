@@ -54,6 +54,7 @@ func ImportExcel(c *gin.Context) {
 	sheetName := f.GetSheetName(0)
 	rows, err := f.GetRows(sheetName)
 	log.Println("Sheet Name:", sheetName)
+	log.Println("Total Rows:", len(rows))
 	if err != nil {
 		log.Println("Error reading rows:", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to read Excel rows"})

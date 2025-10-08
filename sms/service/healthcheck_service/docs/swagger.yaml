@@ -1,0 +1,59 @@
+basePath: /api/v1
+definitions:
+  healthcheck_service_src.HealthResponse:
+    properties:
+      services:
+        additionalProperties:
+          type: string
+        type: object
+      status:
+        type: string
+      timestamp:
+        type: string
+    type: object
+  src.HealthResponse:
+    properties:
+      services:
+        additionalProperties:
+          type: string
+        type: object
+      status:
+        type: string
+      timestamp:
+        type: string
+    type: object
+host: localhost:8803
+info:
+  contact:
+    email: vudangducminh@gmail.com
+    name: Vu Dang Duc Minh
+    url: https://github.com/vudangducminh
+  description: This is a sample server for VCS System Management API.
+  title: VCS System Management API
+  version: "1.0"
+paths:
+  /health:
+    get:
+      consumes:
+      - application/json
+      description: Check the health status of the application and its dependencies
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Application is healthy
+          schema:
+            $ref: '#/definitions/healthcheck_service_src.HealthResponse'
+        "503":
+          description: Service unavailable
+          schema:
+            $ref: '#/definitions/healthcheck_service_src.HealthResponse'
+      summary: Health check endpoint
+      tags:
+      - Health
+schemes:
+- http
+swagger: "2.0"
+tags:
+- description: '"Check the health status of services and managed servers"'
+  name: Healthcheck

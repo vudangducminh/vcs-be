@@ -1,8 +1,8 @@
 package main
 
 import (
+	initialize "healthcheck_service/init"
 	"log"
-	initialize "report_service/init"
 )
 
 // @title           VCS System Management API
@@ -13,10 +13,10 @@ import (
 // @contact.url     https://github.com/vudangducminh
 // @BasePath        /api/v1
 // @schemes         http
-// @host            localhost:8802
-// @Tag.name		Report
-// @Tag.description "Operations related to generating and sending reports"
+// @host            localhost:8803
+// @Tag.name		Healthcheck
+// @Tag.description "Check the health status of services and managed servers"
 func main() {
 	initialize.Init()
-	log.Println("Report Service is running on port 8802")
+	log.Println("Health Check Service is running on port 8803")
 }

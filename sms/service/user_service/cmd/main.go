@@ -1,6 +1,9 @@
 package main
 
-import initialize "user_service/init"
+import (
+	"log"
+	initialize "user_service/init"
+)
 
 // @title           VCS System Management API
 // @version         1.0
@@ -15,4 +18,5 @@ import initialize "user_service/init"
 // @Tag.description "Operations related to User management"
 func main() {
 	initialize.Init()
+	log.Println("User Service is running on port 8800")
 }

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	initialize "server_service/init"
 )
 
@@ -17,4 +18,5 @@ import (
 // @Tag.description "Operations related to server management"
 func main() {
 	initialize.Init()
+	log.Println("Server Service is running on port 8801")
 }

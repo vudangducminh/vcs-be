@@ -78,6 +78,9 @@ networks:
   report_service_network:
     external: true
     name: config_report_service_network
+  healthcheck_service_network:
+    external: true
+    name: config_healthcheck_service_network
 
 volumes:
   elasticsearch-data:
