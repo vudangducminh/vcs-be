@@ -1,12 +1,12 @@
-package report_service
+package src
 
 import (
 	"fmt"
 	"log"
 	"net/http"
-	elastic_query "sms/server/database/elasticsearch/query"
-	postgresql_query "sms/server/database/postgresql/query"
-	report_service "sms/service/report_service/template"
+	elastic_query "report_service/infrastructure/elasticsearch/query"
+	postgresql_query "report_service/infrastructure/postgresql/query"
+	"report_service/src/template"
 	"time"
 
 	"github.com/xuri/excelize/v2"
@@ -79,7 +79,7 @@ func DailyReporter() {
 				emailBody += "Average uptime percentage across all servers: " + fmt.Sprintf("%.2f", averageUptimePercentage) + "%" + "\n"
 				for _, email := range emailList {
 					// Send email with the Excel file as attachment
-					status = report_service.SendEmail(f, email.Email, "Server Report", emailBody)
+					status = template.SendEmail(f, email.Email, "Server Report", emailBody)
 					if status != http.StatusOK {
 						log.Printf("Failed to send daily report to %s\n", email.Email)
 					} else {

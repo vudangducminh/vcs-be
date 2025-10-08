@@ -1,0 +1,198 @@
+basePath: /api/v1
+definitions:
+  entities.AuthErrorResponse:
+    properties:
+      error:
+        example: Authentication failed
+        type: string
+    type: object
+  entities.DailyReportConflictResponse:
+    properties:
+      error:
+        example: Email already exists
+        type: string
+    type: object
+  entities.DailyReportInternalServerErrorResponse:
+    properties:
+      error:
+        example: Internal server error
+        type: string
+    type: object
+  entities.DailyReportInvalidRequestResponse:
+    properties:
+      error:
+        example: Invalid request body
+        type: string
+    type: object
+  entities.DailyReportRequest:
+    properties:
+      email:
+        type: string
+    required:
+    - email
+    type: object
+  entities.DailyReportResponse:
+    properties:
+      message:
+        example: Request saved successfully
+        type: string
+    type: object
+  entities.ExportExcelFailedResponse:
+    properties:
+      error:
+        example: Failed to export into Excel file
+        type: string
+    type: object
+  entities.ReportInternalServerErrorResponse:
+    properties:
+      error:
+        example: Failed to save request
+        type: string
+      message:
+        example: Internal server error
+        type: string
+    type: object
+  entities.ReportInvalidRequestResponse:
+    properties:
+      error:
+        example: Invalid request body
+        type: string
+      message:
+        example: Invalid request
+        type: string
+    type: object
+  entities.ReportRequest:
+    properties:
+      email:
+        type: string
+      end_time:
+        type: string
+      start_time:
+        type: string
+    required:
+    - email
+    - end_time
+    - start_time
+    type: object
+  entities.ReportResponse:
+    properties:
+      message:
+        example: Request saved successfully
+        type: string
+    type: object
+host: localhost:8802
+info:
+  contact:
+    email: vudangducminh@gmail.com
+    name: Vu Dang Duc Minh
+    url: https://github.com/vudangducminh
+  description: This is a sample server for VCS System Management API.
+  title: VCS System Management API
+  version: "1.0"
+paths:
+  /report/daily_report:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        An email will be sent to the specified recipients at 00:00:00 UTC.
+        Example date format: 2025-07-23T12:00:00Z
+      parameters:
+      - description: JWT token for authentication
+        in: header
+        name: jwt
+        required: true
+        type: string
+      - description: Daily report request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/entities.DailyReportRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Request saved successfully
+          schema:
+            $ref: '#/definitions/entities.DailyReportResponse'
+        "400":
+          description: Invalid request
+          schema:
+            $ref: '#/definitions/entities.DailyReportInvalidRequestResponse'
+        "401":
+          description: Authentication failed
+          schema:
+            $ref: '#/definitions/entities.AuthErrorResponse'
+        "409":
+          description: Email already exists
+          schema:
+            $ref: '#/definitions/entities.DailyReportConflictResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/entities.DailyReportInternalServerErrorResponse'
+      summary: Create a request to send report email
+      tags:
+      - Report
+  /report/report:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        Create a request to send report email from YYYY-MM-DD to YYYY-MM-DD
+        Example date format: 2025-07-23T12:00:00Z
+      parameters:
+      - description: JWT token for authentication
+        in: header
+        name: jwt
+        required: true
+        type: string
+      - description: Order of results, either 'asc' or 'desc'. If not provided or
+          using the wrong order format, the default order is ascending
+        in: query
+        name: order
+        type: string
+      - description: Filter by server_name, ipv4, or status. If not provided or using
+          the wrong filter format, then there is no filter applied
+        in: query
+        name: filter
+        type: string
+      - description: Substring to search in server_name, ipv4, or status
+        in: query
+        name: string
+        type: string
+      - description: Report request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/entities.ReportRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Email sent successfully
+          schema:
+            $ref: '#/definitions/entities.ReportResponse'
+        "400":
+          description: Invalid request
+          schema:
+            $ref: '#/definitions/entities.ReportInvalidRequestResponse'
+        "401":
+          description: Authentication failed
+          schema:
+            $ref: '#/definitions/entities.AuthErrorResponse'
+        "500":
+          description: Failed to export into Excel file
+          schema:
+            $ref: '#/definitions/entities.ExportExcelFailedResponse'
+      summary: Create a request to send report email
+      tags:
+      - Report
+schemes:
+- http
+swagger: "2.0"
+tags:
+- description: '"Operations related to generating and sending reports"'
+  name: Report

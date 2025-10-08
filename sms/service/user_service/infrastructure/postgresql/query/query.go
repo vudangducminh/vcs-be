@@ -27,7 +27,7 @@ func GetRoleByUsername(username string) string {
 	return account.Role
 }
 
-func GetAccountPasswordByUsername(username string) string {
+func GetAccountPasswordByUsername(username string) (string, int) {
 	var account entities.Account
 	has, err := connector.PostgreSQL.Table("account").
 		Cols("password").
@@ -37,14 +37,14 @@ func GetAccountPasswordByUsername(username string) string {
 
 	if err != nil {
 		log.Println("Error retrieving account password:", err)
-		return ""
+		return "", http.StatusInternalServerError
 	}
 
 	if !has || account.Password == "" {
 		log.Println("No account found with username:", username)
-		return ""
+		return "", http.StatusNotFound
 	}
-	return account.Password
+	return account.Password, http.StatusOK
 }
 
 func AddAccountInfo(account entities.Account) int {

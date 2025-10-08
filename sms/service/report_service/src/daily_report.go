@@ -1,9 +1,9 @@
-package report_service
+package src
 
 import (
 	"net/http"
-	"sms/object"
-	posgresql_query "sms/server/database/postgresql/query"
+	"report_service/entities"
+	posgresql_query "report_service/infrastructure/postgresql/query"
 
 	"github.com/gin-gonic/gin"
 )
@@ -15,16 +15,16 @@ import (
 // @Accept       json
 // @Produce      json
 // @Param        jwt header string true "JWT token for authentication"
-// @Param        request body object.DailyReportRequest true "Daily report request"
-// @Success      201 {object} object.DailyReportResponse "Request saved successfully"
-// @Failure      400 {object} object.DailyReportInvalidRequestResponse "Invalid request"
-// @Failure      401 {object} object.AuthErrorResponse "Authentication failed"
-// @Failure      409 {object} object.DailyReportConflictResponse "Email already exists"
-// @Failure      500 {object} object.DailyReportInternalServerErrorResponse "Internal server error"
+// @Param        request body entities.DailyReportRequest true "Daily report request"
+// @Success      201 {object} entities.DailyReportResponse "Request saved successfully"
+// @Failure      400 {object} entities.DailyReportInvalidRequestResponse "Invalid request"
+// @Failure      401 {object} entities.AuthErrorResponse "Authentication failed"
+// @Failure      409 {object} entities.DailyReportConflictResponse "Email already exists"
+// @Failure      500 {object} entities.DailyReportInternalServerErrorResponse "Internal server error"
 // @Router       /report/daily_report [post]
 func DailyReport(c *gin.Context) {
 	// Implementation for daily report
-	var req object.DailyReportRequest
+	var req entities.DailyReportRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
 		return
@@ -33,7 +33,7 @@ func DailyReport(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Email is required"})
 		return
 	}
-	email := object.Email(req)
+	email := entities.Email(req)
 	status := posgresql_query.AddEmailInfo(email)
 	if status == http.StatusCreated {
 		c.JSON(http.StatusOK, gin.H{

@@ -3,14 +3,14 @@ package middleware
 import (
 	"log"
 	"net/http"
-	posgresql_query "server_service/infrastructure/postgresql/query"
-	"server_service/src/algorithm"
+	posgresql_query "report_service/infrastructure/postgresql/query"
+	"report_service/src/algorithm"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 )
 
-func AuthAdmin() gin.HandlerFunc {
+func AuthUser() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		jwtString := c.GetHeader("jwt")
 		token, err := algorithm.ValidateJWT(jwtString)
@@ -62,18 +62,6 @@ func AuthAdmin() gin.HandlerFunc {
 		if storedPassword != password {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed"})
 			log.Println("Password does not match")
-			c.Abort()
-			return
-		}
-		role, ok := claims["role"].(string)
-		if !ok {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed"})
-			log.Println("Role claim not found or not a string")
-			c.Abort()
-			return
-		}
-		if role != "admin" {
-			c.JSON(http.StatusForbidden, gin.H{"error": "Admin access required"})
 			c.Abort()
 			return
 		}

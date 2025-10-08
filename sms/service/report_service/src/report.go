@@ -1,12 +1,12 @@
-package report_service
+package src
 
 import (
 	"fmt"
 	"log"
 	"net/http"
-	"sms/object"
-	elastic_query "sms/server/database/elasticsearch/query"
-	report_service "sms/service/report_service/template"
+	"report_service/entities"
+	elastic_query "report_service/infrastructure/elasticsearch/query"
+	"report_service/src/template"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -23,13 +23,13 @@ import (
 // @Param        order query string false "Order of results, either 'asc' or 'desc'. If not provided or using the wrong order format, the default order is ascending"
 // @Param        filter query string false "Filter by server_name, ipv4, or status. If not provided or using the wrong filter format, then there is no filter applied"
 // @Param        string query string false "Substring to search in server_name, ipv4, or status"
-// @Param        request body object.ReportRequest true "Report request"
-// @Success      200 {object} object.ReportResponse "Email sent successfully"
-// @Failure      400 {object} object.ReportInvalidRequestResponse "Invalid request"
-// @Failure      401 {object} object.AuthErrorResponse "Authentication failed"
-// @Failure      500 {object} object.ReportInternalServerErrorResponse "Internal server error"
-// @Failure      500 {object} object.ExportExcelFailedResponse "Failed to export into Excel file"
-// @Router       /report/report/{order}/{filter}/{string} [post]
+// @Param        request body entities.ReportRequest true "Report request"
+// @Success      200 {object} entities.ReportResponse "Email sent successfully"
+// @Failure      400 {object} entities.ReportInvalidRequestResponse "Invalid request"
+// @Failure      401 {object} entities.AuthErrorResponse "Authentication failed"
+// @Failure      500 {object} entities.ReportInternalServerErrorResponse "Internal server error"
+// @Failure      500 {object} entities.ExportExcelFailedResponse "Failed to export into Excel file"
+// @Router       /report/report [post]
 func ReportRequest(c *gin.Context) {
 	order := c.Query("order")
 	if order != "asc" && order != "desc" {
@@ -46,7 +46,7 @@ func ReportRequest(c *gin.Context) {
 		str = ""
 	}
 	log.Printf("Received request to export server with filter '%s' and substring: '%s'", filter, str)
-	var req object.ReportRequest
+	var req entities.ReportRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
 		return
@@ -151,7 +151,7 @@ func ReportRequest(c *gin.Context) {
 	emailBody += "Number of maintenance servers: " + fmt.Sprintf("%d", elastic_query.GetTotalMaintenanceServersCount(filter, str)) + "\n"
 	emailBody += "Average uptime percentage across all servers: " + fmt.Sprintf("%.2f", averageUptimePercentage) + "%" + "\n"
 	// Send email with the Excel file as attachment
-	status = report_service.SendEmail(f, req.Email, "Server Report", emailBody)
+	status = template.SendEmail(f, req.Email, "Server Report", emailBody)
 	if status != http.StatusOK {
 		c.JSON(status, gin.H{"error": "Failed to send email"})
 		return

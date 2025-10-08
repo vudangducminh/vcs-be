@@ -10,6 +10,11 @@ CREATE TABLE IF NOT EXISTS account (
     role VARCHAR(20) NOT NULL DEFAULT 'user'
 );
 
+CREATE TABLE IF NOT EXISTS email_manager (
+    id SERIAL PRIMARY KEY,
+    email VARCHAR(100) UNIQUE NOT NULL
+);
+
 -- Insert default admin user (password: admin123)
 INSERT INTO account (fullname, email, username, password, role) 
 VALUES ('Admin User', 'admin@example.com', 'admin', '123', 'admin')

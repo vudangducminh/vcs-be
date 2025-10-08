@@ -52,7 +52,13 @@ func AuthUser() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-		storedPassword := posgresql_query.GetAccountPasswordByUsername(username)
+		storedPassword, status := posgresql_query.GetAccountPasswordByUsername(username)
+		if status == http.StatusInternalServerError {
+			c.JSON(status, gin.H{"error": "Authentication failed"})
+			log.Println("Error retrieving stored password:", err)
+			c.Abort()
+			return
+		}
 		if storedPassword != password {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed"})
 			log.Println("Password does not match")

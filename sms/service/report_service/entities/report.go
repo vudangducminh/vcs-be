@@ -1,4 +1,4 @@
-package object
+package entities
 
 type ReportRequest struct {
 	Email     string `json:"email" binding:"required,email"`

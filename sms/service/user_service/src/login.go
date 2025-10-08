@@ -40,7 +40,11 @@ func HandleLogin(c *gin.Context) {
 		return
 	}
 
-	storedPassword := posgresql_query.GetAccountPasswordByUsername(req.Username)
+	storedPassword, status := posgresql_query.GetAccountPasswordByUsername(req.Username)
+	if status == http.StatusInternalServerError {
+		c.JSON(status, gin.H{"error": "Error retrieving stored password"})
+		return
+	}
 	log.Println("Username:", req.Username)
 	log.Println("Password:", req.Password)
 	log.Println("Stored Password:", storedPassword)

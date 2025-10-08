@@ -3,8 +3,8 @@ package middleware
 import (
 	"log"
 	"net/http"
-	posgresql_query "server_service/infrastructure/postgresql/query"
-	"server_service/src/algorithm"
+	posgresql_query "report_service/infrastructure/postgresql/query"
+	"report_service/src/algorithm"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"

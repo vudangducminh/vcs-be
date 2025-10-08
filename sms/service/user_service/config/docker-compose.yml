@@ -19,6 +19,9 @@ services:
       - user_service_network
     volumes:
       - ./logs:/app/logs  # Mount logs directory
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8800/health || exit 1"]
+      interval: 30s
     restart: unless-stopped
 
   postgresql:
@@ -33,6 +36,7 @@ services:
     networks:
       - user_service_network
       - server_service_network
+      - report_service_network
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
@@ -50,6 +54,9 @@ networks:
   server_service_network:
     external: true
     name: config_server_service_network
+  report_service_network:
+    external: true
+    name: config_report_service_network
 
 
 volumes:
