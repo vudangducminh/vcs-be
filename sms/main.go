@@ -5,14 +5,14 @@ import (
 	"log"
 	"math/rand"
 	"os"
-	"sms/algorithm"
 	_ "sms/docs"
 	"sms/object"
 	redis "sms/server/database/cache/redis/connector"
 	elastic "sms/server/database/elasticsearch/connector"
 	elastic_query "sms/server/database/elasticsearch/query"
 	postgresql "sms/server/database/postgresql/connector"
-	time_checker "sms/service/report_service/time_checker"
+	healthcheck_service "sms/service/healthcheck_service"
+	"sms/service/report_service"
 	"sms/service/swagger"
 	_ "sms/service/user_service" // Importing users_handler for Swagger documentation
 	"time"
@@ -27,18 +27,18 @@ import (
 // @BasePath        /api/v1
 // @schemes         http
 // @host            localhost:8800
-// @Tag.name        Users
+// @Tag.name        User
 // @Tag.description "Operations related to user authentication and management"
-// @Tag.name		Auth
-// @Tag.description "Operations related to user authentication"
-// @Tag.name		Servers
+// @Tag.name		Server
 // @Tag.description "Operations related to server management"
+// @Tag.name		Report
+// @Tag.description "Operations related to generating and sending reports"
+// @Tag.name		Health
+// @Tag.description "Health check endpoint"
 func main() {
 	// Set the log file
 	file, err := os.OpenFile("log/server.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if err != nil {
-		// If we can't open the log file, we can't continue.
-		// log.Fatal will print the error and exit the program.
 		log.Fatalf("Failed to open log file: %v", err)
 	}
 	// Set the output of the default logger to the file.
@@ -50,6 +50,8 @@ func main() {
 	postgresql.ConnectToDB()
 	if !postgresql.IsConnected() {
 		log.Println("Failed to connect to postgresql database")
+	} else {
+		go report_service.DailyReporter()
 	}
 	// Initialize the Redis connection
 	redis.ConnectToRedis()
@@ -61,13 +63,13 @@ func main() {
 	elastic.ConnectToEs()
 	if !elastic.IsConnected() {
 		log.Println("Failed to connect to Elasticsearch")
+	} else {
+		go healthcheck_service.HealthCheck()
 	}
-
 	// Generate sample servers for testing
 	// GenerateServer()
 
 	// Start the time checker for daily report email requests
-	go time_checker.TimeCheckerForSendingEmails()
 
 	// Connect to Swagger for API documentation
 	swagger.ConnectToSwagger()
@@ -77,7 +79,7 @@ func main() {
 
 func GenerateServer() {
 	var servers []object.Server
-	for i := 0; i < 10000; i++ {
+	for i := 0; i < 9000; i++ {
 		var rng = rand.Intn(1000)
 		if rng < 600 {
 			rng = 0 // Active status
@@ -98,11 +100,10 @@ func GenerateServer() {
 			status = "other"
 		}
 		server := object.Server{
-			ServerId:        algorithm.SHA256Hash(time.Now().String() + fmt.Sprintf("%d", i)),
 			ServerName:      "Server " + fmt.Sprintf("%d", i),
 			Status:          status,
 			IPv4:            fmt.Sprintf("%d", rand.Intn(256)) + "." + fmt.Sprintf("%d", rand.Intn(256)) + "." + fmt.Sprintf("%d", rand.Intn(256)) + "." + fmt.Sprintf("%d", rand.Intn(256)),
-			Uptime:          int64(rand.Intn(86400)),                               // 1 hour in seconds
+			Uptime:          []int{0},
 			CreatedTime:     time.Now().Unix() - 86400*2 - int64(rand.Intn(86400)), // Created 2 to 3 days ago
 			LastUpdatedTime: time.Now().Unix(),
 		}

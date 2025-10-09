@@ -1,11 +1,11 @@
 package object
 
 type DeleteServerRequest struct {
-	ServerId string `json:"server_id" binding:"required"`
+	Id string `json:"_id" binding:"required"`
 }
 type DeleteServerResponse struct {
 	Message    string `json:"message" example:"Server deleted successfully"`
-	ServerId   string `json:"server_id"`   // Unique identifier for the deleted server
+	Id         string `json:"_id"`         // Unique identifier for the deleted server
 	ServerName string `json:"server_name"` // Name of the deleted server
 	ServerIPv4 string `json:"ipv4"`        // IPv4 address of the deleted server
 }

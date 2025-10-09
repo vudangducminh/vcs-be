@@ -1,56 +1,105 @@
-package notification
+package report_service
 
 import (
+	"bytes"
+	"encoding/base64"
 	"fmt"
 	"log"
+	"mime/multipart"
+	"net/http"
 	"net/smtp"
-	"os"
-	elastic_query "sms/server/database/elasticsearch/query"
+	"net/textproto"
+	"time"
+
+	"github.com/xuri/excelize/v2"
 )
 
-// SendEmail sends an email using credentials and server info from environment variables.
-func SendEmail(to []string, averageUptime float32) error {
-	from := os.Getenv("SMTP_FROM_EMAIL")
-	password := os.Getenv("SMTP_APP_PASSWORD")
-	smtpHost := os.Getenv("SMTP_HOST") // smtp.gmail.com
-	smtpPort := os.Getenv("SMTP_PORT")
+func SendEmail(excelFile *excelize.File, recipientEmail string, subject string, body string) int {
+	// SMTP configuration - use environment variables
+	smtpHost := "smtp.gmail.com" // e.g., "smtp.gmail.com"
+	smtpPort := "587"            // e.g., "587"
+	senderEmail := "vudangducminh@gmail.com"
+	senderPassword := "fzyzzdsglqrznvpw"
 
-	if from == "" || password == "" || smtpHost == "" || smtpPort == "" {
-		return fmt.Errorf("SMTP environment variables not set")
+	if smtpHost == "" || smtpPort == "" || senderEmail == "" || senderPassword == "" {
+		log.Println("SMTP configuration not set")
+		return http.StatusInternalServerError
 	}
 
-	smtpAddr := smtpHost + ":" + smtpPort
+	// Create the Excel file in memory
+	var excelBuffer bytes.Buffer
+	if err := excelFile.Write(&excelBuffer); err != nil {
+		log.Printf("Failed to write Excel file: %v", err)
+		return http.StatusInternalServerError
+	}
 
-	// Template for the email subject and body
-	// Template for the email subject and body
-	var subject string = "Daily report from VCS System Management API"
-	var totalServers int = elastic_query.GetTotalServersCount()
-	var activeServers int = elastic_query.GetTotalActiveServersCount()
-	var inactiveServers int = elastic_query.GetTotalInactiveServersCount()
-	var maintenanceServers int = elastic_query.GetTotalMaintenanceServersCount()
-	var otherServers int = totalServers - (activeServers + inactiveServers + maintenanceServers)
-	var body string = "Number of servers in the system: " + fmt.Sprintf("%d", totalServers) +
-		"\nNumber of active servers: " + fmt.Sprintf("%d", activeServers) +
-		"\nNumber of inactive servers: " + fmt.Sprintf("%d", inactiveServers) +
-		"\nNumber of servers in maintenance: " + fmt.Sprintf("%d", maintenanceServers) +
-		"\nNumber of other servers: " + fmt.Sprintf("%d", otherServers) +
-		"\nAverage server uptime: " + fmt.Sprintf("%.2f", averageUptime) + "%"
+	// Verify Excel file size
+	log.Printf("Excel file size: %d bytes", excelBuffer.Len())
+	if excelBuffer.Len() == 0 {
+		log.Println("Excel file is empty")
+		return http.StatusInternalServerError
+	}
 
-	message := []byte(fmt.Sprintf("To: %s\r\n"+
-		"Subject: %s\r\n"+
-		"\r\n"+
-		"%s\r\n", to, subject, body))
+	// Create email message
+	var emailBuffer bytes.Buffer
+	writer := multipart.NewWriter(&emailBuffer)
 
-	// Create an authentication object.
-	auth := smtp.PlainAuth("", from, password, smtpHost)
+	// Email headers
+	emailBuffer.WriteString(fmt.Sprintf("From: %s\r\n", senderEmail))
+	emailBuffer.WriteString(fmt.Sprintf("To: %s\r\n", recipientEmail))
+	emailBuffer.WriteString(fmt.Sprintf("Subject: %s\r\n", subject))
+	emailBuffer.WriteString("MIME-Version: 1.0\r\n")
+	emailBuffer.WriteString(fmt.Sprintf("Content-Type: multipart/mixed; boundary=%s\r\n\r\n", writer.Boundary()))
 
-	// Send the email.
-	err := smtp.SendMail(smtpAddr, auth, from, to, message)
+	// Write email body part
+	bodyPart, err := writer.CreatePart(textproto.MIMEHeader{
+		"Content-Type": []string{"text/plain; charset=utf-8"},
+	})
+	if err != nil {
+		log.Printf("Failed to create email body part: %v", err)
+		return http.StatusInternalServerError
+	}
+	if _, err := bodyPart.Write([]byte(body)); err != nil {
+		log.Printf("Failed to write email body: %v", err)
+		return http.StatusInternalServerError
+	}
+
+	// Write Excel attachment with proper encoding
+	filename := fmt.Sprintf("daily_report_%s.xlsx", time.Now().Format("2006-01-02"))
+	attachmentPart, err := writer.CreatePart(textproto.MIMEHeader{
+		"Content-Type":              []string{"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"},
+		"Content-Disposition":       []string{fmt.Sprintf("attachment; filename=\"%s\"", filename)},
+		"Content-Transfer-Encoding": []string{"base64"}, // ← Add this
+	})
+	if err != nil {
+		log.Printf("Failed to create attachment part: %v", err)
+		return http.StatusInternalServerError
+	}
+
+	// Encode Excel file in base64
+	encoder := base64.NewEncoder(base64.StdEncoding, attachmentPart)
+	if _, err := encoder.Write(excelBuffer.Bytes()); err != nil {
+		log.Printf("Failed to write attachment: %v", err)
+		return http.StatusInternalServerError
+	}
+	encoder.Close()
+
+	writer.Close()
+
+	// Send email
+	auth := smtp.PlainAuth("", senderEmail, senderPassword, smtpHost)
+	err = smtp.SendMail(
+		smtpHost+":"+smtpPort,
+		auth,
+		senderEmail,
+		[]string{recipientEmail},
+		emailBuffer.Bytes(),
+	)
+
 	if err != nil {
 		log.Printf("Failed to send email: %v", err)
-		return err
+		return http.StatusInternalServerError
 	}
 
-	log.Printf("Email sent successfully to %v", to)
-	return nil
+	return http.StatusOK
 }

@@ -9,9 +9,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// @Tags         Servers
-// @Summary      Handle updating an existing server
-// @Description  Handle updating an existing server by validating input and updating server information
+// @Tags         Server
+// @Summary      Update an existing server
+// @Description  Update an existing server by validating input and updating server information
 // @Accept       json
 // @Produce      json
 // @Param        jwt header string true "JWT token for authentication"
@@ -20,9 +20,9 @@ import (
 // @Failure      401 {object} object.AuthErrorResponse "Authentication failed"
 // @Failure      400 {object} object.UpdateServerBadRequestResponse "Invalid request body"
 // @Failure      404 {object} object.UpdateServerStatusNotFoundResponse "Server not found"
-// @Failure      409 {object} object.UpdateServerConflictResponse "Server already exists"
+// @Failure      409 {object} object.UpdateServerConflictResponse "Server IP already exists"
 // @Failure      500 {object} object.UpdateServerInternalServerErrorResponse "Internal server error"
-// @Router       /servers/update_server [put]
+// @Router       /server/update_server [put]
 func UpdateServer(c *gin.Context) {
 	var req object.UpdateServerRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -30,12 +30,12 @@ func UpdateServer(c *gin.Context) {
 		return
 	}
 
-	if req.ServerId == "" {
+	if req.Id == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "ServerId is required"})
 		return
 	}
 
-	server, exists := elastic_query.GetServerById(req.ServerId)
+	server, exists := elastic_query.GetServerById(req.Id)
 	if !exists {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Server not found"})
 		return
@@ -44,20 +44,16 @@ func UpdateServer(c *gin.Context) {
 	if req.ServerName != "" {
 		server.ServerName = req.ServerName
 	}
-	if req.IPv4 != "" {
-		server.IPv4 = req.IPv4
-	}
-	if req.Status != "" {
-		if server.Status == "active" && (req.Status == "inactive" || req.Status == "maintenance") {
-			server.Uptime = time.Now().Unix() - server.LastUpdatedTime
-		}
-		server.Status = req.Status
-	}
+
+	server.Status = req.Status
 	server.LastUpdatedTime = time.Now().Unix()
 
 	status := elastic_query.UpdateServerInfo(server)
 	if status == http.StatusOK {
-		c.JSON(http.StatusOK, gin.H{"message": "Server updated successfully"})
+		c.JSON(http.StatusOK, gin.H{
+			"message": "Server updated successfully",
+			"server":  server,
+		})
 	} else {
 		c.JSON(status, gin.H{"error": "Failed to update server"})
 	}

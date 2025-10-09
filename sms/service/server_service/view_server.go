@@ -10,20 +10,20 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// @Tags         Servers
+// @Tags         Server
 // @Summary      View server details
 // @Description  View server details with optional filtering
 // @Accept       json
 // @Produce      json
-// @Param        jwt query string false "JWT token for authentication"
+// @Param        jwt header string true "JWT token for authentication"
 // @Param        order query string false "Order of results, either 'asc' or 'desc'. If not provided or using the wrong order format, the default order is ascending"
-// @Param        filter query string false "Filter by server_id, server_name, ipv4, or status. If not provided or using the wrong filter format, the default filter is server_name"
-// @Param        string path string false "Substring to search in server_id, server_name, ipv4, or status"
+// @Param        filter query string false "Filter by server_name, ipv4, or status. If not provided or using the wrong filter format, the default filter is server_name"
+// @Param        string query string false "Substring to search in server_name, ipv4, or status"
 // @Success      200 {object} object.ViewServerSuccessResponse "Server details retrieved successfully"
 // @Failure      400 {object} object.ViewServerBadRequestResponse "Invalid request parameters"
 // @Failure      401 {object} object.AuthErrorResponse "Authentication failed"
 // @Failure      500 {object} object.ViewServerInternalServerErrorResponse "Failed to retrieve server details"
-// @Router       /servers/view_servers/{order}/{filter}/{string} [get]
+// @Router       /server/view_servers/{order}/{filter}/{string} [get]
 func ViewServer(c *gin.Context) {
 
 	order := c.Query("order")
@@ -31,7 +31,7 @@ func ViewServer(c *gin.Context) {
 		order = "asc" // Default order if not specified
 	}
 	filter := c.Query("filter")
-	str := c.Param("string")
+	str := c.Query("string")
 	log.Printf("Received request to view server with filter '%s' and substring: '%s'", filter, str)
 	if str == "undefined" || str == "{string}" {
 		str = ""
@@ -40,8 +40,6 @@ func ViewServer(c *gin.Context) {
 	var servers []object.Server
 	var httpStatus int
 	switch filter {
-	case "server_id":
-		servers, httpStatus = elastic_query.GetServerByIdSubstr(str)
 	case "server_name":
 		servers, httpStatus = elastic_query.GetServerByNameSubstr(str)
 	case "ipv4":
@@ -63,8 +61,6 @@ func ViewServer(c *gin.Context) {
 	sort.Slice(servers, func(i, j int) bool {
 		var less bool
 		switch filter {
-		case "server_id":
-			less = servers[i].ServerId < servers[j].ServerId
 		case "status":
 			less = servers[i].Status < servers[j].Status
 		case "ipv4":
@@ -82,10 +78,9 @@ func ViewServer(c *gin.Context) {
 	var response []gin.H
 	for _, server := range servers {
 		response = append(response, gin.H{
-			"server_id":         server.ServerId,
+			"_id":               server.Id,
 			"server_name":       server.ServerName,
 			"status":            server.Status,
-			"uptime":            server.Uptime,
 			"created_time":      server.CreatedTime,
 			"last_updated_time": server.LastUpdatedTime,
 			"ipv4":              server.IPv4,

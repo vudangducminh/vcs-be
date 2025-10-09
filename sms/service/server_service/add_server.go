@@ -2,7 +2,6 @@ package servers_handler
 
 import (
 	"net/http"
-	"sms/algorithm"
 	"sms/object"
 	"time"
 
@@ -11,9 +10,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// @Tags         Servers
-// @Summary      Handle adding a new server
-// @Description  Handle adding a new server by validating input and storing server information
+// @Tags         Server
+// @Summary      Add a new server
+// @Description  Add a new server by validating input and storing server information
 // @Accept       json
 // @Produce      json
 // @Param        jwt header string true "JWT token for authentication"
@@ -23,7 +22,7 @@ import (
 // @Failure      401 {object} object.AuthErrorResponse "Authentication failed"
 // @Failure      409 {object} object.AddServerConflictResponse "Server already exists"
 // @Failure      500 {object} object.AddServerInternalServerErrorResponse "Internal server error"
-// @Router       /servers/add_server [post]
+// @Router       /server/add_server [post]
 func AddServer(c *gin.Context) {
 	// Implementation for adding a server
 	var req object.AddServerRequest
@@ -42,10 +41,9 @@ func AddServer(c *gin.Context) {
 	}
 
 	server := object.Server{
-		ServerId:        algorithm.SHA256Hash(time.Now().String()),
 		ServerName:      req.ServerName,
 		Status:          req.Status,
-		Uptime:          0, // Default uptime to 0
+		Uptime:          []int{0}, // Default uptime to 0
 		CreatedTime:     time.Now().Unix(),
 		LastUpdatedTime: time.Now().Unix(),
 		IPv4:            req.IPv4,
@@ -56,7 +54,6 @@ func AddServer(c *gin.Context) {
 	case http.StatusCreated:
 		c.JSON(http.StatusCreated, gin.H{
 			"message":     "Server added successfully to Elasticsearch",
-			"server_id":   server.ServerId,
 			"server_name": server.ServerName,
 			"ipv4":        server.IPv4,
 		})

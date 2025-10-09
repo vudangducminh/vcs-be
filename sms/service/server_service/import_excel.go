@@ -3,7 +3,6 @@ package servers_handler
 import (
 	"log"
 	"net/http"
-	"sms/algorithm"
 	"sms/object"
 	elastic_query "sms/server/database/elasticsearch/query"
 	"time"
@@ -12,7 +11,7 @@ import (
 	"github.com/xuri/excelize/v2"
 )
 
-// @Tags         Servers
+// @Tags         Server
 // @Summary      Import file from excel
 // @Description  Import server data from an Excel file
 // @Accept       multipart/form-data
@@ -26,7 +25,7 @@ import (
 // @Failure      500 {object} object.ImportExcelOpenFileFailedResponse "Failed to open file"
 // @Failure      500 {object} object.ImportExcelReadFileFailedResponse "Failed to read Excel rows"
 // @Failure      500 {object} object.ImportExcelElasticsearchErrorResponse "Failed to add server to Elasticsearch from Excel row"
-// @Router       /servers/import_excel [post]
+// @Router       /server/import_excel [post]
 func ImportExcel(c *gin.Context) {
 	file, err := c.FormFile("file")
 	if err != nil {
@@ -64,34 +63,59 @@ func ImportExcel(c *gin.Context) {
 	var isFirstRow bool = true
 	var servers []object.Server
 	var errorServers []object.Server
+	var successServers []object.Server
 	for _, row := range rows {
 		if isFirstRow {
 			isFirstRow = false
 			continue
 		}
 		var server object.Server
-		server.ServerId = algorithm.SHA256Hash(time.Now().String())
 		server.ServerName = row[1]
 		server.Status = row[2]
 		server.IPv4 = row[3]
 		server.CreatedTime = time.Now().Unix()
 		server.LastUpdatedTime = server.CreatedTime
-		server.Uptime = 0
-		if elastic_query.CheckServerExists(server.IPv4) {
-			log.Println("Server already exists in Elasticsearch, skipping row:", row)
-			errorServers = append(errorServers, server)
-			continue
-		}
+		server.Uptime = []int{0}
+		// if elastic_query.CheckServerExists(server.IPv4) {
+		// 	log.Println("Server already exists in Elasticsearch, skipping row:", row)
+		// 	errorServers = append(errorServers, server)
+		// 	continue
+		// }
 		servers = append(servers, server)
+		if len(servers) >= 250 {
+			status := elastic_query.BulkServerInfo(servers)
+			if status != http.StatusCreated {
+				for _, s := range servers {
+					status = elastic_query.AddServerInfo(s)
+					if status != http.StatusCreated {
+						errorServers = append(errorServers, s)
+					} else {
+						successServers = append(successServers, s)
+					}
+				}
+			} else {
+				successServers = append(successServers, servers...)
+			}
+			servers = nil
+		}
 	}
 	status := elastic_query.BulkServerInfo(servers)
 	if status != http.StatusCreated {
-		c.JSON(status, gin.H{"error": "Failed to add servers to Elasticsearch from Excel rows"})
-		return
+		for _, s := range servers {
+			status = elastic_query.AddServerInfo(s)
+			if status != http.StatusCreated {
+				errorServers = append(errorServers, s)
+			} else {
+				successServers = append(successServers, s)
+			}
+		}
+	} else {
+		successServers = append(successServers, servers...)
 	}
+	servers = nil
 	c.JSON(http.StatusOK, gin.H{
 		"message":       "Excel file imported successfully",
-		"added_servers": len(servers),
+		"added_servers": len(successServers),
 		"error_servers": len(errorServers),
 	})
 }
