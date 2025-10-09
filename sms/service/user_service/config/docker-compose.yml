@@ -1,0 +1,55 @@
+services:
+  user_service:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    container_name: user_service
+    ports:
+      - "8800:8800" 
+    environment:
+      - POSTGRES_HOST=postgresql
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=vudangducminh
+      - POSTGRES_PASSWORD=Amogus69420
+      - POSTGRES_DB=postgres
+    depends_on:
+      postgresql:
+        condition: service_healthy
+    networks:
+      - user_service_network
+    volumes:
+      - ./logs:/app/logs  # Mount logs directory
+  # healthcheck:
+  #   test: ["CMD-SHELL", "curl -f http://localhost:8800/health || exit 1"]
+  #   interval: 30s
+  # restart: unless-stopped
+
+  postgresql:
+    image: postgres:15-alpine
+    container_name: postgresql
+    environment:
+      - POSTGRES_USER=vudangducminh
+      - POSTGRES_PASSWORD=Amogus69420 
+      - POSTGRES_DB=postgres
+    ports:
+      - "5433:5432"
+    networks:
+      - user_service_network
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vudangducminh -d postgres"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+networks:
+  user_service_network:
+    driver: bridge
+
+
+volumes:
+  postgres_data:

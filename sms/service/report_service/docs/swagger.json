@@ -1,0 +1,289 @@
+{
+    "schemes": [
+        "http"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "description": "This is a sample server for VCS System Management API.",
+        "title": "VCS System Management API",
+        "contact": {
+            "name": "Vu Dang Duc Minh",
+            "url": "https://github.com/vudangducminh",
+            "email": "vudangducminh@gmail.com"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:8802",
+    "basePath": "/api/v1",
+    "paths": {
+        "/report/daily_report": {
+            "post": {
+                "description": "An email will be sent to the specified recipients at 00:00:00 UTC.\nExample date format: 2025-07-23T12:00:00Z",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Report"
+                ],
+                "summary": "Create a request to send report email",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "JWT token for authentication",
+                        "name": "jwt",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Daily report request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entities.DailyReportRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Request saved successfully",
+                        "schema": {
+                            "$ref": "#/definitions/entities.DailyReportResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "schema": {
+                            "$ref": "#/definitions/entities.DailyReportInvalidRequestResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication failed",
+                        "schema": {
+                            "$ref": "#/definitions/entities.AuthErrorResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Email already exists",
+                        "schema": {
+                            "$ref": "#/definitions/entities.DailyReportConflictResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/entities.DailyReportInternalServerErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/report/report": {
+            "post": {
+                "description": "Create a request to send report email from YYYY-MM-DD to YYYY-MM-DD\nExample date format: 2025-07-23T12:00:00Z",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Report"
+                ],
+                "summary": "Create a request to send report email",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "JWT token for authentication",
+                        "name": "jwt",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Order of results, either 'asc' or 'desc'. If not provided or using the wrong order format, the default order is ascending",
+                        "name": "order",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter by server_name, ipv4, or status. If not provided or using the wrong filter format, then there is no filter applied",
+                        "name": "filter",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Substring to search in server_name, ipv4, or status",
+                        "name": "string",
+                        "in": "query"
+                    },
+                    {
+                        "description": "Report request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entities.ReportRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Email sent successfully",
+                        "schema": {
+                            "$ref": "#/definitions/entities.ReportResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "schema": {
+                            "$ref": "#/definitions/entities.ReportInvalidRequestResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication failed",
+                        "schema": {
+                            "$ref": "#/definitions/entities.AuthErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to export into Excel file",
+                        "schema": {
+                            "$ref": "#/definitions/entities.ExportExcelFailedResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "entities.AuthErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Authentication failed"
+                }
+            }
+        },
+        "entities.DailyReportConflictResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Email already exists"
+                }
+            }
+        },
+        "entities.DailyReportInternalServerErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Internal server error"
+                }
+            }
+        },
+        "entities.DailyReportInvalidRequestResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Invalid request body"
+                }
+            }
+        },
+        "entities.DailyReportRequest": {
+            "type": "object",
+            "required": [
+                "email"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                }
+            }
+        },
+        "entities.DailyReportResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "Request saved successfully"
+                }
+            }
+        },
+        "entities.ExportExcelFailedResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Failed to export into Excel file"
+                }
+            }
+        },
+        "entities.ReportInternalServerErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Failed to save request"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Internal server error"
+                }
+            }
+        },
+        "entities.ReportInvalidRequestResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Invalid request body"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Invalid request"
+                }
+            }
+        },
+        "entities.ReportRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "end_time",
+                "start_time"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "end_time": {
+                    "type": "string"
+                },
+                "start_time": {
+                    "type": "string"
+                }
+            }
+        },
+        "entities.ReportResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "Request saved successfully"
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "description": "\"Operations related to generating and sending reports\"",
+            "name": "Report"
+        }
+    ]
+}

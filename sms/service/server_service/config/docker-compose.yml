@@ -1,0 +1,80 @@
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.17.4
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - xpack.security.enabled=false
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    networks:
+      - server_service_network
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health?wait_for_status=green&timeout=30s && curl -f http://localhost:9200/_cat/indices || exit 1"]
+      interval: 30s
+      timeout: 30s
+      retries: 10
+      start_period: 90s
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.17.4
+    container_name: kibana
+    ports:
+      - "5601:5601"
+    networks:
+      - server_service_network
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5601/api/status || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 120s
+
+  server-service:
+    build:
+      context: ../
+      dockerfile: Dockerfile
+    container_name: server-service
+    ports:
+      - "8801:8801"
+    environment:
+      - GO_ENV=production
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+      - POSTGRES_HOST=postgresql
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=vudangducminh
+      - POSTGRES_PASSWORD=Amogus69420
+      - POSTGRES_DB=postgres
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+      kibana:
+        condition: service_healthy
+    networks:
+      - server_service_network
+      - user_service_network
+    restart: unless-stopped
+    volumes:
+      - ./logs:/app/logs  # Mount logs directory
+  # healthcheck:
+  #   test: ["CMD-SHELL", "curl -f http://localhost:8801/health || exit 1"]
+  #   interval: 30s
+  
+networks:
+  server_service_network:
+    driver: bridge
+  user_service_network:
+    external: true
+    name: config_user_service_network
+
+volumes:
+  elasticsearch-data:

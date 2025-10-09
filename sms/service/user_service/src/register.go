@@ -1,0 +1,60 @@
+package users_handler
+
+import (
+	"log"
+	"net/http"
+	"user_service/entities"
+	posgresql_query "user_service/infrastructure/postgresql/query"
+
+	"github.com/gin-gonic/gin"
+)
+
+// @Tags         User
+// @Summary      Handle user registration
+// @Description  Handle user registration by validating input and storing account information
+// @Accept       json
+// @Produce      json
+// @Param        request body entities.RegisterRequest true "Registration request"
+// @Success      201 {object} entities.RegisterSuccessResponse "Registration successful"
+// @Failure      400 {object} entities.RegisterBadRequestResponse "Invalid request body"
+// @Failure      409 {object} entities.RegisterConflictResponse "Account already exists"
+// @Failure      500 {object} entities.RegisterInternalServerErrorResponse "Internal server error
+// @Router       /user/register [post]
+func HandleRegister(c *gin.Context) {
+	var req entities.RegisterRequest
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
+		return
+	}
+
+	if req.Fullname == "" || req.Email == "" || req.Username == "" || req.Password == "" || req.ConfirmPassword == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "All fields are required"})
+		return
+	}
+	if req.Password != req.ConfirmPassword {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Passwords do not match"})
+		return
+	}
+
+	log.Println("Registering Username:", req.Username)
+	log.Println("Password:", req.Password)
+	account := entities.Account{
+		Fullname: req.Fullname,
+		Email:    req.Email,
+		Username: req.Username,
+		Password: req.Password,
+		Role:     "user",
+	}
+	httpStatus := posgresql_query.AddAccountInfo(account)
+	if httpStatus == http.StatusCreated {
+		c.JSON(http.StatusCreated, gin.H{
+			"message": "Registration successful",
+		})
+	} else {
+		c.JSON(httpStatus, gin.H{
+			"message": "Registration failed",
+			"error":   "Account already exists or internal server error",
+		})
+	}
+}

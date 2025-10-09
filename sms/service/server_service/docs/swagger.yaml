@@ -1,0 +1,531 @@
+basePath: /api/v1
+definitions:
+  entities.AddServerBadRequestResponse:
+    properties:
+      error:
+        example: Invalid request body
+        type: string
+    type: object
+  entities.AddServerConflictResponse:
+    properties:
+      error:
+        example: Server already exists
+        type: string
+    type: object
+  entities.AddServerInternalServerErrorResponse:
+    properties:
+      error:
+        example: Internal server error
+        type: string
+    type: object
+  entities.AddServerRequest:
+    properties:
+      ipv4:
+        description: IPv4 address of the server
+        type: string
+      server_name:
+        type: string
+      status:
+        description: e.g., "active", "inactive", "maintenance"
+        type: string
+    type: object
+  entities.AddServerSuccessResponse:
+    properties:
+      _id:
+        description: Unique identifier for the server
+        type: string
+      ipv4:
+        description: IPv4 address of the server
+        type: string
+      message:
+        description: Confirmation message
+        example: Server added
+        type: string
+      server_name:
+        description: Name of the server
+        type: string
+    type: object
+  entities.AuthErrorResponse:
+    properties:
+      error:
+        example: Authentication failed
+        type: string
+    type: object
+  entities.DeleteServerInternalServerErrorResponse:
+    properties:
+      error:
+        example: Internal server error
+        type: string
+    type: object
+  entities.DeleteServerRequest:
+    properties:
+      _id:
+        type: string
+    required:
+    - _id
+    type: object
+  entities.DeleteServerResponse:
+    properties:
+      _id:
+        description: Unique identifier for the deleted server
+        type: string
+      ipv4:
+        description: IPv4 address of the deleted server
+        type: string
+      message:
+        example: Server deleted successfully
+        type: string
+      server_name:
+        description: Name of the deleted server
+        type: string
+    type: object
+  entities.DeleteServerStatusNotFoundResponse:
+    properties:
+      error:
+        example: Server not found
+        type: string
+    type: object
+  entities.ExportExcelBadRequestResponse:
+    properties:
+      error:
+        example: Invalid request parameters
+        type: string
+    type: object
+  entities.ExportExcelFailedResponse:
+    properties:
+      error:
+        example: Failed to export into Excel file
+        type: string
+    type: object
+  entities.ExportExcelInternalServerErrorResponse:
+    properties:
+      error:
+        example: Failed to retrieve server details
+        type: string
+    type: object
+  entities.ExportExcelSuccessResponse:
+    properties:
+      message:
+        example: Excel file exported successfully
+        type: string
+    type: object
+  entities.ImportExcelElasticsearchErrorResponse:
+    properties:
+      error:
+        example: Failed to add server to Elasticsearch from Excel row
+        type: string
+    type: object
+  entities.ImportExcelInvalidFileFormatResponse:
+    properties:
+      error:
+        example: Invalid file format
+        type: string
+    type: object
+  entities.ImportExcelOpenFileFailedResponse:
+    properties:
+      error:
+        example: Failed to open file
+        type: string
+    type: object
+  entities.ImportExcelReadFileFailedResponse:
+    properties:
+      error:
+        example: Failed to read Excel rows
+        type: string
+    type: object
+  entities.ImportExcelRetrieveFailedResponse:
+    properties:
+      error:
+        example: Failed to retrieve file
+        type: string
+    type: object
+  entities.ImportExcelSuccessResponse:
+    properties:
+      added_servers:
+        example: 5
+        type: integer
+      error_servers:
+        example: 2
+        type: integer
+      message:
+        example: Excel file imported successfully
+        type: string
+    type: object
+  entities.Server:
+    properties:
+      _id:
+        description: Unique identifier for the server
+        type: string
+      created_time:
+        description: Unix timestamp
+        type: integer
+      ipv4:
+        type: string
+      last_updated_time:
+        description: Unix timestamp
+        type: integer
+      server_name:
+        type: string
+      status:
+        description: e.g., "active", "inactive", "maintenance"
+        type: string
+      uptime:
+        description: e.g., "3666" for 1 hour 1 minute and 6 seconds
+        items:
+          type: integer
+        type: array
+    type: object
+  entities.UpdateServerBadRequestResponse:
+    properties:
+      error:
+        example: Invalid request body
+        type: string
+    type: object
+  entities.UpdateServerConflictResponse:
+    properties:
+      error:
+        example: Server already exists with the same IPv4 address
+        type: string
+    type: object
+  entities.UpdateServerInternalServerErrorResponse:
+    properties:
+      error:
+        example: Internal server error
+        type: string
+    type: object
+  entities.UpdateServerRequest:
+    properties:
+      _id:
+        type: string
+      server_name:
+        type: string
+      status:
+        description: e.g., "active", "inactive", "maintenance"
+        type: string
+    type: object
+  entities.UpdateServerStatusNotFoundResponse:
+    properties:
+      error:
+        example: Server not found
+        type: string
+    type: object
+  entities.UpdateServerSuccessResponse:
+    properties:
+      _id:
+        description: Unique identifier for the server
+        type: string
+      ipv4:
+        description: IPv4 address of the server
+        type: string
+      last_updated_time:
+        description: Last updated time in ISO 8601 format
+        type: string
+      message:
+        description: Confirmation message
+        example: Server updated
+        type: string
+      server_name:
+        description: Name of the server
+        type: string
+      status:
+        description: Status of the server, e.g., "active", "inactive", "maintenance"
+        type: string
+    type: object
+  entities.ViewServerBadRequestResponse:
+    properties:
+      error:
+        example: Invalid request parameters
+        type: string
+    type: object
+  entities.ViewServerInternalServerErrorResponse:
+    properties:
+      error:
+        example: Failed to retrieve server details
+        type: string
+    type: object
+  entities.ViewServerSuccessResponse:
+    properties:
+      servers:
+        items:
+          $ref: '#/definitions/entities.Server'
+        type: array
+    type: object
+host: localhost:8801
+info:
+  contact:
+    email: vudangducminh@gmail.com
+    name: Vu Dang Duc Minh
+    url: https://github.com/vudangducminh
+  description: This is a sample server for VCS System Management API.
+  title: VCS System Management API
+  version: "1.0"
+paths:
+  /server/add_server:
+    post:
+      consumes:
+      - application/json
+      description: Add a new server by validating input and storing server information
+      parameters:
+      - description: JWT token for authentication
+        in: header
+        name: jwt
+        required: true
+        type: string
+      - description: Add server request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/entities.AddServerRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Server added
+          schema:
+            $ref: '#/definitions/entities.AddServerSuccessResponse'
+        "400":
+          description: Invalid request body
+          schema:
+            $ref: '#/definitions/entities.AddServerBadRequestResponse'
+        "401":
+          description: Authentication failed
+          schema:
+            $ref: '#/definitions/entities.AuthErrorResponse'
+        "409":
+          description: Server already exists
+          schema:
+            $ref: '#/definitions/entities.AddServerConflictResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/entities.AddServerInternalServerErrorResponse'
+      summary: Add a new server
+      tags:
+      - Server
+  /server/delete_server:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a server by its unique ID
+      parameters:
+      - description: JWT token for authentication
+        in: header
+        name: jwt
+        required: true
+        type: string
+      - description: Delete server request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/entities.DeleteServerRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Server deleted successfully
+          schema:
+            $ref: '#/definitions/entities.DeleteServerResponse'
+        "401":
+          description: Authentication failed
+          schema:
+            $ref: '#/definitions/entities.AuthErrorResponse'
+        "404":
+          description: Server not found
+          schema:
+            $ref: '#/definitions/entities.DeleteServerStatusNotFoundResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/entities.DeleteServerInternalServerErrorResponse'
+      summary: Delete a server by ID
+      tags:
+      - Server
+  /server/export_excel:
+    get:
+      consumes:
+      - application/json
+      description: Export server data to an Excel file with optional filtering and
+        ordering
+      parameters:
+      - description: JWT token for authentication
+        in: header
+        name: jwt
+        required: true
+        type: string
+      - description: Order of results, either 'asc' or 'desc'. If not provided or
+          using the wrong order format, the default order is ascending
+        in: query
+        name: order
+        type: string
+      - description: Filter by server_name, ipv4, or status. If not provided or using
+          the wrong filter format, then there is no filter applied
+        in: query
+        name: filter
+        type: string
+      - description: Substring to search in server_name, ipv4, or status
+        in: query
+        name: string
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Excel file exported successfully
+          schema:
+            $ref: '#/definitions/entities.ExportExcelSuccessResponse'
+        "400":
+          description: Invalid request parameters
+          schema:
+            $ref: '#/definitions/entities.ExportExcelBadRequestResponse'
+        "401":
+          description: Authentication failed
+          schema:
+            $ref: '#/definitions/entities.AuthErrorResponse'
+        "500":
+          description: Failed to export into Excel file
+          schema:
+            $ref: '#/definitions/entities.ExportExcelFailedResponse'
+      summary: Export server data to Excel
+      tags:
+      - Server
+  /server/import_excel:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Import server data from an Excel file
+      parameters:
+      - description: JWT token for authentication
+        in: header
+        name: jwt
+        required: true
+        type: string
+      - description: Excel file to import
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Excel file imported successfully
+          schema:
+            $ref: '#/definitions/entities.ImportExcelSuccessResponse'
+        "400":
+          description: Failed to retrieve file
+          schema:
+            $ref: '#/definitions/entities.ImportExcelRetrieveFailedResponse'
+        "401":
+          description: Authentication failed
+          schema:
+            $ref: '#/definitions/entities.AuthErrorResponse'
+        "500":
+          description: Failed to add server to Elasticsearch from Excel row
+          schema:
+            $ref: '#/definitions/entities.ImportExcelElasticsearchErrorResponse'
+      summary: Import file from excel
+      tags:
+      - Server
+  /server/update_server:
+    put:
+      consumes:
+      - application/json
+      description: Update an existing server by validating input and updating server
+        information
+      parameters:
+      - description: JWT token for authentication
+        in: header
+        name: jwt
+        required: true
+        type: string
+      - description: Update server request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/entities.UpdateServerRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Server updated
+          schema:
+            $ref: '#/definitions/entities.UpdateServerSuccessResponse'
+        "400":
+          description: Invalid request body
+          schema:
+            $ref: '#/definitions/entities.UpdateServerBadRequestResponse'
+        "401":
+          description: Authentication failed
+          schema:
+            $ref: '#/definitions/entities.AuthErrorResponse'
+        "404":
+          description: Server not found
+          schema:
+            $ref: '#/definitions/entities.UpdateServerStatusNotFoundResponse'
+        "409":
+          description: Server IP already exists
+          schema:
+            $ref: '#/definitions/entities.UpdateServerConflictResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/entities.UpdateServerInternalServerErrorResponse'
+      summary: Update an existing server
+      tags:
+      - Server
+  /server/view_servers:
+    get:
+      consumes:
+      - application/json
+      description: View server details with optional filtering
+      parameters:
+      - description: JWT token for authentication
+        in: header
+        name: jwt
+        required: true
+        type: string
+      - description: Order of results, either 'asc' or 'desc'. If not provided or
+          using the wrong order format, the default order is ascending
+        in: query
+        name: order
+        type: string
+      - description: Filter by server_name, ipv4, or status. If not provided or using
+          the wrong filter format, the default filter is server_name
+        in: query
+        name: filter
+        type: string
+      - description: Substring to search in server_name, ipv4, or status
+        in: query
+        name: string
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Server details retrieved successfully
+          schema:
+            $ref: '#/definitions/entities.ViewServerSuccessResponse'
+        "400":
+          description: Invalid request parameters
+          schema:
+            $ref: '#/definitions/entities.ViewServerBadRequestResponse'
+        "401":
+          description: Authentication failed
+          schema:
+            $ref: '#/definitions/entities.AuthErrorResponse'
+        "500":
+          description: Failed to retrieve server details
+          schema:
+            $ref: '#/definitions/entities.ViewServerInternalServerErrorResponse'
+      summary: View server details
+      tags:
+      - Server
+schemes:
+- http
+swagger: "2.0"
+tags:
+- description: '"Operations related to server management"'
+  name: Server

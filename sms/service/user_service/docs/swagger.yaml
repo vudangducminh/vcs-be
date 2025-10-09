@@ -1,0 +1,174 @@
+basePath: /api/v1
+definitions:
+  entities.LoginBadRequestResponse:
+    properties:
+      error:
+        example: Invalid request body
+        type: string
+      message:
+        example: Invalid request body
+        type: string
+    type: object
+  entities.LoginInternalServerErrorResponse:
+    properties:
+      error:
+        example: Error generating token
+        type: string
+      message:
+        example: Error generating token
+        type: string
+    type: object
+  entities.LoginRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  entities.LoginSuccessResponse:
+    properties:
+      message:
+        example: Login successful
+        type: string
+    type: object
+  entities.LoginUnauthorizedResponse:
+    properties:
+      error:
+        example: Invalid credentials
+        type: string
+      message:
+        example: Invalid credentials
+        type: string
+    type: object
+  entities.RegisterBadRequestResponse:
+    properties:
+      message:
+        example: Invalid request body
+        type: string
+    type: object
+  entities.RegisterConflictResponse:
+    properties:
+      message:
+        example: Account already exists
+        type: string
+    type: object
+  entities.RegisterInternalServerErrorResponse:
+    properties:
+      message:
+        example: Internal server error
+        type: string
+    type: object
+  entities.RegisterRequest:
+    properties:
+      confirm_password:
+        type: string
+      email:
+        type: string
+      fullname:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - confirm_password
+    - email
+    - fullname
+    - password
+    - username
+    type: object
+  entities.RegisterSuccessResponse:
+    properties:
+      message:
+        example: Registration successful
+        type: string
+    type: object
+host: localhost:8800
+info:
+  contact:
+    email: vudangducminh@gmail.com
+    name: Vu Dang Duc Minh
+    url: https://github.com/vudangducminh
+  description: This is a sample server for VCS System Management API.
+  title: VCS System Management API
+  version: "1.0"
+paths:
+  /user/login:
+    post:
+      consumes:
+      - application/json
+      description: Handle user login by validating credentials and generating a JWT
+        token
+      parameters:
+      - description: Login request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/entities.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Login successful
+          schema:
+            $ref: '#/definitions/entities.LoginSuccessResponse'
+        "400":
+          description: Invalid request body
+          schema:
+            $ref: '#/definitions/entities.LoginBadRequestResponse'
+        "401":
+          description: Invalid credentials
+          schema:
+            $ref: '#/definitions/entities.LoginUnauthorizedResponse'
+        "500":
+          description: Error generating token
+          schema:
+            $ref: '#/definitions/entities.LoginInternalServerErrorResponse'
+      summary: Handle user login
+      tags:
+      - User
+  /user/register:
+    post:
+      consumes:
+      - application/json
+      description: Handle user registration by validating input and storing account
+        information
+      parameters:
+      - description: Registration request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/entities.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Registration successful
+          schema:
+            $ref: '#/definitions/entities.RegisterSuccessResponse'
+        "400":
+          description: Invalid request body
+          schema:
+            $ref: '#/definitions/entities.RegisterBadRequestResponse'
+        "409":
+          description: Account already exists
+          schema:
+            $ref: '#/definitions/entities.RegisterConflictResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/entities.RegisterInternalServerErrorResponse'
+      summary: Handle user registration
+      tags:
+      - User
+schemes:
+- http
+swagger: "2.0"
+tags:
+- description: '"Operations related to User management"'
+  name: User
