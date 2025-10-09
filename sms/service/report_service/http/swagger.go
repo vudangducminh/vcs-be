@@ -2,7 +2,7 @@ package http
 
 import (
 	_ "report_service/docs"
-	report_service "report_service/src"
+	"report_service/src"
 	"report_service/src/middleware"
 
 	"github.com/gin-gonic/gin"
@@ -13,10 +13,15 @@ import (
 func Init() {
 	r := gin.Default()
 
+	health := r.Group("api/v1/health")
+	{
+		health.GET("", src.HealthCheck)
+	}
+
 	report := r.Group("api/v1/report", middleware.AuthAdmin())
 	{
-		report.POST("/report", report_service.ReportRequest)
-		report.POST("/daily_report", report_service.DailyReport)
+		report.POST("/report", src.ReportRequest)
+		report.POST("/daily_report", src.DailyReport)
 	}
 	// The host should match the @host annotation in main.go
 	url := ginSwagger.URL("http://localhost:8802/swagger/doc.json")

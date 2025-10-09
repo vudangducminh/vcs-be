@@ -1,9 +1,9 @@
 package src
 
 import (
-	es "healthcheck_service/infrastructure/elasticsearch/connector"
 	"net/http"
 	"time"
+	psql "user_service/infrastructure/postgresql/connector"
 
 	"github.com/gin-gonic/gin"
 )
@@ -17,7 +17,7 @@ type HealthResponse struct {
 
 // @Tags         Health
 // @Summary      Health check endpoint
-// @Description  Check the health status of the healthcheck service and its dependencies
+// @Description  Check the health status of the user service and its dependencies
 // @Accept       json
 // @Produce      json
 // @Success      200 {object} HealthResponse "Service is healthy"
@@ -27,9 +27,10 @@ func HealthCheck(c *gin.Context) {
 	services := make(map[string]string)
 	overallStatus := "healthy"
 
-	if !es.IsConnected() {
+	// Check PostgreSQL connection
+	if !psql.IsConnected() {
 		overallStatus = "unhealthy"
-		services["elasticsearch"] = "unhealthy"
+		services["postgresql"] = "unhealthy"
 	}
 
 	// Prepare response

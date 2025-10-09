@@ -2,7 +2,7 @@ package http
 
 import (
 	_ "healthcheck_service/docs"
-	healthcheck_service "healthcheck_service/src"
+	"healthcheck_service/src"
 
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
@@ -14,7 +14,7 @@ func Init() {
 
 	health := r.Group("api/v1/health")
 	{
-		health.GET("/", healthcheck_service.ServiceHealthCheck)
+		health.GET("", src.HealthCheck)
 	}
 
 	url := ginSwagger.URL("http://localhost:8803/swagger/doc.json")

@@ -1,4 +1,4 @@
-package healthcheck_service
+package src
 
 import (
 	"healthcheck_service/entities"
@@ -25,7 +25,7 @@ func PingServer(ip string) bool {
 	return err == nil
 }
 
-func HealthCheck() {
+func StartHealthCheck() {
 	log.Println("Starting Health Check logic...")
 	// Wait a bit for services to fully start
 	time.Sleep(10 * time.Second)

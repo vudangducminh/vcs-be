@@ -13,6 +13,11 @@ import (
 func Init() {
 	r := gin.Default()
 
+	health := r.Group("api/v1/health")
+	{
+		health.GET("", src.HealthCheck)
+	}
+
 	server := r.Group("api/v1/server", middleware.AuthUser())
 	{
 		server.GET("/view_servers", src.ViewServer)

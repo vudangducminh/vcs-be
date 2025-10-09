@@ -21,7 +21,7 @@ const docTemplate = `{
     "paths": {
         "/health": {
             "get": {
-                "description": "Check the health status of the application and its dependencies",
+                "description": "Check the health status of the healthcheck service and its dependencies",
                 "consumes": [
                     "application/json"
                 ],
@@ -34,15 +34,15 @@ const docTemplate = `{
                 "summary": "Health check endpoint",
                 "responses": {
                     "200": {
-                        "description": "Application is healthy",
+                        "description": "Service is healthy",
                         "schema": {
-                            "$ref": "#/definitions/healthcheck_service_src.HealthResponse"
+                            "$ref": "#/definitions/src.HealthResponse"
                         }
                     },
                     "503": {
                         "description": "Service unavailable",
                         "schema": {
-                            "$ref": "#/definitions/healthcheck_service_src.HealthResponse"
+                            "$ref": "#/definitions/src.HealthResponse"
                         }
                     }
                 }
@@ -50,23 +50,6 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "healthcheck_service_src.HealthResponse": {
-            "type": "object",
-            "properties": {
-                "services": {
-                    "type": "object",
-                    "additionalProperties": {
-                        "type": "string"
-                    }
-                },
-                "status": {
-                    "type": "string"
-                },
-                "timestamp": {
-                    "type": "string"
-                }
-            }
-        },
         "src.HealthResponse": {
             "type": "object",
             "properties": {
@@ -80,6 +63,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "timestamp": {
+                    "type": "string"
+                },
+                "version": {
                     "type": "string"
                 }
             }

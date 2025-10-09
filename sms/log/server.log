@@ -1,9 +1,0 @@
-2025/10/09 06:58:07 Logger initialized. Subsequent logs will be written to log/server.log
-2025/10/09 06:58:07 Attempting to connect to PostgreSQL at postgresql:5432
-2025/10/09 06:58:07 Connected to PostgreSQL database successfully
-2025/10/09 06:58:28 Logger initialized. Subsequent logs will be written to log/server.log
-2025/10/09 06:58:28 Attempting to connect to PostgreSQL at postgresql:5432
-2025/10/09 06:58:28 Connected to PostgreSQL database successfully
-2025/10/09 06:58:30 Connected to Redis successfully
-2025/10/09 06:58:30 Error pinging Elasticsearch: dial tcp 172.18.0.5:9200: connect: connection refused
-2025/10/09 06:58:30 Failed to connect to Elasticsearch

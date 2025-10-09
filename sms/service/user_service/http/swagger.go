@@ -11,6 +11,12 @@ import (
 
 func Init() {
 	r := gin.Default()
+
+	health := r.Group("api/v1/health")
+	{
+		health.GET("", src.HealthCheck)
+	}
+
 	user := r.Group("api/v1/user")
 	{
 		user.POST("/login", src.HandleLogin)

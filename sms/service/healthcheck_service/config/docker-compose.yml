@@ -15,9 +15,9 @@ services:
     restart: unless-stopped
     volumes:
       - ./logs:/app/logs  # Mount logs directory
-  # healthcheck:
-  #   test: ["CMD-SHELL", "curl -f http://localhost:8803/health || exit 1"]
-  #   interval: 30s
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8803/api/v1/health || exit 1"]
+      interval: 30s
   
 networks:
   healthcheck_service_network:

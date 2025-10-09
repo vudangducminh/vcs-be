@@ -86,6 +86,19 @@ definitions:
         example: Registration successful
         type: string
     type: object
+  src.HealthResponse:
+    properties:
+      services:
+        additionalProperties:
+          type: string
+        type: object
+      status:
+        type: string
+      timestamp:
+        type: string
+      version:
+        type: string
+    type: object
 host: localhost:8800
 info:
   contact:
@@ -96,6 +109,25 @@ info:
   title: VCS System Management API
   version: "1.0"
 paths:
+  /health:
+    get:
+      consumes:
+      - application/json
+      description: Check the health status of the user service and its dependencies
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Service is healthy
+          schema:
+            $ref: '#/definitions/src.HealthResponse'
+        "503":
+          description: Service unavailable
+          schema:
+            $ref: '#/definitions/src.HealthResponse'
+      summary: Health check endpoint
+      tags:
+      - Health
   /user/login:
     post:
       consumes:

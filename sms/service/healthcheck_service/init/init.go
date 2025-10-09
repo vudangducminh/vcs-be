@@ -9,6 +9,6 @@ import (
 func Init() {
 	// Must init everything before swagger
 	es.Connect()
-	go healthcheck_service.HealthCheck()
+	go healthcheck_service.StartHealthCheck()
 	swagger.Init()
 }
