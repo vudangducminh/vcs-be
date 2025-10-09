@@ -471,6 +471,14 @@ func GetTotalActiveServersCount(filter string, substr string) int {
 				}
 			}
 		}`
+	case "status":
+		query = `{
+			"query": {
+				"term": {
+					"status": "%s"
+				}
+			}
+		}`
 	default:
 		query = `{
 			"query": {
@@ -551,6 +559,14 @@ func GetTotalInactiveServersCount(filter string, substr string) int {
 				}
 			}
 		}`
+	case "status":
+		query = `{
+			"query": {
+				"term": {
+					"status": "%s"
+				}
+			}
+		}`
 	default:
 		query = `{
 			"query": {
@@ -628,6 +644,14 @@ func GetTotalMaintenanceServersCount(filter string, substr string) int {
 							}
 						}
 					]
+				}
+			}
+		}`
+	case "status":
+		query = `{
+			"query": {
+				"term": {
+					"status": "%s"
 				}
 			}
 		}`
