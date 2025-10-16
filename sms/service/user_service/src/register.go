@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"user_service/entities"
 	posgresql_query "user_service/infrastructure/postgresql/query"
+	algorithm "user_service/src/algorithm"
 
 	"github.com/gin-gonic/gin"
 )
@@ -44,7 +45,7 @@ func HandleRegister(c *gin.Context) {
 		Fullname: req.Fullname,
 		Email:    req.Email,
 		Username: req.Username,
-		Password: req.Password,
+		Password: algorithm.SHA256Hash(req.Password),
 		Role:     req.Role,
 	}
 	httpStatus := posgresql_query.AddAccountInfo(account)
