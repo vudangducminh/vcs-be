@@ -14,6 +14,7 @@ import (
 // @Description  Handle user registration by validating input and storing account information
 // @Accept       json
 // @Produce      json
+// @Param        jwt header string true "JWT token for authentication"
 // @Param        request body entities.RegisterRequest true "Registration request"
 // @Success      201 {object} entities.RegisterSuccessResponse "Registration successful"
 // @Failure      400 {object} entities.RegisterBadRequestResponse "Invalid request body"
@@ -28,7 +29,7 @@ func HandleRegister(c *gin.Context) {
 		return
 	}
 
-	if req.Fullname == "" || req.Email == "" || req.Username == "" || req.Password == "" || req.ConfirmPassword == "" {
+	if req.Role == "" || req.Fullname == "" || req.Email == "" || req.Username == "" || req.Password == "" || req.ConfirmPassword == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "All fields are required"})
 		return
 	}
@@ -44,7 +45,7 @@ func HandleRegister(c *gin.Context) {
 		Email:    req.Email,
 		Username: req.Username,
 		Password: req.Password,
-		Role:     "user",
+		Role:     req.Role,
 	}
 	httpStatus := posgresql_query.AddAccountInfo(account)
 	if httpStatus == http.StatusCreated {

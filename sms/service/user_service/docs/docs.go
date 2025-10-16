@@ -115,6 +115,13 @@ const docTemplate = `{
                 "summary": "Handle user registration",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "JWT token for authentication",
+                        "name": "jwt",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
                         "description": "Registration request",
                         "name": "request",
                         "in": "body",
@@ -251,6 +258,7 @@ const docTemplate = `{
                 "email",
                 "fullname",
                 "password",
+                "role",
                 "username"
             ],
             "properties": {
@@ -264,6 +272,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "password": {
+                    "type": "string"
+                },
+                "role": {
                     "type": "string"
                 },
                 "username": {

@@ -112,6 +112,13 @@
                 "summary": "Handle user registration",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "JWT token for authentication",
+                        "name": "jwt",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
                         "description": "Registration request",
                         "name": "request",
                         "in": "body",
@@ -248,6 +255,7 @@
                 "email",
                 "fullname",
                 "password",
+                "role",
                 "username"
             ],
             "properties": {
@@ -261,6 +269,9 @@
                     "type": "string"
                 },
                 "password": {
+                    "type": "string"
+                },
+                "role": {
                     "type": "string"
                 },
                 "username": {

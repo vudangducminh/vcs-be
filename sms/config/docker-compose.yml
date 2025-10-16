@@ -1,4 +1,28 @@
 services:
+  # traefik:
+  #   image: traefik:v3.0
+  #   container_name: traefik
+  #   command:
+  #     - "--api.insecure=true"
+  #     - "--providers.docker=true"
+  #     - "--providers.docker.exposedbydefault=false"
+  #     - "--entrypoints.web.address=:80"
+  #     - "--entrypoints.websecure.address=:443"
+  #     - "--log.level=INFO"
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #     - "8080:8080"  # Traefik dashboard
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock:ro
+  #   networks:
+  #     - sms_network
+  #   restart: unless-stopped
+  #   labels:
+  #     - "traefik.enable=true"
+  #     - "traefik.http.routers.dashboard.rule=Host(`traefik.localhost`)"
+  #     - "traefik.http.routers.dashboard.service=api@internal"
+
   postgresql:
     image: postgres:15-alpine
     container_name: postgresql
@@ -47,8 +71,6 @@ services:
       context: ../service/user_service
       dockerfile: Dockerfile
     container_name: user_service
-    ports:
-      - "8800:8800"
     environment:
       - GO_ENV=production
       - POSTGRES_HOST=postgresql
@@ -56,15 +78,15 @@ services:
       - POSTGRES_USER=vudangducminh
       - POSTGRES_PASSWORD=Amogus69420
       - POSTGRES_DB=postgres
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
+    ports:
+      - "8800:8800"
     depends_on:
       postgresql:
         condition: service_healthy
     networks:
       - sms_network
     volumes:
-      - ./service/user_service/logs:/app/logs
+      - ../service/user_service/logs:/app/logs
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:8800/api/v1/health || exit 1"]
       interval: 30s
@@ -72,14 +94,17 @@ services:
       retries: 3
       start_period: 60s
     restart: unless-stopped
+  # labels:
+  #   - "traefik.enable=true"
+  #   - "traefik.http.routers.user-service.rule=Host(`user.localhost`)"
+  #   - "traefik.http.routers.user-service.entrypoints=web"
+  #   - "traefik.http.services.user-service.loadbalancer.server.port=8800"
 
   server_service:
     build:
       context: ../service/server_service
       dockerfile: Dockerfile
     container_name: server_service
-    ports:
-      - "8801:8801"
     environment:
       - GO_ENV=production
       - ELASTICSEARCH_URL=http://elasticsearch:9200
@@ -89,6 +114,8 @@ services:
       - POSTGRES_PASSWORD=Amogus69420
       - POSTGRES_DB=postgres
       - USER_SERVICE_URL=http://user_service:8800
+    ports:
+      - "8801:8801"
     depends_on:
       user_service:
         condition: service_healthy
@@ -99,7 +126,7 @@ services:
     networks:
       - sms_network
     volumes:
-      - ./service/server_service/logs:/app/logs
+      - ../service/server_service/logs:/app/logs
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:8801/api/v1/health || exit 1"]
       interval: 30s
@@ -107,14 +134,17 @@ services:
       retries: 3
       start_period: 60s
     restart: unless-stopped
+  # labels:
+  #   - "traefik.enable=true"
+  #   - "traefik.http.routers.server-service.rule=Host(`server.localhost`)"
+  #   - "traefik.http.routers.server-service.entrypoints=web"
+  #   - "traefik.http.services.server-service.loadbalancer.server.port=8801"
 
   report_service:
     build:
       context: ../service/report_service
       dockerfile: Dockerfile
     container_name: report_service
-    ports:
-      - "8802:8802"
     environment:
       - GO_ENV=production
       - POSTGRES_HOST=postgresql
@@ -124,6 +154,8 @@ services:
       - POSTGRES_DB=postgres
       - USER_SERVICE_URL=http://user_service:8800
       - SERVER_SERVICE_URL=http://server_service:8801
+    ports:
+      - "8802:8802"
     depends_on:
       user_service:
         condition: service_healthy
@@ -134,7 +166,7 @@ services:
     networks:
       - sms_network
     volumes:
-      - ./service/report_service/logs:/app/logs
+      - ../service/report_service/logs:/app/logs
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:8802/api/v1/health || exit 1"]
       interval: 30s
@@ -142,26 +174,31 @@ services:
       retries: 3
       start_period: 60s
     restart: unless-stopped
+  # labels:
+  #   - "traefik.enable=true"
+  #   - "traefik.http.routers.report-service.rule=Host(`report.localhost`)"
+  #   - "traefik.http.routers.report-service.entrypoints=web"
+  #   - "traefik.http.services.report-service.loadbalancer.server.port=8802"
 
   healthcheck_service:
     build:
       context: ../service/healthcheck_service
       dockerfile: Dockerfile
     container_name: healthcheck_service
-    ports:
-      - "8803:8803"
     environment:
       - GO_ENV=production
       - USER_SERVICE_URL=http://user_service:8800
       - SERVER_SERVICE_URL=http://server_service:8801
       - REPORT_SERVICE_URL=http://report_service:8802
+    ports:
+      - "8803:8803"
     depends_on:
       server_service:
         condition: service_healthy
     networks:
       - sms_network
     volumes:
-      - ./service/healthcheck_service/logs:/app/logs
+      - ../service/healthcheck_service/logs:/app/logs
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:8803/api/v1/health || exit 1"]
       interval: 30s
@@ -169,6 +206,11 @@ services:
       retries: 3
       start_period: 60s
     restart: unless-stopped
+# labels:
+#   - "traefik.enable=true"
+#   - "traefik.http.routers.healthcheck-service.rule=Host(`health.localhost`)"
+#   - "traefik.http.routers.healthcheck-service.entrypoints=web"
+#   - "traefik.http.services.healthcheck-service.loadbalancer.server.port=8803"
 
 networks:
   sms_network:

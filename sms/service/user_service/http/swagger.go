@@ -3,6 +3,7 @@ package http
 import (
 	_ "user_service/docs"
 	src "user_service/src"
+	"user_service/src/middleware"
 
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
@@ -20,6 +21,9 @@ func Init() {
 	user := r.Group("api/v1/user")
 	{
 		user.POST("/login", src.HandleLogin)
+	}
+	user = r.Group("api/v1/user", middleware.AuthAdmin())
+	{
 		user.POST("/register", src.HandleRegister)
 	}
 	// The host should match the @host annotation in main.go

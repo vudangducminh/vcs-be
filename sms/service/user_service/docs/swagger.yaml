@@ -71,6 +71,8 @@ definitions:
         type: string
       password:
         type: string
+      role:
+        type: string
       username:
         type: string
     required:
@@ -78,6 +80,7 @@ definitions:
     - email
     - fullname
     - password
+    - role
     - username
     type: object
   entities.RegisterSuccessResponse:
@@ -170,6 +173,11 @@ paths:
       description: Handle user registration by validating input and storing account
         information
       parameters:
+      - description: JWT token for authentication
+        in: header
+        name: jwt
+        required: true
+        type: string
       - description: Registration request
         in: body
         name: request

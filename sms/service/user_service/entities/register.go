@@ -6,6 +6,7 @@ type RegisterRequest struct {
 	Username        string `json:"username" binding:"required"`
 	Password        string `json:"password" binding:"required"`
 	ConfirmPassword string `json:"confirm_password" binding:"required"`
+	Role            string `json:"role" binding:"required"`
 }
 
 type RegisterSuccessResponse struct {

@@ -20,7 +20,7 @@ RUN go build -o server ./cmd/main.go
 FROM alpine:latest
 
 # Install ca-certificates for HTTPS
-RUN apk --no-cache add ca-certificates
+RUN apk --no-cache add ca-certificates curl
 
 WORKDIR /root/
 
