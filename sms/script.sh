@@ -1,8 +1,25 @@
 
-curl -X POST "http://localhost:9200/server/_search?pretty" -H 'Content-Type: application/json' -d'{
-    "query": {
-        "match": {
-            "_id": "cedc893d43608ab14d8a73bce3f8804d1a389735726f2f986cf2ee06adbd026a"
+curl -X PUT "http://localhost:9200/server" -H 'Content-Type: application/json' -d'{
+    "mappings": {
+        "properties": {
+            "ipv4": {
+                "type": "text"
+            },
+            "uptime": {
+                "type": "integer"
+            },
+            "last_updated_time": {
+                "type": "long"
+            },
+            "status": {
+                "type": "keyword"
+            },
+            "server_name": {
+                "type": "text"
+            },
+            "created_time": {
+                "type": "long"
+            }
         }
     }
 }'
