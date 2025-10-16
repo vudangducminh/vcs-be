@@ -9,10 +9,9 @@ import (
 
 var jwtKey = []byte("saba")
 
-func GenerateJWT(username string, password string, role string) (string, error) {
+func GenerateJWT(username string, role string) (string, error) {
 	claims := jwt.MapClaims{
 		"username": username,
-		"password": password,
 		"role":     role,
 		"exp":      time.Now().Add(time.Hour * 1).Unix(), // expires in 1 hour
 	}

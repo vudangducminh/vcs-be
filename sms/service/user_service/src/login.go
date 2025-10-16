@@ -58,7 +58,7 @@ func HandleLogin(c *gin.Context) {
 
 	// Generate JWT token before redirecting the user
 	role := posgresql_query.GetRoleByUsername(req.Username)
-	tokenString, err := algorithm.GenerateJWT(req.Username, req.Password, role)
+	tokenString, err := algorithm.GenerateJWT(req.Username, role)
 	if err != nil {
 		// handle error
 		c.JSON(http.StatusUnauthorized, gin.H{

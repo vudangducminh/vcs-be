@@ -3,7 +3,6 @@ package middleware
 import (
 	"log"
 	"net/http"
-	posgresql_query "report_service/infrastructure/postgresql/query"
 	"report_service/src/algorithm"
 
 	"github.com/gin-gonic/gin"
@@ -42,26 +41,6 @@ func AuthAdmin() gin.HandlerFunc {
 		}
 		if username == "" {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed"})
-			c.Abort()
-			return
-		}
-		password, ok := claims["password"].(string)
-		if !ok {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed"})
-			log.Println("Password claim not found or not a string")
-			c.Abort()
-			return
-		}
-		storedPassword, status := posgresql_query.GetAccountPasswordByUsername(username)
-		if status == http.StatusInternalServerError {
-			c.JSON(status, gin.H{"error": "Authentication failed"})
-			log.Println("Error retrieving stored password:", err)
-			c.Abort()
-			return
-		}
-		if storedPassword != password {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed"})
-			log.Println("Password does not match")
 			c.Abort()
 			return
 		}
