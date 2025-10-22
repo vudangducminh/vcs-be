@@ -22,6 +22,7 @@ import (
 // @Failure      400 {object} entities.ImportExcelInvalidFileFormatResponse "Invalid file format"
 // @Failure      400 {object} entities.ImportExcelRetrieveFailedResponse "Failed to retrieve file"
 // @Failure      401 {object} entities.AuthErrorResponse "Authentication failed"
+// @Failure      429 {object} entities.RateLimitExceededResponse "Too many requests"
 // @Failure      500 {object} entities.ImportExcelOpenFileFailedResponse "Failed to open file"
 // @Failure      500 {object} entities.ImportExcelReadFileFailedResponse "Failed to read Excel rows"
 // @Failure      500 {object} entities.ImportExcelElasticsearchErrorResponse "Failed to add server to Elasticsearch from Excel row"

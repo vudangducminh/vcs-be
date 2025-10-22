@@ -21,6 +21,7 @@ import (
 // @Failure      400 {object} entities.UpdateServerBadRequestResponse "Invalid request body"
 // @Failure      404 {object} entities.UpdateServerStatusNotFoundResponse "Server not found"
 // @Failure      409 {object} entities.UpdateServerConflictResponse "Server IP already exists"
+// @Failure      429 {object} entities.RateLimitExceededResponse "Too many requests"
 // @Failure      500 {object} entities.UpdateServerInternalServerErrorResponse "Internal server error"
 // @Router       /server/update_server [put]
 func UpdateServer(c *gin.Context) {

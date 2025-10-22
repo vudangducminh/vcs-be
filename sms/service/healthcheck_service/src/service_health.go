@@ -21,6 +21,7 @@ type HealthResponse struct {
 // @Accept       json
 // @Produce      json
 // @Success      200 {object} HealthResponse "Service is healthy"
+// @Failure      429 {object} entities.RateLimitExceededResponse "Too many requests"
 // @Failure      503 {object} HealthResponse "Service unavailable"
 // @Router       /health [get]
 func HealthCheck(c *gin.Context) {

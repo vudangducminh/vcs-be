@@ -20,6 +20,7 @@ import (
 // @Success      201 {object} entities.RegisterSuccessResponse "Registration successful"
 // @Failure      400 {object} entities.RegisterBadRequestResponse "Invalid request body"
 // @Failure      409 {object} entities.RegisterConflictResponse "Account already exists"
+// @Failure      429 {object} entities.RateLimitExceededResponse "Too many requests"
 // @Failure      500 {object} entities.RegisterInternalServerErrorResponse "Internal server error
 // @Router       /user/register [post]
 func HandleRegister(c *gin.Context) {

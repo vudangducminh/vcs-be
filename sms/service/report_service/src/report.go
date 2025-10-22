@@ -27,6 +27,7 @@ import (
 // @Success      200 {object} entities.ReportResponse "Email sent successfully"
 // @Failure      400 {object} entities.ReportInvalidRequestResponse "Invalid request"
 // @Failure      401 {object} entities.AuthErrorResponse "Authentication failed"
+// @Failure      429 {object} entities.RateLimitExceededResponse "Too many requests"
 // @Failure      500 {object} entities.ReportInternalServerErrorResponse "Internal server error"
 // @Failure      500 {object} entities.ExportExcelFailedResponse "Failed to export into Excel file"
 // @Router       /report/report [post]

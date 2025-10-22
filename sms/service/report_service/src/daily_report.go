@@ -20,6 +20,7 @@ import (
 // @Failure      400 {object} entities.DailyReportInvalidRequestResponse "Invalid request"
 // @Failure      401 {object} entities.AuthErrorResponse "Authentication failed"
 // @Failure      409 {object} entities.DailyReportConflictResponse "Email already exists"
+// @Failure      429 {object} entities.RateLimitExceededResponse "Too many requests"
 // @Failure      500 {object} entities.DailyReportInternalServerErrorResponse "Internal server error"
 // @Router       /report/daily_report [post]
 func DailyReport(c *gin.Context) {

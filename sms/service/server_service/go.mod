@@ -11,6 +11,7 @@ require (
 	github.com/swaggo/gin-swagger v1.6.1
 	github.com/swaggo/swag v1.8.12
 	github.com/xuri/excelize/v2 v2.9.1
+	golang.org/x/time v0.14.0
 	xorm.io/xorm v1.3.10
 )
 

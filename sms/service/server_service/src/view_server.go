@@ -22,6 +22,7 @@ import (
 // @Success      200 {object} entities.ViewServerSuccessResponse "Server details retrieved successfully"
 // @Failure      400 {object} entities.ViewServerBadRequestResponse "Invalid request parameters"
 // @Failure      401 {object} entities.AuthErrorResponse "Authentication failed"
+// @Failure      429 {object} entities.RateLimitExceededResponse "Too many requests"
 // @Failure      500 {object} entities.ViewServerInternalServerErrorResponse "Failed to retrieve server details"
 // @Router       /server/view_servers [get]
 func ViewServer(c *gin.Context) {

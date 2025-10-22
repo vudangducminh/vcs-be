@@ -20,6 +20,7 @@ import (
 // @Success      200 {object} entities.LoginSuccessResponse "Login successful"
 // @Failure      400 {object} entities.LoginBadRequestResponse "Invalid request body"
 // @Failure      401 {object} entities.LoginUnauthorizedResponse "Invalid credentials"
+// @Failure      429 {object} entities.RateLimitExceededResponse "Too many requests"
 // @Failure      500 {object} entities.LoginInternalServerErrorResponse "Error generating token
 // @Router       /user/login [post]
 func HandleLogin(c *gin.Context) {

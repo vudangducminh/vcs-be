@@ -22,6 +22,7 @@ import (
 // @Param        string query string false "Substring to search in server_name, ipv4, or status"
 // @Success      200 {object} entities.ExportExcelSuccessResponse "Excel file exported successfully"
 // @Failure      400 {object} entities.ExportExcelBadRequestResponse "Invalid request parameters"
+// @Failure      429 {object} entities.RateLimitExceededResponse "Too many requests"
 // @Failure      401 {object} entities.AuthErrorResponse "Authentication failed"
 // @Failure      500 {object} entities.ExportExcelInternalServerErrorResponse "Failed to retrieve server details"
 // @Failure      500 {object} entities.ExportExcelFailedResponse "Failed to export into Excel file"

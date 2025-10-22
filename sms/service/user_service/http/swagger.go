@@ -1,6 +1,7 @@
 package http
 
 import (
+	"time"
 	_ "user_service/docs"
 	src "user_service/src"
 	"user_service/src/middleware"
@@ -8,10 +9,13 @@ import (
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	"golang.org/x/time/rate"
 )
 
 func Init() {
 	r := gin.Default()
+	rateLimiter := middleware.NewIPRateLimiter(rate.Every(time.Second/3), 5)
+	r.Use(middleware.RateLimitMiddleware(rateLimiter))
 
 	health := r.Group("api/v1/health")
 	{

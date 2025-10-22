@@ -4,14 +4,18 @@ import (
 	_ "server_service/docs" // This import is required for swagger docs to be registered
 	"server_service/src"
 	"server_service/src/middleware"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	"golang.org/x/time/rate"
 )
 
 func Init() {
 	r := gin.Default()
+	rateLimiter := middleware.NewIPRateLimiter(rate.Every(time.Second/3), 5)
+	r.Use(middleware.RateLimitMiddleware(rateLimiter))
 
 	health := r.Group("api/v1/health")
 	{

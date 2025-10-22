@@ -20,6 +20,7 @@ import (
 // @Failure      400 {object} entities.AddServerBadRequestResponse "Invalid request body"
 // @Failure      401 {object} entities.AuthErrorResponse "Authentication failed"
 // @Failure      409 {object} entities.AddServerConflictResponse "Server already exists"
+// @Failure      429 {object} entities.RateLimitExceededResponse "Too many requests"
 // @Failure      500 {object} entities.AddServerInternalServerErrorResponse "Internal server error"
 // @Router       /server/add_server [post]
 func AddServer(c *gin.Context) {
