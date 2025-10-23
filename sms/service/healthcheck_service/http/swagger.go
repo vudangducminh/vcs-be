@@ -22,7 +22,7 @@ func Init() {
 		health.GET("", src.HealthCheck)
 	}
 
-	url := ginSwagger.URL("http://localhost:8803/swagger/doc.json")
+	url := ginSwagger.URL("/swagger/doc.json")
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
 	r.Run(":8803")
 }
