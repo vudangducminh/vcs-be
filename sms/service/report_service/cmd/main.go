@@ -11,9 +11,9 @@ import (
 // @contact.name    Vu Dang Duc Minh
 // @contact.email   vudangducminh@gmail.com
 // @contact.url     https://github.com/vudangducminh
-// @BasePath        /api/v1
+// @BasePath        /
 // @schemes         http
-// @host            localhost:8802
+// @host            report.localhost
 // @Tag.name		Report
 // @Tag.description "Operations related to generating and sending reports"
 func main() {

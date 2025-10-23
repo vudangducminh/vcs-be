@@ -1,4 +1,4 @@
-basePath: /api/v1
+basePath: /
 definitions:
   entities.LoginBadRequestResponse:
     properties:
@@ -41,6 +41,12 @@ definitions:
         type: string
       message:
         example: Invalid credentials
+        type: string
+    type: object
+  entities.RateLimitExceededResponse:
+    properties:
+      error:
+        example: Rate limit exceeded. Please try again later.
         type: string
     type: object
   entities.RegisterBadRequestResponse:
@@ -102,7 +108,7 @@ definitions:
       version:
         type: string
     type: object
-host: localhost:8800
+host: user.localhost
 info:
   contact:
     email: vudangducminh@gmail.com
@@ -124,6 +130,10 @@ paths:
           description: Service is healthy
           schema:
             $ref: '#/definitions/src.HealthResponse'
+        "429":
+          description: Too many requests
+          schema:
+            $ref: '#/definitions/entities.RateLimitExceededResponse'
         "503":
           description: Service unavailable
           schema:
@@ -159,6 +169,10 @@ paths:
           description: Invalid credentials
           schema:
             $ref: '#/definitions/entities.LoginUnauthorizedResponse'
+        "429":
+          description: Too many requests
+          schema:
+            $ref: '#/definitions/entities.RateLimitExceededResponse'
         "500":
           description: Error generating token
           schema:
@@ -199,6 +213,10 @@ paths:
           description: Account already exists
           schema:
             $ref: '#/definitions/entities.RegisterConflictResponse'
+        "429":
+          description: Too many requests
+          schema:
+            $ref: '#/definitions/entities.RateLimitExceededResponse'
         "500":
           description: Internal server error
           schema:

@@ -13,8 +13,8 @@
         },
         "version": "1.0"
     },
-    "host": "localhost:8802",
-    "basePath": "/api/v1",
+    "host": "report.localhost",
+    "basePath": "/",
     "paths": {
         "/health": {
             "get": {
@@ -34,6 +34,12 @@
                         "description": "Service is healthy",
                         "schema": {
                             "$ref": "#/definitions/src.HealthResponse"
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "schema": {
+                            "$ref": "#/definitions/entities.RateLimitExceededResponse"
                         }
                     },
                     "503": {
@@ -99,6 +105,12 @@
                         "description": "Email already exists",
                         "schema": {
                             "$ref": "#/definitions/entities.DailyReportConflictResponse"
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "schema": {
+                            "$ref": "#/definitions/entities.RateLimitExceededResponse"
                         }
                     },
                     "500": {
@@ -178,6 +190,12 @@
                             "$ref": "#/definitions/entities.AuthErrorResponse"
                         }
                     },
+                    "429": {
+                        "description": "Too many requests",
+                        "schema": {
+                            "$ref": "#/definitions/entities.RateLimitExceededResponse"
+                        }
+                    },
                     "500": {
                         "description": "Failed to export into Excel file",
                         "schema": {
@@ -251,6 +269,15 @@
                 "error": {
                     "type": "string",
                     "example": "Failed to export into Excel file"
+                }
+            }
+        },
+        "entities.RateLimitExceededResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Rate limit exceeded. Please try again later."
                 }
             }
         },

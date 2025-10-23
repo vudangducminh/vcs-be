@@ -14,20 +14,20 @@ import (
 
 func Init() {
 	r := gin.Default()
-	rateLimiter := middleware.NewIPRateLimiter(rate.Every(time.Second/3), 5)
+	rateLimiter := middleware.NewIPRateLimiter(rate.Every(time.Second*10), 50)
 	r.Use(middleware.RateLimitMiddleware(rateLimiter))
 
-	health := r.Group("api/v1/health")
+	health := r.Group("/health")
 	{
 		health.GET("", src.HealthCheck)
 	}
 
-	server := r.Group("api/v1/server", middleware.AuthUser())
+	server := r.Group("/server", middleware.AuthUser())
 	{
 		server.GET("/view_servers", src.ViewServer)
 		server.GET("/export_excel", src.ExportDataToExcel)
 	}
-	server = r.Group("api/v1/server", middleware.AuthAdmin())
+	server = r.Group("/server", middleware.AuthAdmin())
 	{
 		server.POST("/add_server", src.AddServer)
 		server.PUT("/update_server", src.UpdateServer)
@@ -35,7 +35,7 @@ func Init() {
 		server.POST("/import_excel", src.ImportExcel)
 	}
 	// The host should match the @host annotation in main.go
-	url := ginSwagger.URL("http://localhost:8801/swagger/doc.json")
+	url := ginSwagger.URL("/swagger/doc.json")
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
 	r.Run(":8801")
 }

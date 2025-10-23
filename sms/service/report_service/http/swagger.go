@@ -14,21 +14,21 @@ import (
 
 func Init() {
 	r := gin.Default()
-	rateLimiter := middleware.NewIPRateLimiter(rate.Every(time.Second/3), 5)
+	rateLimiter := middleware.NewIPRateLimiter(rate.Every(time.Second*10), 50)
 	r.Use(middleware.RateLimitMiddleware(rateLimiter))
 
-	health := r.Group("api/v1/health")
+	health := r.Group("/health")
 	{
 		health.GET("", src.HealthCheck)
 	}
 
-	report := r.Group("api/v1/report", middleware.AuthAdmin())
+	report := r.Group("/report", middleware.AuthAdmin())
 	{
 		report.POST("/report", src.ReportRequest)
 		report.POST("/daily_report", src.DailyReport)
 	}
 	// The host should match the @host annotation in main.go
-	url := ginSwagger.URL("http://localhost:8802/swagger/doc.json")
+	url := ginSwagger.URL("/swagger/doc.json")
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
 	r.Run(":8802")
 }

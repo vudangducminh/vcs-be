@@ -86,18 +86,20 @@ services:
       - sms_network
     volumes:
       - ../service/user_service/logs:/app/logs
+    extra_hosts:
+      - "user.localhost:host-gateway"
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8800/api/v1/health || exit 1"]
+      test: ["CMD-SHELL", "curl -f http://localhost:8800/health || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 60s
     restart: unless-stopped
-  # labels:
-  #   - "traefik.enable=true"
-  #   - "traefik.http.routers.user-service.rule=Host(`user.localhost`)"
-  #   - "traefik.http.routers.user-service.entrypoints=web"
-  #   - "traefik.http.services.user-service.loadbalancer.server.port=8800"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.user_service.rule=Host(`user.localhost`)"
+      - "traefik.http.routers.user_service.entrypoints=web"
+      - "traefik.http.services.user_service.loadbalancer.server.port=8800"
 
   server_service:
     build:
@@ -112,7 +114,7 @@ services:
       - POSTGRES_USER=vudangducminh
       - POSTGRES_PASSWORD=Amogus69420
       - POSTGRES_DB=postgres
-      - USER_SERVICE_URL=http://user_service:8800
+      - USER_SERVICE_URL=http://user.localhost
     ports:
       - "8801:8801"
     depends_on:
@@ -126,18 +128,20 @@ services:
       - sms_network
     volumes:
       - ../service/server_service/logs:/app/logs
+    extra_hosts:
+      - "service.localhost:host-gateway"
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8801/api/v1/health || exit 1"]
+      test: ["CMD-SHELL", "curl -f http://localhost:8801/health || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 60s
     restart: unless-stopped
-  # labels:
-  #   - "traefik.enable=true"
-  #   - "traefik.http.routers.server-service.rule=Host(`server.localhost`)"
-  #   - "traefik.http.routers.server-service.entrypoints=web"
-  #   - "traefik.http.services.server-service.loadbalancer.server.port=8801"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.server_service.rule=Host(`server.localhost`)"
+      - "traefik.http.routers.server_service.entrypoints=web"
+      - "traefik.http.services.server_service.loadbalancer.server.port=8801"
 
   report_service:
     build:
@@ -151,8 +155,8 @@ services:
       - POSTGRES_USER=vudangducminh
       - POSTGRES_PASSWORD=Amogus69420
       - POSTGRES_DB=postgres
-      - USER_SERVICE_URL=http://user_service:8800
-      - SERVER_SERVICE_URL=http://server_service:8801
+      - USER_SERVICE_URL=http://user.localhost
+      - SERVER_SERVICE_URL=http://server.localhost
     ports:
       - "8802:8802"
     depends_on:
@@ -166,18 +170,20 @@ services:
       - sms_network
     volumes:
       - ../service/report_service/logs:/app/logs
+    extra_hosts:
+      - "report.localhost:host-gateway"
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8802/api/v1/health || exit 1"]
+      test: ["CMD-SHELL", "curl -f http://localhost:8802/health || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 60s
     restart: unless-stopped
-  # labels:
-  #   - "traefik.enable=true"
-  #   - "traefik.http.routers.report-service.rule=Host(`report.localhost`)"
-  #   - "traefik.http.routers.report-service.entrypoints=web"
-  #   - "traefik.http.services.report-service.loadbalancer.server.port=8802"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.report_service.rule=Host(`report.localhost`)"
+      - "traefik.http.routers.report_service.entrypoints=web"
+      - "traefik.http.services.report_service.loadbalancer.server.port=8802"
 
   healthcheck_service:
     build:
@@ -186,9 +192,9 @@ services:
     container_name: healthcheck_service
     environment:
       - GO_ENV=production
-      - USER_SERVICE_URL=http://user_service:8800
-      - SERVER_SERVICE_URL=http://server_service:8801
-      - REPORT_SERVICE_URL=http://report_service:8802
+      - USER_SERVICE_URL=http://user.localhost
+      - SERVER_SERVICE_URL=http://server.localhost
+      - REPORT_SERVICE_URL=http://report.localhost
     ports:
       - "8803:8803"
     depends_on:

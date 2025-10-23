@@ -1,4 +1,4 @@
-basePath: /api/v1
+basePath: /
 definitions:
   entities.AddServerBadRequestResponse:
     properties:
@@ -151,6 +151,12 @@ definitions:
         example: Excel file imported successfully
         type: string
     type: object
+  entities.RateLimitExceededResponse:
+    properties:
+      error:
+        example: Rate limit exceeded. Please try again later.
+        type: string
+    type: object
   entities.Server:
     properties:
       _id:
@@ -263,7 +269,7 @@ definitions:
       version:
         type: string
     type: object
-host: localhost:8801
+host: server.localhost
 info:
   contact:
     email: vudangducminh@gmail.com
@@ -285,6 +291,10 @@ paths:
           description: Service is healthy
           schema:
             $ref: '#/definitions/src.HealthResponse'
+        "429":
+          description: Too many requests
+          schema:
+            $ref: '#/definitions/entities.RateLimitExceededResponse'
         "503":
           description: Service unavailable
           schema:
@@ -328,6 +338,10 @@ paths:
           description: Server already exists
           schema:
             $ref: '#/definitions/entities.AddServerConflictResponse'
+        "429":
+          description: Too many requests
+          schema:
+            $ref: '#/definitions/entities.RateLimitExceededResponse'
         "500":
           description: Internal server error
           schema:
@@ -367,6 +381,10 @@ paths:
           description: Server not found
           schema:
             $ref: '#/definitions/entities.DeleteServerStatusNotFoundResponse'
+        "429":
+          description: Too many requests
+          schema:
+            $ref: '#/definitions/entities.RateLimitExceededResponse'
         "500":
           description: Internal server error
           schema:
@@ -415,6 +433,10 @@ paths:
           description: Authentication failed
           schema:
             $ref: '#/definitions/entities.AuthErrorResponse'
+        "429":
+          description: Too many requests
+          schema:
+            $ref: '#/definitions/entities.RateLimitExceededResponse'
         "500":
           description: Failed to export into Excel file
           schema:
@@ -453,6 +475,10 @@ paths:
           description: Authentication failed
           schema:
             $ref: '#/definitions/entities.AuthErrorResponse'
+        "429":
+          description: Too many requests
+          schema:
+            $ref: '#/definitions/entities.RateLimitExceededResponse'
         "500":
           description: Failed to add server to Elasticsearch from Excel row
           schema:
@@ -501,6 +527,10 @@ paths:
           description: Server IP already exists
           schema:
             $ref: '#/definitions/entities.UpdateServerConflictResponse'
+        "429":
+          description: Too many requests
+          schema:
+            $ref: '#/definitions/entities.RateLimitExceededResponse'
         "500":
           description: Internal server error
           schema:
@@ -548,6 +578,10 @@ paths:
           description: Authentication failed
           schema:
             $ref: '#/definitions/entities.AuthErrorResponse'
+        "429":
+          description: Too many requests
+          schema:
+            $ref: '#/definitions/entities.RateLimitExceededResponse'
         "500":
           description: Failed to retrieve server details
           schema:

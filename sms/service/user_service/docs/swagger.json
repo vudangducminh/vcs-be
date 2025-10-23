@@ -13,8 +13,8 @@
         },
         "version": "1.0"
     },
-    "host": "localhost:8800",
-    "basePath": "/api/v1",
+    "host": "user.localhost",
+    "basePath": "/",
     "paths": {
         "/health": {
             "get": {
@@ -34,6 +34,12 @@
                         "description": "Service is healthy",
                         "schema": {
                             "$ref": "#/definitions/src.HealthResponse"
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "schema": {
+                            "$ref": "#/definitions/entities.RateLimitExceededResponse"
                         }
                     },
                     "503": {
@@ -86,6 +92,12 @@
                         "description": "Invalid credentials",
                         "schema": {
                             "$ref": "#/definitions/entities.LoginUnauthorizedResponse"
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "schema": {
+                            "$ref": "#/definitions/entities.RateLimitExceededResponse"
                         }
                     },
                     "500": {
@@ -145,6 +157,12 @@
                         "description": "Account already exists",
                         "schema": {
                             "$ref": "#/definitions/entities.RegisterConflictResponse"
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "schema": {
+                            "$ref": "#/definitions/entities.RateLimitExceededResponse"
                         }
                     },
                     "500": {
@@ -218,6 +236,15 @@
                 "message": {
                     "type": "string",
                     "example": "Invalid credentials"
+                }
+            }
+        },
+        "entities.RateLimitExceededResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Rate limit exceeded. Please try again later."
                 }
             }
         },

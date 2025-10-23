@@ -22,7 +22,7 @@ services:
     volumes:
       - ./logs:/app/logs  # Mount logs directory
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8802/api/v1/health || exit 1"]
+      test: ["CMD-SHELL", "curl -f http://report.localhost/health || exit 1"]
       interval: 30s
   
 networks:

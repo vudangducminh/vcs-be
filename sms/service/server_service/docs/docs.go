@@ -39,6 +39,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/src.HealthResponse"
                         }
                     },
+                    "429": {
+                        "description": "Too many requests",
+                        "schema": {
+                            "$ref": "#/definitions/entities.RateLimitExceededResponse"
+                        }
+                    },
                     "503": {
                         "description": "Service unavailable",
                         "schema": {
@@ -104,6 +110,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/entities.AddServerConflictResponse"
                         }
                     },
+                    "429": {
+                        "description": "Too many requests",
+                        "schema": {
+                            "$ref": "#/definitions/entities.RateLimitExceededResponse"
+                        }
+                    },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
@@ -161,6 +173,12 @@ const docTemplate = `{
                         "description": "Server not found",
                         "schema": {
                             "$ref": "#/definitions/entities.DeleteServerStatusNotFoundResponse"
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "schema": {
+                            "$ref": "#/definitions/entities.RateLimitExceededResponse"
                         }
                     },
                     "500": {
@@ -231,6 +249,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/entities.AuthErrorResponse"
                         }
                     },
+                    "429": {
+                        "description": "Too many requests",
+                        "schema": {
+                            "$ref": "#/definitions/entities.RateLimitExceededResponse"
+                        }
+                    },
                     "500": {
                         "description": "Failed to export into Excel file",
                         "schema": {
@@ -286,6 +310,12 @@ const docTemplate = `{
                         "description": "Authentication failed",
                         "schema": {
                             "$ref": "#/definitions/entities.AuthErrorResponse"
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "schema": {
+                            "$ref": "#/definitions/entities.RateLimitExceededResponse"
                         }
                     },
                     "500": {
@@ -359,6 +389,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/entities.UpdateServerConflictResponse"
                         }
                     },
+                    "429": {
+                        "description": "Too many requests",
+                        "schema": {
+                            "$ref": "#/definitions/entities.RateLimitExceededResponse"
+                        }
+                    },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
@@ -425,6 +461,12 @@ const docTemplate = `{
                         "description": "Authentication failed",
                         "schema": {
                             "$ref": "#/definitions/entities.AuthErrorResponse"
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "schema": {
+                            "$ref": "#/definitions/entities.RateLimitExceededResponse"
                         }
                     },
                     "500": {
@@ -660,6 +702,15 @@ const docTemplate = `{
                 }
             }
         },
+        "entities.RateLimitExceededResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Rate limit exceeded. Please try again later."
+                }
+            }
+        },
         "entities.Server": {
             "type": "object",
             "properties": {
@@ -836,8 +887,8 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "localhost:8801",
-	BasePath:         "/api/v1",
+	Host:             "server.localhost",
+	BasePath:         "/",
 	Schemes:          []string{"http"},
 	Title:            "VCS System Management API",
 	Description:      "This is a sample server for VCS System Management API.",

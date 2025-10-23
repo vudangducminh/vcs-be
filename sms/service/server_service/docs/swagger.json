@@ -13,8 +13,8 @@
         },
         "version": "1.0"
     },
-    "host": "localhost:8801",
-    "basePath": "/api/v1",
+    "host": "server.localhost",
+    "basePath": "/",
     "paths": {
         "/health": {
             "get": {
@@ -34,6 +34,12 @@
                         "description": "Service is healthy",
                         "schema": {
                             "$ref": "#/definitions/src.HealthResponse"
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "schema": {
+                            "$ref": "#/definitions/entities.RateLimitExceededResponse"
                         }
                     },
                     "503": {
@@ -101,6 +107,12 @@
                             "$ref": "#/definitions/entities.AddServerConflictResponse"
                         }
                     },
+                    "429": {
+                        "description": "Too many requests",
+                        "schema": {
+                            "$ref": "#/definitions/entities.RateLimitExceededResponse"
+                        }
+                    },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
@@ -158,6 +170,12 @@
                         "description": "Server not found",
                         "schema": {
                             "$ref": "#/definitions/entities.DeleteServerStatusNotFoundResponse"
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "schema": {
+                            "$ref": "#/definitions/entities.RateLimitExceededResponse"
                         }
                     },
                     "500": {
@@ -228,6 +246,12 @@
                             "$ref": "#/definitions/entities.AuthErrorResponse"
                         }
                     },
+                    "429": {
+                        "description": "Too many requests",
+                        "schema": {
+                            "$ref": "#/definitions/entities.RateLimitExceededResponse"
+                        }
+                    },
                     "500": {
                         "description": "Failed to export into Excel file",
                         "schema": {
@@ -283,6 +307,12 @@
                         "description": "Authentication failed",
                         "schema": {
                             "$ref": "#/definitions/entities.AuthErrorResponse"
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "schema": {
+                            "$ref": "#/definitions/entities.RateLimitExceededResponse"
                         }
                     },
                     "500": {
@@ -356,6 +386,12 @@
                             "$ref": "#/definitions/entities.UpdateServerConflictResponse"
                         }
                     },
+                    "429": {
+                        "description": "Too many requests",
+                        "schema": {
+                            "$ref": "#/definitions/entities.RateLimitExceededResponse"
+                        }
+                    },
                     "500": {
                         "description": "Internal server error",
                         "schema": {
@@ -422,6 +458,12 @@
                         "description": "Authentication failed",
                         "schema": {
                             "$ref": "#/definitions/entities.AuthErrorResponse"
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "schema": {
+                            "$ref": "#/definitions/entities.RateLimitExceededResponse"
                         }
                     },
                     "500": {
@@ -654,6 +696,15 @@
                 "message": {
                     "type": "string",
                     "example": "Excel file imported successfully"
+                }
+            }
+        },
+        "entities.RateLimitExceededResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Rate limit exceeded. Please try again later."
                 }
             }
         },

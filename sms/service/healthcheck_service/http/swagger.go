@@ -14,7 +14,7 @@ import (
 
 func Init() {
 	r := gin.Default()
-	rateLimiter := middleware.NewIPRateLimiter(rate.Every(time.Second/3), 5)
+	rateLimiter := middleware.NewIPRateLimiter(rate.Every(time.Second*10), 50)
 	r.Use(middleware.RateLimitMiddleware(rateLimiter))
 
 	health := r.Group("/health")

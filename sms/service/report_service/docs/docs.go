@@ -39,6 +39,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/src.HealthResponse"
                         }
                     },
+                    "429": {
+                        "description": "Too many requests",
+                        "schema": {
+                            "$ref": "#/definitions/entities.RateLimitExceededResponse"
+                        }
+                    },
                     "503": {
                         "description": "Service unavailable",
                         "schema": {
@@ -102,6 +108,12 @@ const docTemplate = `{
                         "description": "Email already exists",
                         "schema": {
                             "$ref": "#/definitions/entities.DailyReportConflictResponse"
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "schema": {
+                            "$ref": "#/definitions/entities.RateLimitExceededResponse"
                         }
                     },
                     "500": {
@@ -181,6 +193,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/entities.AuthErrorResponse"
                         }
                     },
+                    "429": {
+                        "description": "Too many requests",
+                        "schema": {
+                            "$ref": "#/definitions/entities.RateLimitExceededResponse"
+                        }
+                    },
                     "500": {
                         "description": "Failed to export into Excel file",
                         "schema": {
@@ -254,6 +272,15 @@ const docTemplate = `{
                 "error": {
                     "type": "string",
                     "example": "Failed to export into Excel file"
+                }
+            }
+        },
+        "entities.RateLimitExceededResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Rate limit exceeded. Please try again later."
                 }
             }
         },
@@ -343,8 +370,8 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "localhost:8802",
-	BasePath:         "/api/v1",
+	Host:             "report.localhost",
+	BasePath:         "/",
 	Schemes:          []string{"http"},
 	Title:            "VCS System Management API",
 	Description:      "This is a sample server for VCS System Management API.",
