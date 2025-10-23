@@ -1,27 +1,27 @@
 services:
-  # traefik:
-  #   image: traefik:v3.0
-  #   container_name: traefik
-  #   command:
-  #     - "--api.insecure=true"
-  #     - "--providers.docker=true"
-  #     - "--providers.docker.exposedbydefault=false"
-  #     - "--entrypoints.web.address=:80"
-  #     - "--entrypoints.websecure.address=:443"
-  #     - "--log.level=INFO"
-  #   ports:
-  #     - "80:80"
-  #     - "443:443"
-  #     - "8080:8080"  # Traefik dashboard
-  #   volumes:
-  #     - /var/run/docker.sock:/var/run/docker.sock:ro
-  #   networks:
-  #     - sms_network
-  #   restart: unless-stopped
-  #   labels:
-  #     - "traefik.enable=true"
-  #     - "traefik.http.routers.dashboard.rule=Host(`traefik.localhost`)"
-  #     - "traefik.http.routers.dashboard.service=api@internal"
+  traefik:
+    image: traefik:v3.0
+    container_name: traefik
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--log.level=INFO"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"  # Traefik dashboard
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - sms_network
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dashboard.rule=Host(`traefik.localhost`)"
+      - "traefik.http.routers.dashboard.service=api@internal"
 
   postgresql:
     image: postgres:15-alpine
@@ -199,17 +199,21 @@ services:
     volumes:
       - ../service/healthcheck_service/logs:/app/logs
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8803/api/v1/health || exit 1"]
+      test: ["CMD-SHELL", "curl -f http://health.localhost/health || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 60s
     restart: unless-stopped
-# labels:
-#   - "traefik.enable=true"
-#   - "traefik.http.routers.healthcheck-service.rule=Host(`health.localhost`)"
-#   - "traefik.http.routers.healthcheck-service.entrypoints=web"
-#   - "traefik.http.services.healthcheck-service.loadbalancer.server.port=8803"
+
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.healthcheck-service.rule=Host(`health.localhost`)"
+      - "traefik.http.routers.healthcheck-service.entrypoints=web"
+      - "traefik.http.routers.healthcheck-service.middlewares=healthcheck-redirect"
+      - "traefik.http.middlewares.healthcheck-redirect.redirectregex.regex=^http://health.localhost/$$"
+      - "traefik.http.middlewares.healthcheck-redirect.redirectregex.replacement=http://health.localhost/swagger/index.html"
+      - "traefik.http.services.healthcheck-service.loadbalancer.server.port=8803"
 
 networks:
   sms_network:
