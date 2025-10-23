@@ -13,8 +13,8 @@
         },
         "version": "1.0"
     },
-    "host": "localhost:8803",
-    "basePath": "/api/v1",
+    "host": "healthcheck.localhost",
+    "basePath": "/",
     "paths": {
         "/health": {
             "get": {
@@ -36,6 +36,12 @@
                             "$ref": "#/definitions/src.HealthResponse"
                         }
                     },
+                    "429": {
+                        "description": "Too many requests",
+                        "schema": {
+                            "$ref": "#/definitions/entities.RateLimitExceededResponse"
+                        }
+                    },
                     "503": {
                         "description": "Service unavailable",
                         "schema": {
@@ -47,6 +53,15 @@
         }
     },
     "definitions": {
+        "entities.RateLimitExceededResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Rate limit exceeded. Please try again later."
+                }
+            }
+        },
         "src.HealthResponse": {
             "type": "object",
             "properties": {

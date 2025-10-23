@@ -39,6 +39,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/src.HealthResponse"
                         }
                     },
+                    "429": {
+                        "description": "Too many requests",
+                        "schema": {
+                            "$ref": "#/definitions/entities.RateLimitExceededResponse"
+                        }
+                    },
                     "503": {
                         "description": "Service unavailable",
                         "schema": {
@@ -50,6 +56,15 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "entities.RateLimitExceededResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Rate limit exceeded. Please try again later."
+                }
+            }
+        },
         "src.HealthResponse": {
             "type": "object",
             "properties": {
@@ -82,8 +97,8 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "localhost:8803",
-	BasePath:         "/api/v1",
+	Host:             "healthcheck.localhost",
+	BasePath:         "/",
 	Schemes:          []string{"http"},
 	Title:            "VCS System Management API",
 	Description:      "This is a sample server for VCS System Management API.",

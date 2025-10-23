@@ -17,7 +17,7 @@ func Init() {
 	rateLimiter := middleware.NewIPRateLimiter(rate.Every(time.Second/3), 5)
 	r.Use(middleware.RateLimitMiddleware(rateLimiter))
 
-	health := r.Group("api/v1/health")
+	health := r.Group("/health")
 	{
 		health.GET("", src.HealthCheck)
 	}

@@ -11,9 +11,9 @@ import (
 // @contact.name    Vu Dang Duc Minh
 // @contact.email   vudangducminh@gmail.com
 // @contact.url     https://github.com/vudangducminh
-// @BasePath        /api/v1
+// @BasePath        /
 // @schemes         http
-// @host            localhost:8803
+// @host            healthcheck.localhost
 // @Tag.name		Healthcheck
 // @Tag.description "Check the health status of services and managed servers"
 func main() {

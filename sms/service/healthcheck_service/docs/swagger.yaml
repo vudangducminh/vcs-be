@@ -1,5 +1,11 @@
-basePath: /api/v1
+basePath: /
 definitions:
+  entities.RateLimitExceededResponse:
+    properties:
+      error:
+        example: Rate limit exceeded. Please try again later.
+        type: string
+    type: object
   src.HealthResponse:
     properties:
       services:
@@ -13,7 +19,7 @@ definitions:
       version:
         type: string
     type: object
-host: localhost:8803
+host: healthcheck.localhost
 info:
   contact:
     email: vudangducminh@gmail.com
@@ -35,6 +41,10 @@ paths:
           description: Service is healthy
           schema:
             $ref: '#/definitions/src.HealthResponse'
+        "429":
+          description: Too many requests
+          schema:
+            $ref: '#/definitions/entities.RateLimitExceededResponse'
         "503":
           description: Service unavailable
           schema:
