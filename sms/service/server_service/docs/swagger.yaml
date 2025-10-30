@@ -302,7 +302,7 @@ paths:
       summary: Health check endpoint
       tags:
       - Health
-  /server/add_server:
+  /servers/add-server:
     post:
       consumes:
       - application/json
@@ -349,7 +349,7 @@ paths:
       summary: Add a new server
       tags:
       - Server
-  /server/delete_server:
+  /servers/delete-server:
     delete:
       consumes:
       - application/json
@@ -392,7 +392,7 @@ paths:
       summary: Delete a server by ID
       tags:
       - Server
-  /server/export_excel:
+  /servers/export-excel:
     get:
       consumes:
       - application/json
@@ -444,7 +444,7 @@ paths:
       summary: Export server data to Excel
       tags:
       - Server
-  /server/import_excel:
+  /servers/import-excel:
     post:
       consumes:
       - multipart/form-data
@@ -486,7 +486,7 @@ paths:
       summary: Import file from excel
       tags:
       - Server
-  /server/update_server:
+  /servers/update-server:
     put:
       consumes:
       - application/json
@@ -538,7 +538,7 @@ paths:
       summary: Update an existing server
       tags:
       - Server
-  /server/view_servers:
+  /servers/view-servers:
     get:
       consumes:
       - application/json

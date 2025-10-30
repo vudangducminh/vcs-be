@@ -141,7 +141,7 @@ paths:
       summary: Health check endpoint
       tags:
       - Health
-  /user/login:
+  /users/login:
     post:
       consumes:
       - application/json
@@ -180,7 +180,7 @@ paths:
       summary: Handle user login
       tags:
       - User
-  /user/register:
+  /users/register:
     post:
       consumes:
       - application/json

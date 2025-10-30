@@ -25,7 +25,7 @@ func Init() {
 	report := r.Group("/report", middleware.AuthAdmin())
 	{
 		report.POST("/report", src.ReportRequest)
-		report.POST("/daily_report", src.DailyReport)
+		report.POST("/daily-report", src.DailyReport)
 	}
 	// The host should match the @host annotation in main.go
 	url := ginSwagger.URL("/swagger/doc.json")

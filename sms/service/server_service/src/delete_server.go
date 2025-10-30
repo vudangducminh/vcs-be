@@ -21,7 +21,7 @@ import (
 // @Failure      404 {object} entities.DeleteServerStatusNotFoundResponse "Server not found"
 // @Failure      429 {object} entities.RateLimitExceededResponse "Too many requests"
 // @Failure      500 {object} entities.DeleteServerInternalServerErrorResponse "Internal server error"
-// @Router	     /server/delete_server [delete]
+// @Router	     /servers/delete-server [delete]
 func DeleteServer(c *gin.Context) {
 	var req entities.DeleteServerRequest
 	if err := c.ShouldBindJSON(&req); err != nil {

@@ -22,7 +22,7 @@ import (
 // @Failure      409 {object} entities.DailyReportConflictResponse "Email already exists"
 // @Failure      429 {object} entities.RateLimitExceededResponse "Too many requests"
 // @Failure      500 {object} entities.DailyReportInternalServerErrorResponse "Internal server error"
-// @Router       /report/daily_report [post]
+// @Router       /report/daily-report [post]
 func DailyReport(c *gin.Context) {
 	// Implementation for daily report
 	var req entities.DailyReportRequest

@@ -54,7 +54,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/server/add_server": {
+        "/servers/add-server": {
             "post": {
                 "description": "Add a new server by validating input and storing server information",
                 "consumes": [
@@ -125,7 +125,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/server/delete_server": {
+        "/servers/delete-server": {
             "delete": {
                 "description": "Delete a server by its unique ID",
                 "consumes": [
@@ -190,7 +190,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/server/export_excel": {
+        "/servers/export-excel": {
             "get": {
                 "description": "Export server data to an Excel file with optional filtering and ordering",
                 "consumes": [
@@ -264,7 +264,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/server/import_excel": {
+        "/servers/import-excel": {
             "post": {
                 "description": "Import server data from an Excel file",
                 "consumes": [
@@ -327,7 +327,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/server/update_server": {
+        "/servers/update-server": {
             "put": {
                 "description": "Update an existing server by validating input and updating server information",
                 "consumes": [
@@ -404,7 +404,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/server/view_servers": {
+        "/servers/view-servers": {
             "get": {
                 "description": "View server details with optional filtering",
                 "consumes": [

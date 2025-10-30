@@ -22,17 +22,17 @@ func Init() {
 		health.GET("", src.HealthCheck)
 	}
 
-	server := r.Group("/server", middleware.AuthUser())
+	server := r.Group("/servers", middleware.AuthUser())
 	{
-		server.GET("/view_servers", src.ViewServer)
-		server.GET("/export_excel", src.ExportDataToExcel)
+		server.GET("/view-servers", src.ViewServer)
+		server.GET("/export-excel", src.ExportDataToExcel)
 	}
-	server = r.Group("/server", middleware.AuthAdmin())
+	server = r.Group("/servers", middleware.AuthAdmin())
 	{
-		server.POST("/add_server", src.AddServer)
-		server.PUT("/update_server", src.UpdateServer)
-		server.DELETE("/delete_server", src.DeleteServer)
-		server.POST("/import_excel", src.ImportExcel)
+		server.POST("/add-server", src.AddServer)
+		server.PUT("/update-server", src.UpdateServer)
+		server.DELETE("/delete-server", src.DeleteServer)
+		server.POST("/import-excel", src.ImportExcel)
 	}
 	// The host should match the @host annotation in main.go
 	url := ginSwagger.URL("/swagger/doc.json")

@@ -24,7 +24,7 @@ import (
 // @Failure      401 {object} entities.AuthErrorResponse "Authentication failed"
 // @Failure      429 {object} entities.RateLimitExceededResponse "Too many requests"
 // @Failure      500 {object} entities.ViewServerInternalServerErrorResponse "Failed to retrieve server details"
-// @Router       /server/view_servers [get]
+// @Router       /servers/view-servers [get]
 func ViewServer(c *gin.Context) {
 
 	order := c.Query("order")

@@ -26,7 +26,7 @@ import (
 // @Failure      500 {object} entities.ImportExcelOpenFileFailedResponse "Failed to open file"
 // @Failure      500 {object} entities.ImportExcelReadFileFailedResponse "Failed to read Excel rows"
 // @Failure      500 {object} entities.ImportExcelElasticsearchErrorResponse "Failed to add server to Elasticsearch from Excel row"
-// @Router       /server/import_excel [post]
+// @Router       /servers/import-excel [post]
 func ImportExcel(c *gin.Context) {
 	file, err := c.FormFile("file")
 	if err != nil {

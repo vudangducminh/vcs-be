@@ -54,7 +54,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/login": {
+        "/users/login": {
             "post": {
                 "description": "Handle user login by validating credentials and generating a JWT token",
                 "consumes": [
@@ -112,7 +112,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/register": {
+        "/users/register": {
             "post": {
                 "description": "Handle user registration by validating input and storing account information",
                 "consumes": [

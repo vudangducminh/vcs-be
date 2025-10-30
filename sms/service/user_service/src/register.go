@@ -22,7 +22,7 @@ import (
 // @Failure      409 {object} entities.RegisterConflictResponse "Account already exists"
 // @Failure      429 {object} entities.RateLimitExceededResponse "Too many requests"
 // @Failure      500 {object} entities.RegisterInternalServerErrorResponse "Internal server error
-// @Router       /user/register [post]
+// @Router       /users/register [post]
 func HandleRegister(c *gin.Context) {
 	var req entities.RegisterRequest
 

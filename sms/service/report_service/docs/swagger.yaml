@@ -132,7 +132,7 @@ paths:
       summary: Health check endpoint
       tags:
       - Health
-  /report/daily_report:
+  /report/daily-report:
     post:
       consumes:
       - application/json
