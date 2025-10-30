@@ -135,15 +135,15 @@ func ReportRequest(c *gin.Context) {
 	}
 
 	// Set response headers for file download
-	c.Header("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-	c.Header("Content-Disposition", "attachment; filename=servers.xlsx")
-	c.Header("File-Name", "servers.xlsx")
-	c.Header("Content-Transfer-Encoding", "binary")
+	// c.Header("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+	// c.Header("Content-Disposition", "attachment; filename=servers.xlsx")
+	// c.Header("File-Name", "servers.xlsx")
+	// c.Header("Content-Transfer-Encoding", "binary")
 
-	if err := f.Write(c.Writer); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to export into Excel file"})
-		return
-	}
+	// if err := f.Write(c.Writer); err != nil {
+	// 	c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to export into Excel file"})
+	// 	return
+	// }
 	totalActiveServer := elastic_query.GetTotalActiveServersCount(filter, str)
 	totalInactiveServer := elastic_query.GetTotalInactiveServersCount(filter, str)
 	totalMaintenanceServer := elastic_query.GetTotalMaintenanceServersCount(filter, str)
@@ -160,7 +160,7 @@ func ReportRequest(c *gin.Context) {
 		c.JSON(status, gin.H{"error": "Failed to send email"})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"message": "Servers exported successfully"})
+	c.JSON(http.StatusOK, gin.H{"message": "Email sent successfully"})
 	// Query from uptime[len - beginBlock] to uptime[len - endBlock]
 	// Needs to provide total uptime of every single servers during this period
 	// log.Println(startTimeInSecond, " ", time.Now().Unix())
