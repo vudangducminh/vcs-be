@@ -16,7 +16,7 @@ func DailyReporter() {
 	time.Sleep(10 * time.Second) // Initial delay to allow other services to start
 
 	for {
-		var sec int64 = 60
+		var sec int64 = 86400
 		if time.Now().Unix()%sec >= sec-20 {
 			log.Println("Starting daily report email process...")
 			emailList, status := postgresql_query.GetAllEmails()
