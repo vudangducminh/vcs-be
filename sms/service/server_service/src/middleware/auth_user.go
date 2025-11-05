@@ -44,6 +44,21 @@ func AuthUser() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
+		role, ok := claims["role"].(string)
+		if !ok {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed"})
+			log.Println("Role claim not found or not a string")
+			c.Abort()
+			return
+		}
+		if role != "admin" && role != "user" {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed"})
+			c.Abort()
+			return
+		}
+		// Store username and role in context for further handlers
+		c.Set("username", username)
+		c.Set("role", role)
 		c.Next()
 	}
 }
