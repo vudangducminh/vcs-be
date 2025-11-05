@@ -26,7 +26,7 @@ import (
 // @Failure      401 {object} entities.AuthErrorResponse "Authentication failed"
 // @Failure      500 {object} entities.ExportExcelInternalServerErrorResponse "Failed to retrieve server details"
 // @Failure      500 {object} entities.ExportExcelFailedResponse "Failed to export into Excel file"
-// @Router       /server/export_excel [get]
+// @Router       /servers/export-excel [get]
 func ExportDataToExcel(c *gin.Context) {
 	var servers []entities.Server
 	order := c.Query("order")

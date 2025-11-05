@@ -23,7 +23,7 @@ import (
 // @Failure      409 {object} entities.UpdateServerConflictResponse "Server IP already exists"
 // @Failure      429 {object} entities.RateLimitExceededResponse "Too many requests"
 // @Failure      500 {object} entities.UpdateServerInternalServerErrorResponse "Internal server error"
-// @Router       /server/update_server [put]
+// @Router       /servers/update-server [put]
 func UpdateServer(c *gin.Context) {
 	var req entities.UpdateServerRequest
 	if err := c.ShouldBindJSON(&req); err != nil {

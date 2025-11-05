@@ -54,7 +54,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/report/daily_report": {
+        "/report/daily-report": {
             "post": {
                 "description": "An email will be sent to the specified recipients at 00:00:00 UTC.\nExample date format: 2025-07-23T12:00:00Z",
                 "consumes": [

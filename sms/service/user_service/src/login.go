@@ -22,7 +22,7 @@ import (
 // @Failure      401 {object} entities.LoginUnauthorizedResponse "Invalid credentials"
 // @Failure      429 {object} entities.RateLimitExceededResponse "Too many requests"
 // @Failure      500 {object} entities.LoginInternalServerErrorResponse "Error generating token
-// @Router       /user/login [post]
+// @Router       /users/login [post]
 func HandleLogin(c *gin.Context) {
 	var req entities.LoginRequest
 

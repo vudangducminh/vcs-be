@@ -10,7 +10,6 @@
 Note:
 - Swagger initialization:
     export PATH=$PATH:$(go env GOPATH)/bin
-    swag init -g main.go --dir .,./service/user_service,./service/server_service,./service/healthcheck_service,./object
     swag init -g cmd/main.go --dir .,./src
 
 
