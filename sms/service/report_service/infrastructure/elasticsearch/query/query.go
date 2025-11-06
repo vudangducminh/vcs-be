@@ -3,12 +3,14 @@ package query
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"report_service/entities"
 	elastic "report_service/infrastructure/elasticsearch/connector"
 	"sort"
 	"strings"
+	"time"
 
 	"github.com/elastic/go-elasticsearch/v8/esapi"
 )
@@ -51,7 +53,22 @@ func ParseSearchResults(res *esapi.Response) ([]entities.Server, int) {
 	return servers, http.StatusOK
 }
 
-func GetServerUptimeInRange(startBlock int, endBlock int, order string, filter string, substr string) ([]entities.Server, int, float64) {
+func GetServerUptimeInRange(startTimeInSecond int64, endTimeInSecond int64, order string, filter string, substr string) ([]entities.Server, int, float64) {
+	currentTimeInSecond := time.Now().Unix()
+	roundedStartTime := startTimeInSecond - (startTimeInSecond % 1200) // Round down to nearest 20 minutes
+	roundedEndTime := endTimeInSecond - (endTimeInSecond % 1200)       // Round down to nearest 20 minutes
+	roundedCurrentTime := currentTimeInSecond - (currentTimeInSecond % 1200)
+	if startTimeInSecond%1200 == 0 {
+		roundedStartTime -= 1200
+	}
+	if endTimeInSecond%1200 == 0 {
+		roundedEndTime -= 1200
+	}
+	if currentTimeInSecond%1200 == 0 {
+		roundedCurrentTime -= 1200
+	}
+	startBlock := int((roundedCurrentTime-roundedStartTime)/1200 + 1)
+	endBlock := int((roundedCurrentTime-roundedEndTime)/1200 + 1)
 	var query string
 	switch filter {
 	case "server_name":
@@ -121,7 +138,7 @@ func GetServerUptimeInRange(startBlock int, endBlock int, order string, filter s
 		// log.Println("Server IP: ", servers[i].IPv4)
 		// log.Println("Uptime data: ", servers[i].Uptime)
 		var start = max(0, len(servers[i].Uptime)-startBlock)
-		var end = max(0, len(servers[i].Uptime)-endBlock)
+		var end = max(-1, len(servers[i].Uptime)-endBlock)
 		allServerTotalTime += float64((end - start + 1) * 1200)
 		// Calculate total uptime in the range using simple loop
 		var totalUptime int = 0
@@ -159,7 +176,7 @@ func GetTotalActiveServersCount(filter string, substr string) int {
 	var query string
 	switch filter {
 	case "server_name":
-		query = `{
+		query = fmt.Sprintf(`{
 			"query": {
 				"bool": {
 					"must": [
@@ -178,9 +195,9 @@ func GetTotalActiveServersCount(filter string, substr string) int {
 					]
 				}
 			}
-		}`
+		}`, substr)
 	case "ipv4":
-		query = `{
+		query = fmt.Sprintf(`{
 			"query": {
 				"bool": {
 					"must": [
@@ -199,15 +216,15 @@ func GetTotalActiveServersCount(filter string, substr string) int {
 					]
 				}
 			}
-		}`
+		}`, substr)
 	case "status":
-		query = `{
+		query = fmt.Sprintf(`{
 			"query": {
 				"term": {
 					"status": "%s"
 				}
 			}
-		}`
+		}`, substr)
 	default:
 		query = `{
 			"query": {
@@ -247,7 +264,7 @@ func GetTotalInactiveServersCount(filter string, substr string) int {
 	var query string
 	switch filter {
 	case "server_name":
-		query = `{
+		query = fmt.Sprintf(`{
 			"query": {
 				"bool": {
 					"must": [
@@ -266,9 +283,9 @@ func GetTotalInactiveServersCount(filter string, substr string) int {
 					]
 				}
 			}
-		}`
+		}`, substr)
 	case "ipv4":
-		query = `{
+		query = fmt.Sprintf(`{
 			"query": {
 				"bool": {
 					"must": [
@@ -287,15 +304,15 @@ func GetTotalInactiveServersCount(filter string, substr string) int {
 					]
 				}
 			}
-		}`
+		}`, substr)
 	case "status":
-		query = `{
+		query = fmt.Sprintf(`{
 			"query": {
 				"term": {
 					"status": "%s"
 				}
 			}
-		}`
+		}`, substr)
 	default:
 		query = `{
 			"query": {
@@ -327,7 +344,7 @@ func GetTotalInactiveServersCount(filter string, substr string) int {
 	if err := json.NewDecoder(res.Body).Decode(&countResult); err != nil {
 		return 0
 	}
-
+	// log.Printf("Inactive server count: %d", countResult.Count)
 	return countResult.Count
 }
 
@@ -335,7 +352,7 @@ func GetTotalMaintenanceServersCount(filter string, substr string) int {
 	var query string
 	switch filter {
 	case "server_name":
-		query = `{
+		query = fmt.Sprintf(`{
 			"query": {
 				"bool": {
 					"must": [
@@ -354,9 +371,9 @@ func GetTotalMaintenanceServersCount(filter string, substr string) int {
 					]
 				}
 			}
-		}`
+		}`, substr)
 	case "ipv4":
-		query = `{
+		query = fmt.Sprintf(`{
 			"query": {
 				"bool": {
 					"must": [
@@ -375,15 +392,15 @@ func GetTotalMaintenanceServersCount(filter string, substr string) int {
 					]
 				}
 			}
-		}`
+		}`, substr)
 	case "status":
-		query = `{
+		query = fmt.Sprintf(`{
 			"query": {
 				"term": {
 					"status": "%s"
 				}
 			}
-		}`
+		}`, substr)
 	default:
 		query = `{
 			"query": {

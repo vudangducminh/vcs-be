@@ -13,7 +13,7 @@ func GenerateJWT(username string, role string) (string, error) {
 	claims := jwt.MapClaims{
 		"username": username,
 		"role":     role,
-		"exp":      time.Now().Add(time.Hour * 1).Unix(), // expires in 1 hour
+		"exp":      time.Now().Add(time.Minute * 15).Unix(), // expires in 15 minutes
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString(jwtKey)

@@ -22,7 +22,7 @@ func Init() {
 		health.GET("", src.HealthCheck)
 	}
 
-	report := r.Group("/report", middleware.AuthAdmin())
+	report := r.Group("/report", middleware.AuthUser())
 	{
 		report.POST("/report", src.ReportRequest)
 		report.POST("/daily-report", src.DailyReport)

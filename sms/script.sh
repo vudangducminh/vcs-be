@@ -6,13 +6,13 @@ curl -X GET "http://localhost:9200/server/_count?pretty=true" -H 'Content-Type: 
                 {
                     "wildcard": {
                         "server_name": {
-                            "value": "**"
+                            "value": "*123*"
                         }
                     }
                 },
                 {
                     "term": {
-                        "status": "active"
+                        "status": "inactive"
                     }
                 }
             ]

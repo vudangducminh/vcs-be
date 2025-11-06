@@ -28,7 +28,8 @@ func DailyReporter() {
 					time.Sleep(20 * time.Second)
 					continue
 				}
-				serverDataList, status, averageUptimePercentage := elastic_query.GetServerUptimeInRange(72, 1, "", "", "")
+				currentTimeInSecond := time.Now().Unix()
+				serverDataList, status, averageUptimePercentage := elastic_query.GetServerUptimeInRange(currentTimeInSecond-86400, currentTimeInSecond, "", "", "")
 				totalActiveServer := elastic_query.GetTotalActiveServersCount("", "")
 				totalInactiveServer := elastic_query.GetTotalInactiveServersCount("", "")
 				totalMaintenanceServer := elastic_query.GetTotalMaintenanceServersCount("", "")

@@ -77,24 +77,10 @@ func ReportRequest(c *gin.Context) {
 	// Only need to save email & duration in redis
 	startTimeInHHMMSS := parsedStartTime.Sub(parsedBeginTime)
 	endTimeInHHMMSS := parsedEndTime.Sub(parsedBeginTime)
-	var currentTimeInSecond = time.Now().Unix()
-	var startTimeInSecond = min(int64(startTimeInHHMMSS.Seconds()), currentTimeInSecond)
-	var endTimeInSecond = min(int64(endTimeInHHMMSS.Seconds()), currentTimeInSecond)
-	var roundedStartTime = startTimeInSecond - (startTimeInSecond % 1200) // Round down to nearest 20 minutes
-	var roundedEndTime = endTimeInSecond - (endTimeInSecond % 1200)       // Round down to nearest 20 minutes
-	var roundedCurrentTime = currentTimeInSecond - (currentTimeInSecond % 1200)
-	if startTimeInSecond%1200 == 0 {
-		roundedStartTime -= 1200
-	}
-	if endTimeInSecond%1200 == 0 {
-		roundedEndTime -= 1200
-	}
-	if currentTimeInSecond%1200 == 0 {
-		roundedCurrentTime -= 1200
-	}
-	var beginBlock = int((roundedCurrentTime-roundedStartTime)/1200 + 1)
-	var endBlock = int((roundedCurrentTime-roundedEndTime)/1200 + 1)
-	serverDataList, status, averageUptimePercentage := elastic_query.GetServerUptimeInRange(beginBlock, endBlock, order, filter, str)
+	var startTimeInSecond = min(int64(startTimeInHHMMSS.Seconds()), time.Now().Unix())
+	var endTimeInSecond = min(int64(endTimeInHHMMSS.Seconds()), time.Now().Unix())
+
+	serverDataList, status, averageUptimePercentage := elastic_query.GetServerUptimeInRange(startTimeInSecond, endTimeInSecond, order, filter, str)
 	if status != http.StatusOK {
 		c.JSON(status, gin.H{"error": "Failed to retrieve server details"})
 		return
