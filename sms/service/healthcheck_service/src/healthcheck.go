@@ -60,9 +60,9 @@ func StartHealthCheck() {
 					var uptime []int = srv.Uptime
 					if newUptimeStatus {
 						uptime = append(uptime, 0)
-						// Save data for 1 week only
-						if len(uptime) > 504 {
-							uptime = uptime[len(uptime)-504:]
+						// Save data for 4 week only
+						if len(uptime) > 2016 {
+							uptime = uptime[len(uptime)-2016:]
 						}
 					}
 					isAlive := PingServer(srv.IPv4)
