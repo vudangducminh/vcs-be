@@ -22,9 +22,13 @@ func Init() {
 		health.GET("", src.HealthCheck)
 	}
 
-	report := r.Group("/report", middleware.AuthUser())
+	report := r.Group("/report", middleware.AuthReportRequest())
 	{
 		report.POST("/report", src.ReportRequest)
+	}
+
+	report = r.Group("/report", middleware.AuthDailyReport())
+	{
 		report.POST("/daily-report", src.DailyReport)
 	}
 	// The host should match the @host annotation in main.go

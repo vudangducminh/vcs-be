@@ -22,16 +22,28 @@ func Init() {
 		health.GET("", src.HealthCheck)
 	}
 
-	server := r.Group("/servers", middleware.AuthUser())
+	server := r.Group("/servers", middleware.AuthViewServer())
 	{
 		server.GET("/view-servers", src.ViewServer)
-		server.GET("/export-excel", src.ExportDataToExcel)
 	}
-	server = r.Group("/servers", middleware.AuthAdmin())
+	server = r.Group("/servers", middleware.AuthExportExcel())
+	{
+		server.GET("/export-excel", src.ExportExcel)
+	}
+	server = r.Group("/servers", middleware.AuthAddServer())
 	{
 		server.POST("/add-server", src.AddServer)
+	}
+	server = r.Group("/servers", middleware.AuthAddServer())
+	{
 		server.PUT("/update-server", src.UpdateServer)
+	}
+	server = r.Group("/servers", middleware.AuthDeleteServer())
+	{
 		server.DELETE("/delete-server", src.DeleteServer)
+	}
+	server = r.Group("/servers", middleware.AuthImportExcel())
+	{
 		server.POST("/import-excel", src.ImportExcel)
 	}
 	// The host should match the @host annotation in main.go

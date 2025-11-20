@@ -51,8 +51,23 @@ func AuthAdmin() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-		if role != "admin" {
-			c.JSON(http.StatusForbidden, gin.H{"error": "Admin access required"})
+		str := ""
+		admin := false
+		for _, r := range role {
+			if r == ',' {
+				if str == "admin" {
+					admin = true
+				}
+				str = ""
+			} else {
+				str += string(r)
+			}
+		}
+		if str == "admin" {
+			admin = true
+		}
+		if !admin {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed"})
 			c.Abort()
 			return
 		}

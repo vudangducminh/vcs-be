@@ -27,7 +27,7 @@ import (
 // @Failure      500 {object} entities.ExportExcelInternalServerErrorResponse "Failed to retrieve server details"
 // @Failure      500 {object} entities.ExportExcelFailedResponse "Failed to export into Excel file"
 // @Router       /servers/export-excel [get]
-func ExportDataToExcel(c *gin.Context) {
+func ExportExcel(c *gin.Context) {
 	var servers []entities.Server
 	order := c.Query("order")
 	if order != "asc" && order != "desc" {

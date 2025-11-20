@@ -23,7 +23,7 @@ import (
 // @Failure      429 {object} entities.RateLimitExceededResponse "Too many requests"
 // @Failure      500 {object} entities.LoginInternalServerErrorResponse "Error generating token
 // @Router       /users/login [post]
-func HandleLogin(c *gin.Context) {
+func Login(c *gin.Context) {
 	var req entities.LoginRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {

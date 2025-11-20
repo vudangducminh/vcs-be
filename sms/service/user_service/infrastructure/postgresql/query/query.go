@@ -47,6 +47,24 @@ func GetAccountPasswordByUsername(username string) (string, int) {
 	return account.Password, http.StatusOK
 }
 
+func GetAccountByUsername(username string) entities.Account {
+	var account entities.Account
+	has, err := connector.PostgreSQL.Table("account").
+		Where("username = ?", username).
+		Get(&account)
+
+	if err != nil {
+		log.Println("Error retrieving account:", err)
+		return entities.Account{}
+	}
+
+	if !has {
+		log.Println("No account found with username:", username)
+		return entities.Account{}
+	}
+	return account
+}
+
 func AddAccountInfo(account entities.Account) int {
 	has, err := connector.PostgreSQL.Table("account").
 		Where("username = ?", account.Username).
@@ -69,6 +87,23 @@ func AddAccountInfo(account entities.Account) int {
 		return http.StatusCreated
 	} else {
 		log.Println("Failed to add account:", account.Username)
+		return http.StatusInternalServerError
+	}
+}
+
+func UpdateAccountInfo(account entities.Account) int {
+	affected, err := connector.PostgreSQL.Table("account").
+		Where("username = ?", account.Username).
+		Update(account)
+	if err != nil {
+		log.Println(err)
+		return http.StatusInternalServerError
+	}
+	if affected > 0 {
+		log.Println("Account updated successfully:", account.Username)
+		return http.StatusCreated
+	} else {
+		log.Println("Failed to update account:", account.Username)
 		return http.StatusInternalServerError
 	}
 }

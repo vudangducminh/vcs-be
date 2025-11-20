@@ -23,7 +23,7 @@ import (
 // @Failure      429 {object} entities.RateLimitExceededResponse "Too many requests"
 // @Failure      500 {object} entities.RegisterInternalServerErrorResponse "Internal server error
 // @Router       /users/register [post]
-func HandleRegister(c *gin.Context) {
+func Register(c *gin.Context) {
 	var req entities.RegisterRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {

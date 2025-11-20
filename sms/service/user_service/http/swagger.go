@@ -24,11 +24,12 @@ func Init() {
 
 	users := r.Group("/users")
 	{
-		users.POST("/login", src.HandleLogin)
+		users.POST("/login", src.Login)
 	}
 	users = r.Group("/users", middleware.AuthAdmin())
 	{
-		users.POST("/register", src.HandleRegister)
+		users.POST("/register", src.Register)
+		users.PUT("/update-user", src.UpdateUser)
 	}
 	// The host should match the @host annotation in main.go
 	url := ginSwagger.URL("/swagger/doc.json")

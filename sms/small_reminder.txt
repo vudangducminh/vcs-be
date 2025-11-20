@@ -11,6 +11,8 @@ Note:
 - Swagger initialization:
     export PATH=$PATH:$(go env GOPATH)/bin
     swag init -g cmd/main.go --dir .,./src
+- PostgreSQL config:
+    docker exec -it postgresql psql -U vudangducminh -d postgres
 
 
 - Go test:  

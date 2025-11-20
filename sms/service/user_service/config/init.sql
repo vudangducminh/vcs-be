@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS account (
     email VARCHAR(100) UNIQUE,
     username VARCHAR(50) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
-    role VARCHAR(20) NOT NULL DEFAULT 'user'
+    role VARCHAR(100) DEFAULT ''
 );
 
 CREATE TABLE IF NOT EXISTS email_manager (

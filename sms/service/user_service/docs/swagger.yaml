@@ -95,6 +95,33 @@ definitions:
         example: Registration successful
         type: string
     type: object
+  entities.UpdateUserBadRequestResponse:
+    properties:
+      error:
+        type: string
+    type: object
+  entities.UpdateUserInternalServerErrorResponse:
+    properties:
+      error:
+        type: string
+    type: object
+  entities.UpdateUserNotFound:
+    properties:
+      error:
+        type: string
+    type: object
+  entities.UpdateUserRequest:
+    properties:
+      role:
+        type: string
+      username:
+        type: string
+    type: object
+  entities.UpdateUserResponse:
+    properties:
+      message:
+        type: string
+    type: object
   src.HealthResponse:
     properties:
       services:
@@ -222,6 +249,49 @@ paths:
           schema:
             $ref: '#/definitions/entities.RegisterInternalServerErrorResponse'
       summary: Handle user registration
+      tags:
+      - User
+  /users/update-user:
+    put:
+      consumes:
+      - application/json
+      description: Update user information
+      parameters:
+      - description: JWT token for authentication
+        in: header
+        name: jwt
+        required: true
+        type: string
+      - description: Update user request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/entities.UpdateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Update user successful
+          schema:
+            $ref: '#/definitions/entities.UpdateUserResponse'
+        "400":
+          description: Invalid request body
+          schema:
+            $ref: '#/definitions/entities.UpdateUserBadRequestResponse'
+        "404":
+          description: User not found
+          schema:
+            $ref: '#/definitions/entities.UpdateUserNotFound'
+        "429":
+          description: Too many requests
+          schema:
+            $ref: '#/definitions/entities.RateLimitExceededResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/entities.UpdateUserInternalServerErrorResponse'
+      summary: Update user information
       tags:
       - User
 schemes:
