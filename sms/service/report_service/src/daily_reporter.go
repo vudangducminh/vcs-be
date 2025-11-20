@@ -79,6 +79,7 @@ func DailyReporter() {
 				emailBody += "Number of inactive servers: " + fmt.Sprintf("%d", totalInactiveServer) + "\n"
 				emailBody += "Number of maintenance servers: " + fmt.Sprintf("%d", totalMaintenanceServer) + "\n"
 				emailBody += "Average uptime percentage across all servers: " + fmt.Sprintf("%.2f", averageUptimePercentage) + "%" + "\n"
+
 				for _, email := range emailList {
 					// Send email with the Excel file as attachment
 					status = template.SendEmail(f, email.Email, "Server Report", emailBody)

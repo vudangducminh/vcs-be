@@ -126,10 +126,13 @@ func ReportRequest(c *gin.Context) {
 	// c.Header("File-Name", "servers.xlsx")
 	// c.Header("Content-Transfer-Encoding", "binary")
 
+<<<<<<< HEAD:sms/service/report_service/src/report.go
 	// if err := f.Write(c.Writer); err != nil {
 	// 	c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to export into Excel file"})
 	// 	return
 	// }
+=======
+>>>>>>> 23d810cf7783222cb65b080bb5862a548d306573:sms/service/report_service/report.go
 	totalActiveServer := elastic_query.GetTotalActiveServersCount(filter, str)
 	totalInactiveServer := elastic_query.GetTotalInactiveServersCount(filter, str)
 	totalMaintenanceServer := elastic_query.GetTotalMaintenanceServersCount(filter, str)
