@@ -49,3 +49,37 @@ func HealthCheck(c *gin.Context) {
 		c.JSON(http.StatusServiceUnavailable, response)
 	}
 }
+
+type DBChecker interface {
+	IsConnected() bool
+}
+
+var dbChecker DBChecker
+
+func SetDBChecker(checker DBChecker) {
+	dbChecker = checker
+}
+
+func ModifiedHealthCheck(c *gin.Context) {
+	services := make(map[string]string)
+	overallStatus := "healthy"
+
+	// Use injected checker for testability
+	if dbChecker != nil && !dbChecker.IsConnected() {
+		overallStatus = "unhealthy"
+		services["postgresql"] = "unhealthy"
+	}
+
+	response := HealthResponse{
+		Status:    overallStatus,
+		Timestamp: time.Now().UTC().Format(time.RFC3339),
+		Services:  services,
+		Version:   "1.0.0",
+	}
+
+	if overallStatus == "healthy" {
+		c.JSON(http.StatusOK, response)
+	} else {
+		c.JSON(http.StatusServiceUnavailable, response)
+	}
+}

@@ -61,3 +61,46 @@ func Register(c *gin.Context) {
 		})
 	}
 }
+
+type AccountCreator interface {
+	AddAccountInfo(account entities.Account) int
+}
+
+var accountCreator AccountCreator
+
+func SetAccountCreator(ac AccountCreator) {
+	accountCreator = ac
+}
+
+func ModifiedRegister(c *gin.Context) {
+	var req entities.RegisterRequest
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
+		return
+	}
+
+	if req.Password != req.ConfirmPassword {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Passwords do not match"})
+		return
+	}
+
+	account := entities.Account{
+		Fullname: req.Fullname,
+		Email:    req.Email,
+		Username: req.Username,
+		Password: algorithm.SHA256Hash(req.Password),
+		Role:     req.Role,
+	}
+	httpStatus := accountCreator.AddAccountInfo(account)
+	if httpStatus == http.StatusCreated {
+		c.JSON(http.StatusCreated, gin.H{
+			"message": "Registration successful",
+		})
+	} else {
+		c.JSON(httpStatus, gin.H{
+			"message": "Registration failed",
+			"error":   "Account already exists or internal server error",
+		})
+	}
+}

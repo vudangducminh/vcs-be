@@ -53,3 +53,47 @@ func UpdateUser(c *gin.Context) {
 		})
 	}
 }
+
+type UpdateQuery interface {
+	GetAccountByUsername(username string) entities.Account
+	UpdateAccountInfo(account entities.Account) int
+}
+
+var updateQuery UpdateQuery
+
+func SetUpdateQuery(q UpdateQuery) {
+	updateQuery = q
+}
+
+func ModifiedUpdateUser(c *gin.Context) {
+	var req entities.UpdateUserRequest
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
+		return
+	}
+
+	if req.Username == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Username required"})
+		return
+	}
+
+	account := updateQuery.GetAccountByUsername(req.Username)
+	if account == (entities.Account{}) {
+		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
+		return
+	}
+	account.Role = req.Role
+
+	httpStatus := updateQuery.UpdateAccountInfo(account)
+	if httpStatus == http.StatusCreated {
+		c.JSON(http.StatusCreated, gin.H{
+			"message": "Update successful",
+		})
+	} else {
+		c.JSON(httpStatus, gin.H{
+			"message": "Update failed",
+			"error":   "Internal server error",
+		})
+	}
+}

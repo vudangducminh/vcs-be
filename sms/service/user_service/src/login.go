@@ -74,3 +74,56 @@ func Login(c *gin.Context) {
 		"role":    role,
 	})
 }
+
+type AccountQuery interface {
+	GetAccountPasswordByUsername(username string) (string, int)
+	GetRoleByUsername(username string) string
+}
+
+type JWTGenerator interface {
+	GenerateJWT(username, role string) (string, error)
+}
+
+var (
+	accountQuery AccountQuery
+	jwtGenerator JWTGenerator
+)
+
+func ModifiedLogin(c *gin.Context) {
+	var req entities.LoginRequest
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
+		return
+	}
+
+	// Hash the password before comparison
+	hashedPassword := algorithm.SHA256Hash(req.Password)
+	storedPassword, status := accountQuery.GetAccountPasswordByUsername(req.Username)
+	if status == http.StatusInternalServerError {
+		c.JSON(status, gin.H{"error": "Error retrieving stored password"})
+		return
+	}
+	if storedPassword != hashedPassword {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"message": "Invalid username or password",
+			"error":   "Invalid credentials",
+		})
+		return
+	}
+
+	role := accountQuery.GetRoleByUsername(req.Username)
+	tokenString, err := jwtGenerator.GenerateJWT(req.Username, role)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"message": "Error generating token",
+			"error":   "Error generating token",
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Login successful",
+		"token":   tokenString,
+		"role":    role,
+	})
+}
