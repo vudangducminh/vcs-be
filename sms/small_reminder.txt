@@ -22,6 +22,5 @@ Note:
 - http://localhost:8802/swagger/index.html (report service)
 - http://localhost:8803/swagger/index.html (healthcheck service)
 
-Tasks:
-- Fix healthcheck for services
-- Find a way to run all docker compose at once (using docker compose)
+- Logrotate:
+    sudo logrotate -f logrotate/sms-services.conf
