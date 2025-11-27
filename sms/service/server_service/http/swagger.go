@@ -34,7 +34,7 @@ func Init() {
 	{
 		server.POST("/add-server", src.AddServer)
 	}
-	server = r.Group("/servers", middleware.AuthAddServer())
+	server = r.Group("/servers", middleware.AuthUpdateServer())
 	{
 		server.PUT("/update-server", src.UpdateServer)
 	}
