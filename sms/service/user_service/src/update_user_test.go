@@ -82,3 +82,14 @@ func TestUpdateUser_Fail(t *testing.T) {
 		t.Errorf("Expected 500, got %d", w.Code)
 	}
 }
+
+func TestUpdateUser_InternalServerError(t *testing.T) {
+	r := setupUpdateTest(&mockUpdateQuery{account: entities.Account{Username: "user"}, updateCode: http.StatusInternalServerError})
+	body := []byte(`{"username": "user", "role": "admin"}`)
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("PUT", "/users/update-user", bytes.NewBuffer(body))
+	r.ServeHTTP(w, req)
+	if w.Code != http.StatusInternalServerError {
+		t.Errorf("Expected 500, got %d", w.Code)
+	}
+}

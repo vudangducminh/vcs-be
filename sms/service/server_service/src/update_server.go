@@ -59,3 +59,52 @@ func UpdateServer(c *gin.Context) {
 		c.JSON(status, gin.H{"error": "Failed to update server"})
 	}
 }
+
+type ServerUpdater interface {
+	GetServerById(id string) (entities.Server, bool)
+	UpdateServerInfo(server entities.Server) int
+}
+
+var serverUpdater ServerUpdater
+
+func SetServerUpdater(su ServerUpdater) {
+	serverUpdater = su
+}
+
+func ModifiedUpdateServer(c *gin.Context) {
+	var req entities.UpdateServerRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
+		return
+	}
+
+	if req.Id == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "ServerId is required"})
+		return
+	}
+
+	server, exists := serverUpdater.GetServerById(req.Id)
+	if !exists {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Server not found"})
+		return
+	}
+
+	if req.ServerName != "" {
+		server.ServerName = req.ServerName
+	}
+	server.Status = req.Status
+	server.LastUpdatedTime = time.Now().Unix()
+
+	status := serverUpdater.UpdateServerInfo(server)
+	switch status {
+	case http.StatusOK:
+		c.JSON(http.StatusOK, gin.H{
+			"message": "Server updated successfully",
+			"server":  server,
+		})
+	case http.StatusConflict:
+		c.JSON(http.StatusConflict, gin.H{"error": "Server IP already exists"})
+	default:
+		c.JSON(status, gin.H{"error": "Failed to update server"})
+	}
+}

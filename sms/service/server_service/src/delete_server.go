@@ -48,3 +48,42 @@ func DeleteServer(c *gin.Context) {
 		return
 	}
 }
+
+type ServerDeleter interface {
+	GetServerById(id string) (entities.Server, bool)
+	DeleteServer(id string) int
+}
+
+var serverDeleter ServerDeleter
+
+func SetServerDeleter(sd ServerDeleter) {
+	serverDeleter = sd
+}
+
+func ModifiedDeleteServer(c *gin.Context) {
+	var req entities.DeleteServerRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
+		return
+	}
+
+	server, ok := serverDeleter.GetServerById(req.Id)
+	if !ok {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Server not found"})
+		return
+	}
+	status := serverDeleter.DeleteServer(req.Id)
+	switch status {
+	case http.StatusOK:
+		c.JSON(http.StatusOK, gin.H{
+			"message":     "Server deleted successfully",
+			"_id":         req.Id,
+			"server_name": server.ServerName,
+			"server_ipv4": server.IPv4,
+		})
+	case http.StatusNotFound:
+		c.JSON(http.StatusNotFound, gin.H{"error": "Server not found"})
+	default:
+		c.JSON(status, gin.H{"error": "Failed to delete server"})
+	}
+}

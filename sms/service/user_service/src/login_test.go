@@ -108,3 +108,14 @@ func TestLogin_Success(t *testing.T) {
 		t.Errorf("Expected 200, got %d", w.Code)
 	}
 }
+
+func TestLogin_InternalServerError(t *testing.T) {
+	r := setupTest(&mockAccountQuery{status: http.StatusInternalServerError}, &mockJWTGenerator{err: errors.New("fail")})
+	body := []byte(`{"username": "user", "password": "pass"}`)
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("POST", "/login", bytes.NewBuffer(body))
+	r.ServeHTTP(w, req)
+	if w.Code != http.StatusInternalServerError {
+		t.Errorf("Expected 500, got %d", w.Code)
+	}
+}

@@ -78,3 +78,14 @@ func TestRegister_Failure(t *testing.T) {
 		t.Errorf("Expected 409, got %d", w.Code)
 	}
 }
+
+func TestRegister_InternalServerError(t *testing.T) {
+	r := setupRegisterTest(&mockAccountCreator{status: http.StatusInternalServerError})
+	body := []byte(`{"username": "user", "password": "pass", "confirm_password": "pass", "fullname": "name", "email": "user@gmail.com", "role": "user"}`)
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("POST", "/register", bytes.NewBuffer(body))
+	r.ServeHTTP(w, req)
+	if w.Code != http.StatusInternalServerError {
+		t.Errorf("Expected 500, got %d", w.Code)
+	}
+}

@@ -92,3 +92,80 @@ func ViewServer(c *gin.Context) {
 		"message": "Servers retrieved successfully",
 	})
 }
+
+type ServerViewer interface {
+	GetServerByNameSubstr(str string) ([]entities.Server, int)
+	GetServerByIPv4Substr(str string) ([]entities.Server, int)
+	GetServerByStatus(str string) ([]entities.Server, int)
+}
+
+var serverViewer ServerViewer
+
+func SetServerViewer(sv ServerViewer) {
+	serverViewer = sv
+}
+
+func ModifiedViewServer(c *gin.Context) {
+	order := c.Query("order")
+	if order != "asc" && order != "desc" {
+		order = "asc"
+	}
+	filter := c.Query("filter")
+	str := c.Query("string")
+	log.Printf("Received request to view server with filter '%s' and substring: '%s'", filter, str)
+	if str == "undefined" || str == "{string}" {
+		str = ""
+	}
+
+	var servers []entities.Server
+	var httpStatus int
+	switch filter {
+	case "server_name":
+		servers, httpStatus = serverViewer.GetServerByNameSubstr(str)
+	case "ipv4":
+		servers, httpStatus = serverViewer.GetServerByIPv4Substr(str)
+	case "status":
+		servers, httpStatus = serverViewer.GetServerByStatus(str)
+	default:
+		servers, httpStatus = serverViewer.GetServerByNameSubstr(str)
+	}
+	if httpStatus == http.StatusNotFound {
+		c.JSON(http.StatusOK, gin.H{"message": "No servers found with the given requirements"})
+		return
+	} else if httpStatus != http.StatusOK {
+		c.JSON(httpStatus, gin.H{"error": "Failed to retrieve server details"})
+		return
+	}
+
+	sort.Slice(servers, func(i, j int) bool {
+		var less bool
+		switch filter {
+		case "status":
+			less = servers[i].Status < servers[j].Status
+		case "ipv4":
+			less = servers[i].IPv4 < servers[j].IPv4
+		default:
+			less = servers[i].ServerName < servers[j].ServerName
+		}
+		if order == "desc" {
+			return !less
+		}
+		return less
+	})
+
+	var response []gin.H
+	for _, server := range servers {
+		response = append(response, gin.H{
+			"_id":               server.Id,
+			"server_name":       server.ServerName,
+			"status":            server.Status,
+			"created_time":      server.CreatedTime,
+			"last_updated_time": server.LastUpdatedTime,
+			"ipv4":              server.IPv4,
+		})
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"servers": response,
+		"message": "Servers retrieved successfully",
+	})
+}

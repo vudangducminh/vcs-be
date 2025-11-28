@@ -121,3 +121,112 @@ func ImportExcel(c *gin.Context) {
 		"error_servers": len(errorServers),
 	})
 }
+
+type BulkServerAdder interface {
+	BulkServerInfo([]entities.Server) int
+	AddServerInfo(entities.Server) int
+}
+
+var bulkServerAdder BulkServerAdder
+
+func SetBulkServerAdder(bsa BulkServerAdder) {
+	bulkServerAdder = bsa
+}
+
+func ModifiedImportExcel(c *gin.Context) {
+	file, err := c.FormFile("file")
+	if err != nil {
+		log.Println("Error retrieving file:", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to retrieve file"})
+		return
+	}
+
+	openedFile, err := file.Open()
+	if err != nil {
+		log.Println("Error opening file:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to open file"})
+		return
+	}
+	defer openedFile.Close()
+
+	f, err := excelize.OpenReader(openedFile)
+	if err != nil {
+		log.Println("Error parsing Excel file:", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid file format"})
+		return
+	}
+
+	sheetName := f.GetSheetName(0)
+	rows, err := f.GetRows(sheetName)
+	if err != nil {
+		log.Println("Error reading rows:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to read Excel rows"})
+		return
+	}
+
+	var isFirstRow = true
+	var servers []entities.Server
+	var errorServers []entities.Server
+	var successServers []entities.Server
+	for _, row := range rows {
+		if isFirstRow {
+			isFirstRow = false
+			continue
+		}
+		if len(row) < 4 {
+			continue
+		}
+		server := entities.Server{
+			ServerName:      row[1],
+			Status:          row[2],
+			IPv4:            row[3],
+			CreatedTime:     time.Now().Unix(),
+			LastUpdatedTime: time.Now().Unix(),
+			Uptime:          []int{0},
+		}
+		servers = append(servers, server)
+		if len(servers) >= 250 {
+			status := bulkServerAdder.BulkServerInfo(servers)
+			if status != http.StatusCreated {
+				for _, s := range servers {
+					status = bulkServerAdder.AddServerInfo(s)
+					if status != http.StatusCreated {
+						errorServers = append(errorServers, s)
+					} else {
+						successServers = append(successServers, s)
+					}
+				}
+			} else {
+				successServers = append(successServers, servers...)
+			}
+			servers = nil
+		}
+	}
+	var allFailed bool
+	if len(servers) > 0 {
+		status := bulkServerAdder.BulkServerInfo(servers)
+		if status != http.StatusCreated {
+			allFailed = true
+			for _, s := range servers {
+				status = bulkServerAdder.AddServerInfo(s)
+				if status != http.StatusCreated {
+					errorServers = append(errorServers, s)
+				} else {
+					successServers = append(successServers, s)
+					allFailed = false
+				}
+			}
+			if allFailed {
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to add servers"})
+				return
+			}
+		} else {
+			successServers = append(successServers, servers...)
+		}
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message":       "Excel file imported successfully",
+		"added_servers": len(successServers),
+		"error_servers": len(errorServers),
+	})
+}
