@@ -117,3 +117,69 @@ func StartHealthCheck() {
 		time.Sleep(10 * time.Second)
 	}
 }
+
+type ElasticQuery interface {
+	GetAllServer() []entities.BriefServerInfo
+	BulkUpdateServerInfo([]entities.ServerUptimeUpdate)
+}
+
+type Pinger interface {
+	PingServer(ip string) bool
+}
+
+var elasticQuery ElasticQuery
+var pinger Pinger
+
+func SetElasticQuery(eq ElasticQuery) { elasticQuery = eq }
+func SetPinger(pg Pinger)             { pinger = pg }
+
+func ModifiedStartHealthCheck() {
+	log.Println("Starting Health Check logic...")
+	time.Sleep(10 * time.Second)
+
+	ServerList := elasticQuery.GetAllServer()
+	var prevMinute int = -1
+
+	for {
+		if time.Now().Minute() != prevMinute {
+			updateList := []entities.ServerUptimeUpdate{}
+			ServerList = elasticQuery.GetAllServer()
+			newUptimeStatus := time.Now().Minute()%20 == 0
+			resultsChan := make(chan entities.ServerUptimeUpdate, len(ServerList))
+
+			for _, server := range ServerList {
+				go func(srv entities.BriefServerInfo) {
+					uptime := srv.Uptime
+					if newUptimeStatus {
+						uptime = append(uptime, 0)
+						if len(uptime) > 2016 {
+							uptime = uptime[len(uptime)-2016:]
+						}
+					}
+					isAlive := pinger.PingServer(srv.IPv4)
+					if isAlive {
+						uptime[len(uptime)-1] += 60
+					}
+					status := "inactive"
+					if isAlive {
+						status = "active"
+					}
+					resultsChan <- entities.ServerUptimeUpdate{
+						Id:     srv.Id,
+						Uptime: uptime,
+						Status: status,
+					}
+				}(server)
+			}
+
+			for i := 0; i < len(ServerList); i++ {
+				update := <-resultsChan
+				updateList = append(updateList, update)
+			}
+			close(resultsChan)
+			elasticQuery.BulkUpdateServerInfo(updateList)
+			prevMinute = time.Now().Minute()
+		}
+		time.Sleep(10 * time.Second)
+	}
+}
