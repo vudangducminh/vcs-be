@@ -53,3 +53,41 @@ func DailyReport(c *gin.Context) {
 		})
 	}
 }
+
+type EmailAdder interface {
+	AddEmailInfo(email entities.Email) int
+}
+
+var emailAdder EmailAdder
+
+func SetEmailAdder(ea EmailAdder) {
+	emailAdder = ea
+}
+
+func ModifiedDailyReport(c *gin.Context) {
+	var req entities.DailyReportRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
+		return
+	}
+	if req.Email == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Email is required"})
+		return
+	}
+	email := entities.Email(req)
+	status := emailAdder.AddEmailInfo(email)
+	switch status {
+	case http.StatusCreated:
+		c.JSON(http.StatusCreated, gin.H{
+			"message": "Request saved successfully",
+		})
+	case http.StatusConflict:
+		c.JSON(http.StatusConflict, gin.H{
+			"error": "Email already exists",
+		})
+	default:
+		c.JSON(status, gin.H{
+			"error": "Failed to save request",
+		})
+	}
+}

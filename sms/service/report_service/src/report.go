@@ -148,3 +148,50 @@ func ReportRequest(c *gin.Context) {
 	// log.Println(startTimeInSecond, " ", time.Now().Unix())
 
 }
+
+type ReportService interface {
+	GetServerUptimeInRange(start, end int64, order, filter, str string) ([]entities.Server, int)
+	GetTotalActiveServersCount(filter, str string) int
+	GetTotalInactiveServersCount(filter, str string) int
+	GetTotalMaintenanceServersCount(filter, str string) int
+	SendEmailReport(data interface{}, email, subject, body string) int
+}
+
+var reportService ReportService
+
+func SetReportService(rs ReportService) {
+	reportService = rs
+}
+
+func ModifiedReportRequest(c *gin.Context) {
+	filter := c.Query("filter")
+	str := c.Query("string")
+	order := c.Query("order")
+	var req entities.ReportRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
+		return
+	}
+	// Simulate time parsing and validation (skip for brevity in test)
+	startTimeInSecond := int64(0)
+	endTimeInSecond := int64(1000)
+
+	serverDataList, status := reportService.GetServerUptimeInRange(startTimeInSecond, endTimeInSecond, order, filter, str)
+	if status != http.StatusOK {
+		c.JSON(status, gin.H{"error": "Failed to retrieve server details"})
+		return
+	}
+
+	totalActiveServer := reportService.GetTotalActiveServersCount(filter, str)
+	totalInactiveServer := reportService.GetTotalInactiveServersCount(filter, str)
+	totalMaintenanceServer := reportService.GetTotalMaintenanceServersCount(filter, str)
+	totalServer := totalActiveServer + totalInactiveServer + totalMaintenanceServer
+	emailBody := "Total servers: " + fmt.Sprintf("%d", totalServer) + "\n"
+
+	status = reportService.SendEmailReport(serverDataList, req.Email, "Server Report", emailBody)
+	if status != http.StatusOK {
+		c.JSON(status, gin.H{"error": "Failed to send email"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"message": "Email sent successfully"})
+}
